@@ -12,6 +12,7 @@
     <p>Working with Javascript</p>
     <img src="https://img.shields.io/badge/React-61DAFB?style=for-the-badge&logo=react&logoColor=black" alt="React Badge"></img>
     <p>Working with React</p>
+    <p>Someone make this look nice and just edit it with html, use sheil.io badges to make logos</p>
 
 </body>
 </html>
