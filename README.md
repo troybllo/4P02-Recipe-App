@@ -24,14 +24,11 @@ intelligence.Our goal is to foster a community of food enthusiasts through inter
 
 <h1>Features (Planned)</h1>
 <ul>
-    <li>Feature</li>
-    <li>Feature</li>
-    <li>Feature</li>
-    <li>Feature</li>
-    <li>Feature</li>
-    <li>Feature</li>
-    <li>Feature</li>
-    <li>Feature</li>
+    <li>Save and Edit Recipies</li>
+    <li>Share Recipies</li>
+    <li>Search Recipies</li>
+    <li>Temporary Suggestions</li>
+    <li>Ai-Suggestions</li>
 </ul>
 
 <h1>Contributors</h1>
