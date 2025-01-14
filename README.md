@@ -51,6 +51,7 @@ intelligence.Our goal is to foster a community of food enthusiasts through inter
     <li>Save and Edit- Both are buttons. Once a recipie is saved, it creates a new js file</li>
     <li>Share recipies, is also a butoon, but it has a interaction with two or more profiles</li>
     <li>Recipies have [String] Title, [BLOB] Image, [String] Recipie Title, [String] Recipie Description, Example -> https://www.foodnetwork.com/recipes/pork-soup-dumplings-9534785</li>
+    <li>Each Recipie page also has a list of ingredients that may be stored as a string</li>
     <li>Search Recipies, Search through the recipie cards and the js pages</li>
     <li>Temporary Suggestions - Manual / initial data to start</li>
     <li></li>
