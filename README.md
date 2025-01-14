@@ -34,17 +34,17 @@ intelligence.Our goal is to foster a community of food enthusiasts through inter
 <h1>Contributors</h1>
 <h4>Front End Team</h4>
 <ul>
-    <li>Full Name - Role</li>
-    <li>Full Name - Role</li>
-    <li>Full Name - Role</li>
-    <li>Full Name - Role</li>
+    <li>Roger Li - Developer and Manager</li>
+    <li>Sahil Modi - Developer</li>
+    <li>Troy Bello - Developer/li>
+    <li>Abdelgelil Mohamed - Developer</li>
 </ul>
 <h4>Back End Team</h4>
 <ul>
-    <li>Full Name - Role</li>
-    <li>Full Name - Role</li>
-    <li>Full Name - Role</li>
-    <li>Full Name - Role</li>
+    <li>Roger Li - Developper and Manager</li>
+    <li>Ridham Ethance - Developer</li>
+    <li>Samrat Gautam - Developer</li>
+    <li>Duru Michael - Developer</li>
 </ul>
 
 <h1>License</h1>
