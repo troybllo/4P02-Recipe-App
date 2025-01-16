@@ -42,7 +42,7 @@ intelligence.Our goal is to foster a community of food enthusiasts through inter
 <h4>Back End Team</h4>
 <ul>
     <li>Roger Li - Developper and Manager</li>
-    <li>Ridham Ethance - Developer</li>
+    <li>Ridham Elhance - Developer</li>
      <li>Abdelgelil Mohamed - Developer</li>
     <li>Duru Michael - Developer</li>
 </ul>
