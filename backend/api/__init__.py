@@ -1,6 +1,5 @@
 from flask import Flask
 from flask_cors import CORS
-from flask_jwt_extended import JWTManager
 from firebase_admin import credentials, initialize_app, get_app, App
 import firebase_admin
 import os
@@ -9,9 +8,9 @@ def create_app() -> Flask:
     """Create and configure an instance of the Flask application."""
     app = Flask(__name__)
 
-    # Configurations for JWT
-    app.config['JWT_SECRET_KEY'] = os.getenv('JWT_SECRET_KEY', 'super-secret-key')  
-    jwt = JWTManager(app)  # Initialize JWT Manager
+    # Remove or comment out any JWT-related config:
+    # app.config['JWT_SECRET_KEY'] = os.getenv('JWT_SECRET_KEY', 'super-secret-key')
+    # jwt = JWTManager(app)
 
     # Initialize CORS
     CORS(app)
@@ -19,7 +18,7 @@ def create_app() -> Flask:
     # Initialize Firebase Admin
     firebase_app = setup_firebase()
 
-    # Import and register blueprints for registration and login
+    # Import and register blueprints
     from .routes.registration import register_blueprint
     from .routes.login import login_blueprint
 
@@ -34,10 +33,8 @@ def setup_firebase() -> App:
     initialized, return it. Otherwise, initialize a new one using credentials.
     """
     try:
-        # If Firebase has already been initialized, just return the default app.
         return get_app()
     except ValueError:
-        # "ValueError" will be raised if no default app exists yet.
         cred_path = os.getenv('GOOGLE_APPLICATION_CREDENTIALS')
         if not cred_path:
             raise ValueError("Missing environment variable for Firebase credentials")
