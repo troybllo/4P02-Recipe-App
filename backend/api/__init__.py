@@ -30,7 +30,7 @@ def setup_firebase():
     If FLASK_ENV == 'testing', use Firebase_Test.
     Otherwise, use GOOGLE_APPLICATION_CREDENTIALS for dev or prod.
     """
-    # 1. Check if there's already a default app:
+    # Check if there's already a default app:
     try:
         # If default app already exists, do nothing
         get_app()
@@ -38,7 +38,7 @@ def setup_firebase():
     except ValueError:
         pass  # Means no default app has been initialized yet
 
-    # 2. Pick which creds to use
+    # Pick which creds to use
     env_mode = os.getenv("FLASK_ENV", "development").lower()
     if env_mode == "testing":
         cred_path = os.getenv("Firebase_Test")
@@ -49,6 +49,6 @@ def setup_firebase():
         if not cred_path:
             raise ValueError("GOOGLE_APPLICATION_CREDENTIALS not set (non-testing mode).")
 
-    # 3. Initialize the *default* app with whichever creds we found
+    # Initialize the *default* app with whichever creds we found
     cred = credentials.Certificate(cred_path)
     initialize_app(cred)  # default app

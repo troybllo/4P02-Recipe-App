@@ -3,7 +3,7 @@ def test_login_success(client):
     Register a user, then login with correct credentials.
     Expect 200 and a firebase_custom_token in response.
     """
-    # 1. Register
+    # Register
     reg_payload = {
         "username": "loginuser",
         "email": "loginuser@example.com",
@@ -12,7 +12,7 @@ def test_login_success(client):
     reg_resp = client.post("/api/register", json=reg_payload)
     assert reg_resp.status_code == 200
 
-    # 2. Login
+    # Login
     login_payload = {
         "username": "loginuser",
         "password": "loginpassword"
