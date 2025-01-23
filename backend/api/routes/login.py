@@ -6,15 +6,15 @@ login_blueprint = Blueprint('login', __name__)
 @login_blueprint.route('/login', methods=['POST'])
 def login():
     """
-    Handle user login. Verifies credentials and, if successful, returns
-    a Firebase custom token for the client to use.
+    Endpoint: POST /api/login
     """
-    username = request.json.get('username')
-    password = request.json.get('password')
+    data = request.get_json()
+    username = data.get('username') if data else None
+    password = data.get('password') if data else None
 
-    custom_token = authenticate_user(username, password)
-    if custom_token:
-        # Firebase returns a bytes object, so decode to string before sending to client
-        return jsonify({"firebase_custom_token": custom_token.decode('utf-8')}), 200
+    token, status_code, error = authenticate_user(username, password)
+    if token:
+        # Firebase custom_token is bytes, so decode to string
+        return jsonify({"firebase_custom_token": token.decode('utf-8')}), status_code
     else:
-        return jsonify({"error": "Invalid credentials"}), 401
+        return jsonify({"error": error}), status_code
