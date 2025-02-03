@@ -1,18 +1,36 @@
-import logo from "./logo.svg";
-import "./App.css";
-import { Route, Routes } from "react-router-dom";
-import Home from "./pages/Home";
-import Navbar from "./components/Navbar";
+import React, { useState } from 'react';
+import Navbar from './components/Navbar';
+import Home from './pages/Home';
+import About from './pages/About';
 
-function App() {
+const Layout = ({ children }) => {
   return (
-    <div>
-      <Navbar />
-      <Routes>
-        <Route path="/" element={<Home />} />
-      </Routes>
+    <div className="min-h-screen bg-gray-50">
+      {children}
     </div>
   );
-}
+};
+
+const App = () => {
+  const [currentPage, setCurrentPage] = useState('home');
+
+  const renderPage = () => {
+    switch (currentPage) {
+      case 'about':
+        return <About />;
+      default:
+        return <Home />;
+    }
+  };
+
+  return (
+    <Layout>
+      <Navbar currentPage={currentPage} setCurrentPage={setCurrentPage} />
+      <main className="container mx-auto mt-4">
+        {renderPage()}
+      </main>
+    </Layout>
+  );
+};
 
 export default App;
