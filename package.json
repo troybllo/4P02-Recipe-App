@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "react": "^19.0.0",
     "react-card-flip": "^1.2.3"
   }
 }

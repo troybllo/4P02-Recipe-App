@@ -1,5 +1,109 @@
 .card{
-    width: 300px;
-    height: 400px;
+    width: 600px;
+    height: 900px;
+    margin: 50px auto;
+    background: skyblue;
+    display: flexbox;
+}
+
+.card-back{
+    background:teal;
+}
+
+.top-card{
+    background-color: #eaf5e4;
+    padding: 20px;
+    width: 100%;
+    height: auto;
+}
+
+.top-card-text{
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+    justify-content: center;
+    padding: 10px 20px;
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    font-size: 1.2em;
+}
+
+.top-card-image{
+    display: flex;
+    
+}
+
+.top-card-image img{
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    border: 2px solid rgb(44, 156, 91);
+
+}
+
+.recipe-facts{
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    justify-content: center;
+    margin: 10px 0px;
+}
+
+.box{
     border: 1px solid black;
+    padding: 5px 50px;
+    border-radius: 30px;
+}
+
+.middle-image img{
+    width: 600px;
+    height: 600px;
+    object-fit: cover;
+
+}
+
+.hint{
+    background-color: black;
+    color: white;
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    font-weight: bold;
+    text-align: center;
+}
+
+.full-recipe-button{
+    width: 100%;
+    height: 100px;
+    background-color:#ffcf94;
+    border: 0px 0px 50px 0px #934615;
+    padding: 10px 20px;
+    text-align: center;
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    color: #934615;
+    flex-grow: 1;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.full-recipe-button div{
+    flex-grow: 1;
+}
+
+.full-recipe-button h1{
+    font-size: 1.2em;
+    font-weight: bold;
+}
+
+.back-top-card{
+    background-color: #eaf5e4;
+    padding: 20px;
+    width: 100%;
+    height: 600px;
+    display: flex;
+    flex-grow: 1;
+}
+
+.back-save-card{
+    background-color: #fdf8f6;
+    padding: 20px;
+    width: 100%;
+    height: 200px;
 }
