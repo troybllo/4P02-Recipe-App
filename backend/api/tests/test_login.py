@@ -10,7 +10,7 @@ def test_login_success(client):
         "password": "loginpassword"
     }
     reg_resp = client.post("/api/register", json=reg_payload)
-    assert reg_resp.status_code == 200
+    assert reg_resp.status_code == 201  
 
     # Login
     login_payload = {

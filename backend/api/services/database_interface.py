@@ -20,3 +20,22 @@ def get_user_by_username(username):
     for user in users:
         return user.to_dict()
     return None
+
+def get_user_by_email(email):
+    db = firestore.client()
+    users_ref = db.collection('users').where('email', '==', email).limit(1)
+    users = users_ref.stream()
+    for user in users:
+        return user.to_dict()
+    return None
+
+
+
+def add_recipe_card_to_firebase(recipe_dict):
+
+    """
+    Add a new recipe to Firestore.
+    """
+    recipes_ref = db.collection("recipes")
+    new_recipe_ref = recipes_ref.add(recipe_dict)
+    return new_recipe_ref[1].id  # Return the ID of the newly created recipe

@@ -3,6 +3,8 @@ from flask import Flask
 from flask_cors import CORS
 import firebase_admin
 from firebase_admin import credentials, get_app, initialize_app
+from .routes.registration import register_blueprint
+from .routes.login import login_blueprint
 
 def create_app():
     """
@@ -17,8 +19,6 @@ def create_app():
     setup_firebase()
 
     # blueprint registrations
-    from .routes.registration import register_blueprint
-    from .routes.login import login_blueprint
     app.register_blueprint(register_blueprint, url_prefix='/api')
     app.register_blueprint(login_blueprint, url_prefix='/api')
 
