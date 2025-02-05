@@ -1,26 +1,52 @@
-import React from 'react';
+import React from "react";
+import styles from "../styles/Navbar.module.css";
 
 const Navbar = ({ currentPage, setCurrentPage }) => {
   return (
-    <nav className="w-full bg-white shadow-md p-4">
-      <div className="container mx-auto flex justify-between items-center">
-        <div className="flex space-x-4">
-          <button 
-            onClick={() => setCurrentPage('home')}
-            className={`px-3 py-2 rounded-md hover:bg-gray-100 ${currentPage === 'home' ? 'bg-gray-100' : ''}`}
-          >
-            Home
-          </button>
-          <button 
-            onClick={() => setCurrentPage('about')}
-            className={`px-3 py-2 rounded-md hover:bg-gray-100 ${currentPage === 'about' ? 'bg-gray-100' : ''}`}
-          >
-            About
-          </button>
+    <>
+      <nav className={styles.navbar}>
+        <div className={styles.container}>
+          <div className={styles.buttonGroup}>
+            <div className={styles.rotatingborder}>
+              <button
+                onClick={() => setCurrentPage("home")}
+                className={`${styles.button} ${
+                  currentPage === "home" ? styles.activeButton : ""
+                }`}
+              >
+                Home
+              </button>
+              <button
+                onClick={() => setCurrentPage("about")}
+                className={`${styles.button} ${
+                  currentPage === "about" ? styles.activeButton : ""
+                }`}
+              >
+                About
+              </button>
+            </div>
+            {/* <button
+              onClick={() => setCurrentPage("home")}
+              className={`${styles.button} ${
+                currentPage === "home" ? styles.activeButton : ""
+              }`}
+            >
+              Home
+            </button>
+            <button
+              onClick={() => setCurrentPage("about")}
+              className={`${styles.button} ${
+                currentPage === "about" ? styles.activeButton : ""
+              }`}
+            >
+              About
+            </button> */}
+          </div>
+          <div className={styles.profileIcon}></div>
         </div>
-        <div className="w-8 h-8 bg-gray-200 rounded-full" /> {/* Profile icon placeholder */}
-      </div>
-    </nav>
+      </nav>
+      <div className={styles.spacer}></div>
+    </>
   );
 };
 
