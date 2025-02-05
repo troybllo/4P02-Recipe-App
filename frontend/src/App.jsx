@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import Navbar from './components/Navbar';
 import Home from './pages/Home';
 import About from './pages/About';
+import ReactCardFlip from 'react-card-flip';
 
 const Layout = ({ children }) => {
   return (

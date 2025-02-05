@@ -1,12 +1,11 @@
 import React from 'react';
+import Card from '../components/Card';
 
 const Home = () => {
   return (
     <div className="p-4">
-      <h1 className="text-2xl font-bold">Home Page</h1>
-      <p>Welcome to the home page!</p>
-      <p>Test</p>
-      <button>Help!</button>
+      <h1 className="text-2xl font-bold">Card Example</h1>
+      <Card/>
     </div>
   );
 };
