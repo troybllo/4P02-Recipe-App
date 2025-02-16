@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import SignIn from "./SignIn";
 import SignUp from "./Signup";
+import "./Navbar.css";
 
 export default function Navbar() {
   const [isSignInOpen, setIsSignInOpen] = useState(false);
@@ -29,10 +30,17 @@ export default function Navbar() {
   };
 
   return (
-    <div className="pt-6">
-      <nav className="flex flex-row gap-3 justify-evenly">
+    <div className="navbardiv">
+      <nav className="nav">
+        <div className="nav-title">
+          <img src="/src/images/feastly_black.png" className="logo" />
+          <h3>Feastly</h3>
+        </div>
         <Link>
-          <h3>Home</h3>
+          <div className="navlink_div">
+            <img src="/src/images/homePic.png" className="pic_home"/>
+            <h3>Home</h3>
+          </div>
         </Link>
         <Link>
           <h3>Disc</h3>

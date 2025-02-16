@@ -1,0 +1,42 @@
+.navbardiv {
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: 15%; /* Adjust the width as needed */
+  background-color: #cdd6c5; /* Adjust the background color as needed */
+  padding-top: 20px;
+}
+
+.navbardiv a {
+  padding: 10px 15px;
+  text-decoration: none;
+  font-size: 18px;
+  color: rgb(24, 23, 23);
+  display: block;
+  border: 1px solid #575757;
+  border-radius: 30px;
+  min-width: 80%;
+  text-align: center;
+  margin: 5px 20px;
+}
+
+.navbardiv a:hover {
+  background-color: #575757;
+}
+
+.navlink_div{
+  display: flex;
+  align-items: center;
+}
+
+.nav-title{
+  font-size: 24px;
+  font-weight: bold;
+  margin-left: 20px;
+  display: flex;
+  align-items: center;
+  border: black;
+}
