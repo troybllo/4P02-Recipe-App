@@ -43,7 +43,7 @@ export default function Navbar() {
           </div>
         </Link>
         <Link>
-          <h3>Disc</h3>
+          <h3>Discovery</h3>
         </Link>
         <Link>
           <h3>About</h3>
