@@ -6,6 +6,7 @@ import "./Navbar.css";
 import homePic from "../images/homePic.png";
 import discPic from "../images/discovery.png";
 import abtPic from "../images/about.png";
+import searchIcon from "../images/search.png";
 import feastlyPic from "../images/feastly_black.png";
 
 export default function Navbar() {
@@ -39,6 +40,16 @@ export default function Navbar() {
         <div className="nav-title">
           <img src={feastlyPic} className="logo" />
           <h3>Feastly</h3>
+        </div>
+        <div className="nav-search">
+          <input
+            type="text"
+            placeholder="Search..."
+            className="nav-search-input"
+          />
+          <button className="nav-search-button">
+            <img src={searchIcon} />
+          </button>
         </div>
         <Link>
           <div className="navlink_div">

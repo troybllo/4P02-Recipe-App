@@ -27,7 +27,7 @@
 }
 
 .navbardiv a:hover {
-  background-color: #1d380e;
+  border-right: 30px solid #1d380e;
 }
 
 .navlink_div{
@@ -46,4 +46,33 @@
   justify-content: center;
   margin: 10px;
   margin-bottom: 30px;
+}
+
+.nav-search{
+  padding: 10px 15px;
+  text-decoration: none;
+  font-size: 18px;
+  color: rgb(24, 23, 23);
+  display: block;
+  border: 1px solid #575757;
+  background-color: #ffffff;
+  border-radius: 30px;
+  min-width: 80%;
+  text-align: center;
+  margin: 5px 20px;
+}
+
+.nav-search-input{
+  max-width: 75%;
+  background-color: transparent;
+}
+
+.nav-search-button{
+  max-width: 15%;
+  justify-content: center;
+}
+
+.nav-search-input:focus{
+  border: none;
+  outline: none;
 }
