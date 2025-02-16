@@ -5,9 +5,11 @@
   left: 0;
   top: 0;
   height: 100%;
-  width: 15%; /* Adjust the width as needed */
-  background-color: #cdd6c5; /* Adjust the background color as needed */
+  width: 12%; 
+  background-color: #eaf5e4; 
   padding-top: 20px;
+  border-right: 1px solid #575757;
+  border-color: #1d380e;
 }
 
 .navbardiv a {
@@ -17,6 +19,7 @@
   color: rgb(24, 23, 23);
   display: block;
   border: 1px solid #575757;
+  background-color: #ccdec2;
   border-radius: 30px;
   min-width: 80%;
   text-align: center;
@@ -24,12 +27,13 @@
 }
 
 .navbardiv a:hover {
-  background-color: #575757;
+  background-color: #1d380e;
 }
 
 .navlink_div{
   display: flex;
   align-items: center;
+  justify-content: center;
 }
 
 .nav-title{
@@ -39,4 +43,7 @@
   display: flex;
   align-items: center;
   border: black;
+  justify-content: center;
+  margin: 10px;
+  margin-bottom: 30px;
 }

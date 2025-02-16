@@ -3,6 +3,10 @@ import { Link } from "react-router-dom";
 import SignIn from "./SignIn";
 import SignUp from "./Signup";
 import "./Navbar.css";
+import homePic from "../images/homePic.png";
+import discPic from "../images/discovery.png";
+import abtPic from "../images/about.png";
+import feastlyPic from "../images/feastly_black.png";
 
 export default function Navbar() {
   const [isSignInOpen, setIsSignInOpen] = useState(false);
@@ -33,20 +37,26 @@ export default function Navbar() {
     <div className="navbardiv">
       <nav className="nav">
         <div className="nav-title">
-          <img src="/src/images/feastly_black.png" className="logo" />
+          <img src={feastlyPic} className="logo" />
           <h3>Feastly</h3>
         </div>
         <Link>
           <div className="navlink_div">
-            <img src="/src/images/homePic.png" className="pic_home"/>
+            <img src={homePic} className="pic_home"/>
             <h3>Home</h3>
           </div>
         </Link>
         <Link>
-          <h3>Discovery</h3>
+          <div className="navlink_div">
+            <img src={discPic} className="pic_home"/>
+            <h3>Discovery</h3>
+          </div>
         </Link>
         <Link>
-          <h3>About</h3>
+          <div className="navlink_div">
+            <img src={abtPic} className="pic_home"/>
+            <h3>About</h3>
+          </div>
         </Link>
         <button onClick={() => setIsSignInOpen(true)}>Sign In</button>
 
