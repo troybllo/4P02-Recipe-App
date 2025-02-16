@@ -51,25 +51,25 @@ export default function Navbar() {
             <img src={searchIcon} />
           </button>
         </div>
-        <Link>
+        <Link to="/">
           <div className="navlink_div">
             <img src={homePic} className="pic_home"/>
             <h3>Home</h3>
           </div>
         </Link>
-        <Link>
+        <Link to="/discovery">
           <div className="navlink_div">
             <img src={discPic} className="pic_home"/>
             <h3>Discovery</h3>
           </div>
         </Link>
-        <Link>
+        <Link to="/about">
           <div className="navlink_div">
             <img src={abtPic} className="pic_home"/>
             <h3>About</h3>
           </div>
         </Link>
-        <button onClick={() => setIsSignInOpen(true)}>Sign In</button>
+        <button onClick={() => setIsSignInOpen(true)} className='signin_nav'>Sign In</button>
 
         <SignIn
           isOpen={isSignInOpen}

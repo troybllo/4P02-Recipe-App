@@ -76,3 +76,23 @@
   border: none;
   outline: none;
 }
+
+.signin_nav{
+  padding: 10px 15px;
+  text-decoration: none;
+  font-size: 18px;
+  color: rgb(24, 23, 23);
+  display: block;
+  border: 1px solid #ba5719;
+  background-color: #ffcf94;
+  font-weight: bold;
+  color: #ba5719;
+  border-radius: 30px;
+  min-width: 82%;
+  text-align: center;
+  margin: 5px 20px;
+}
+
+.signin_nav:hover{
+  border-right: 30px solid #ba5719;
+}
