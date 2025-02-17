@@ -1,7 +1,7 @@
 .navbardiv {
   display: flex;
   flex-direction: column;
-  position: fixed;
+  position: relative;
   left: 0;
   top: 0;
   height: 100%;
@@ -10,6 +10,7 @@
   padding-top: 20px;
   border-right: 1px solid #575757;
   border-color: #1d380e;
+  height: 100vh;
 }
 
 .navbardiv a {

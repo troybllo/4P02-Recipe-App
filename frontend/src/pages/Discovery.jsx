@@ -1,10 +1,22 @@
+import discDiamond from '../images/discovery_diamond.png';
+import searchIcon from "../images/search.png";
+import "../styles/Discovery.css";
+
 export default function Discovery() {
     return (
       <>
-        <h1 className="flex font-extrabold size-7 w-full justify-center items-center">
-          Discovery
-        </h1>
-        <h1>STARTadjoiajsdoijasiodsjsadjoiajsdoijasiodsjsadjoiajsdoijasiodsj</h1>
+        <div>
+            <img src={discDiamond} />
+            <h1>Your Discovery</h1>
+            <p>Discover new recipes here!</p>
+        </div>
+        <div className="nav-search">
+            <input type="text" placeholder="Search..." className="nav-search-input"
+            />
+            <button className="nav-search-button">
+            <img src={searchIcon} />
+            </button>
+        </div>
       </>
     );
   }
