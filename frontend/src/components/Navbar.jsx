@@ -2,9 +2,14 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import SignIn from "./SignIn";
 import SignUp from "./Signup";
+import "../styles/Navbar.css";
+import homePic from "../images/homePic.png";
+import discPic from "../images/discovery.png";
+import abtPic from "../images/about.png";
+import searchIcon from "../images/search.png";
+import feastlyPic from "../images/feastly_black.png";
 
 export default function Navbar() {
-  const [currentPage, setCurrentPage] = useState("home");
   const [isSignInOpen, setIsSignInOpen] = useState(false);
   const [isSignUpOpen, setIsSignUpOpen] = useState(false);
 
@@ -30,62 +35,90 @@ export default function Navbar() {
   };
 
   return (
-    <>
-      <nav className="fixed top-0 left-0 right-0 bg-white shadow-md px-4 py-4 z-50">
-        <div className="max-w-7xl mx-auto flex justify-between items-center">
-          <div className="flex gap-4">
-            <button
-              onClick={() => setCurrentPage("home")}
-              className={`px-3 py-2 rounded-md text-base transition-colors duration-200 hover:bg-gray-100 hover:shadow
-                ${currentPage === "home" ? "bg-gray-50 shadow" : ""}`}
-            >
-              <Link to="/" className="hover:text-gray-700">
-                Home
-              </Link>
-            </button>
-            <button
-              onClick={() => setCurrentPage("disc")}
-              className={`px-3 py-2 rounded-md text-base transition-colors duration-200 hover:bg-gray-100 hover:shadow
-                ${currentPage === "disc" ? "bg-gray-50 shadow" : ""}`}
-            >
-              <Link to="/discovery" className="hover:text-gray-700">
-                Discovery
-              </Link>
-            </button>
-            <button
-              onClick={() => setCurrentPage("about")}
-              className={`px-3 py-2 rounded-md text-base transition-colors duration-200 hover:bg-gray-100 hover:shadow
-                ${currentPage === "about" ? "bg-gray-50 shadow" : ""}`}
-            >
-              <Link to="/about" className="hover:text-gray-700">
-                About
-              </Link>
-            </button>
-          </div>
-          <div className="flex items-center gap-4">
-            <button
-              onClick={() => setIsSignInOpen(true)}
-              className="px-3 py-2 rounded-md text-base transition-colors duration-200 hover:bg-gray-100 hover:shadow"
-            >
-              Sign In
-            </button>
-            <div className="w-8 h-8 bg-gray-200 rounded-full"></div>
-          </div>
+    <div className="flex flex-col relative left-0 top-0 h-screen w-[12%] bg-[#eaf5e4] pt-5 border-r border-[#1d380e]">
+      <nav>
+        <div className="flex items-center justify-center text-2xl font-bold mx-5 mb-8">
+          <img
+            src="/images/feastly_black.png"
+            alt="Feastly Logo"
+            className="w-auto h-auto"
+          />
+          <h3>Feastly</h3>
         </div>
+
+        <div className="mx-5 my-1 px-4 py-2 flex items-center border border-[#575757] bg-white rounded-full">
+          <input
+            type="text"
+            placeholder="Search..."
+            className="w-[75%] bg-transparent focus:outline-none"
+          />
+          <button className="w-[15%] flex justify-center">
+            <img src="/images/search.png" alt="Search" />
+          </button>
+        </div>
+
+        <Link
+          to="/"
+          className="mx-5 my-1 px-4 py-2 flex items-center justify-center border border-[#575757] bg-[#ccdec2] rounded-full text-lg text-gray-900 hover:border-l-4 hover:border-r-4 hover:border-[#1d380e]"
+        >
+          <div className="flex items-center justify-center">
+            <img
+              src="/images/homePic.png"
+              alt="Home"
+              className="w-auto h-auto"
+            />
+            <h3>Home</h3>
+          </div>
+        </Link>
+
+        <Link
+          to="/discovery"
+          className="mx-5 my-1 px-4 py-2 flex items-center justify-center border border-[#575757] bg-[#ccdec2] rounded-full text-lg text-gray-900 hover:border-l-4 hover:border-r-4 hover:border-[#1d380e]"
+        >
+          <div className="flex items-center justify-center">
+            <img
+              src="/images/discovery.png"
+              alt="Discovery"
+              className="w-auto h-auto"
+            />
+            <h3>Discovery</h3>
+          </div>
+        </Link>
+
+        <Link
+          to="/about"
+          className="mx-5 my-1 px-4 py-2 flex items-center justify-center border border-[#575757] bg-[#ccdec2] rounded-full text-lg text-gray-900 hover:border-l-4 hover:border-r-4 hover:border-[#1d380e]"
+        >
+          <div className="flex items-center justify-center">
+            <img
+              src="/images/about.png"
+              alt="About"
+              className="w-auto h-auto"
+            />
+            <h3>About</h3>
+          </div>
+        </Link>
+
+        <button
+          onClick={() => setIsSignInOpen(true)}
+          className="mx-5 my-1 px-4 py-2 w-[82%] text-lg font-bold text-[#ba5719] border border-[#ba5719] bg-[#ffcf94] rounded-full hover:border-l-4 hover:border-r-4 hover:border-[#ba5719]"
+        >
+          Sign In
+        </button>
+
+        <SignIn
+          isOpen={isSignInOpen}
+          onClose={() => setIsSignInOpen(false)}
+          onSignInSuccess={handleSignInSuccess}
+          onSwitchToSignUp={switchToSignUp}
+        />
+        <SignUp
+          isOpen={isSignUpOpen}
+          onClose={() => setIsSignUpOpen(false)}
+          onSignUpSuccess={handleSignUpSuccess}
+          onSwitchToSignIn={switchToSignIn}
+        />
       </nav>
-      <div className="h-16"></div>
-      <SignIn
-        isOpen={isSignInOpen}
-        onClose={() => setIsSignInOpen(false)}
-        onSignInSuccess={handleSignInSuccess}
-        onSwitchToSignUp={switchToSignUp}
-      />
-      <SignUp
-        isOpen={isSignUpOpen}
-        onClose={() => setIsSignUpOpen(false)}
-        onSignUpSuccess={handleSignUpSuccess}
-        onSwitchToSignIn={switchToSignIn}
-      />
-    </>
+    </div>
   );
 }

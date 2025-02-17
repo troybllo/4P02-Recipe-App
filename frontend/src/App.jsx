@@ -1,21 +1,22 @@
 import "./App.css";
 import { Route, Routes } from "react-router-dom";
 import Home from "./pages/Home";
-import Navbar from "./components/Navbar";
+import Discovery from "./pages/Discovery";
 import About from "./pages/About";
+import Navbar from "./components/Navbar";
 import Sidebar from "./components/Sidebar";
 
 function App() {
   return (
-    <div>
+    <div className="app-container">
       <Navbar />
-      <Sidebar />
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/about" element={<About />} />
-        <Route path="/discovery" element={<About />} />
-        <Route path="/about" element={<About />} />
-      </Routes>
+      <div className="main-content">
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/discovery" element={<Discovery />} />
+          <Route path="/contact" element={<About />} />
+        </Routes>
+      </div>
     </div>
   );
 }
