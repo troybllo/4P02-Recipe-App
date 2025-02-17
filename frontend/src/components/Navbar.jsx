@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import SignIn from "./SignIn";
 import SignUp from "./Signup";
-import "./Navbar.css";
+import "../styles/Navbar.css";
 import homePic from "../images/homePic.png";
 import discPic from "../images/discovery.png";
 import abtPic from "../images/about.png";

@@ -27,7 +27,8 @@
 }
 
 .navbardiv a:hover {
-  border-right: 30px solid #1d380e;
+  border-right: 5px solid #1d380e;
+  border-left: 5px solid #1d380e;
 }
 
 .navlink_div{
@@ -94,5 +95,6 @@
 }
 
 .signin_nav:hover{
-  border-right: 30px solid #ba5719;
+  border-right: 5px solid #ba5719;
+  border-left: 5px solid #ba5719;
 }
