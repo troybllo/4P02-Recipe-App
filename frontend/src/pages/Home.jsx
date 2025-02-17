@@ -1,9 +1,8 @@
 // src/pages/Home.jsx
 import React from "react";
 import FoodSocialCard from "../components/FoodSocialCard";
-import meal2 from "../assets/meal2.jpg"; // Make sure this image exists in your assets
+import meal2 from "../assets/meal2.jpg";
 
-// Simulated backend data
 const mockBackendData = {
   postId: "post_123",
   title: "Authentic Spanish Paella",
@@ -39,17 +38,16 @@ const mockBackendData = {
 
 export default function Home() {
   return (
-    <div className="p-6 ml-[12%]">
-      {" "}
-      {/* Added margin-left to account for navbar */}
+    <div className="p-6 ml-[12%] bg-gray-50 min-h-screen">
       <h1 className="text-3xl font-extrabold text-center mb-8">
         Welcome to Feastly
       </h1>
+
       <div className="max-w-7xl mx-auto space-y-8">
         {/* Card with mock backend data */}
         <FoodSocialCard {...mockBackendData} />
 
-        {/* Placeholder card with default props */}
+        {/* Placeholder card */}
         <FoodSocialCard
           postId="placeholder_1"
           title="Quick & Easy Pasta"
