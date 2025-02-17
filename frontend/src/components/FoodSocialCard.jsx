@@ -1,22 +1,83 @@
+// src/components/FoodSocialCard.jsx
 import React, { useState } from "react";
 import styles from "../styles/FoodSocialCard.module.css";
 
-// Import images
-// import meal1 from "../assets/meal1.jpeg";
-import meal2 from "../assets/meal2.jpg";
-
 const FoodSocialCard = ({
-  title = "Shrimp and Chorizo Paella",
-  author = "RecipeMaster",
-  date = "February 5, 2025",
-  description = "This impressive paella is a perfect party dish and a fun meal to cook together with your guests.",
-  cookingTime = "45 mins",
-  difficulty = "Medium",
-  servings = "4",
-  image = meal2, // Default image, can be overridden via props
+  postId, // Unique identifier for the post
+  title,
+  author,
+  authorId, // For user profile linking
+  datePosted, // ISO date string from backend
+  description,
+  cookingTime,
+  difficulty,
+  servings,
+  imageUrl, // URL from backend storage
+  ingredients, // Array of ingredients
+  instructions, // Array of instructions
+  likes, // Initial likes count
+  isLiked, // Whether current user has liked
 }) => {
   const [expanded, setExpanded] = useState(false);
-  const [liked, setLiked] = useState(false);
+  const [liked, setLiked] = useState(isLiked);
+  const [likeCount, setLikeCount] = useState(likes);
+  const [isLoading, setIsLoading] = useState(false);
+
+  // Format the date from ISO string
+  const formattedDate = new Date(datePosted).toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
+
+  // Handle like toggle with backend integration
+  const handleLike = async () => {
+    if (isLoading) return;
+
+    setIsLoading(true);
+    try {
+      // Backend call will go here
+      // const response = await fetch(`/api/posts/${postId}/like`, {
+      //   method: liked ? 'DELETE' : 'POST',
+      //   headers: {
+      //     'Content-Type': 'application/json',
+      //     // Authorization header will go here
+      //   }
+      // });
+
+      // if (response.ok) {
+      setLiked(!liked);
+      setLikeCount((prevCount) => (liked ? prevCount - 1 : prevCount + 1));
+      // }
+    } catch (error) {
+      console.error("Error toggling like:", error);
+      // Add error handling/notification here
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // Handle share functionality
+  const handleShare = async () => {
+    try {
+      await navigator.share({
+        title: title,
+        text: description,
+        url: window.location.href, // Will need to be updated with actual post URL
+      });
+    } catch (error) {
+      console.log("Error sharing:", error);
+      // Fallback to copying link to clipboard
+      navigator.clipboard.writeText(window.location.href);
+      // Add notification of "Link copied" here
+    }
+  };
+
+  // Handle report/menu functionality
+  const handleMenuClick = () => {
+    // Implement report/menu functionality
+    console.log("Menu clicked for post:", postId);
+  };
 
   return (
     <div className={styles.card}>
@@ -25,22 +86,32 @@ const FoodSocialCard = ({
         <div className={styles.headerContent}>
           <h3 className={styles.title}>{title}</h3>
           <p className={styles.authorInfo}>
-            by {author} • {date}
+            by {author} • {formattedDate}
           </p>
         </div>
-        <button className={styles.iconButton}>•••</button>
+        <button
+          className={styles.iconButton}
+          onClick={handleMenuClick}
+          aria-label="More options"
+        >
+          •••
+        </button>
       </div>
 
       <div className={styles.imageContainer}>
-        <img src={image} alt={title} className={styles.image} />
+        <img
+          src={imageUrl}
+          alt={title}
+          className={styles.image}
+          loading="lazy" // For better performance
+        />
       </div>
 
-      {/* Rest of the component remains the same */}
       <div className={styles.content}>
         <div className={styles.metadata}>
-          <span>⏱️ {cookingTime}</span>
-          <span>📊 {difficulty}</span>
-          <span>👥 Serves {servings}</span>
+          <span title="Cooking Time">⏱️ {cookingTime}</span>
+          <span title="Difficulty">📊 {difficulty}</span>
+          <span title="Servings">👥 Serves {servings}</span>
         </div>
 
         <p className={styles.description}>{description}</p>
@@ -49,15 +120,25 @@ const FoodSocialCard = ({
           <div className={styles.actionButtons}>
             <button
               className={`${styles.iconButton} ${liked ? styles.liked : ""}`}
-              onClick={() => setLiked(!liked)}
+              onClick={handleLike}
+              disabled={isLoading}
+              aria-label={liked ? "Unlike" : "Like"}
             >
               {liked ? "❤️" : "🤍"}
+              <span className={styles.likeCount}>{likeCount}</span>
             </button>
-            <button className={styles.iconButton}>📤</button>
+            <button
+              className={styles.iconButton}
+              onClick={handleShare}
+              aria-label="Share"
+            >
+              📤
+            </button>
           </div>
           <button
             className={styles.expandButton}
             onClick={() => setExpanded(!expanded)}
+            aria-expanded={expanded}
           >
             {expanded ? "Hide Recipe ▼" : "Show Recipe ▶"}
           </button>
@@ -67,28 +148,30 @@ const FoodSocialCard = ({
           <div className={styles.expandedContent}>
             <h4 className={styles.sectionTitle}>Ingredients:</h4>
             <ul className={styles.ingredientsList}>
-              <li>Lorem ipsum</li>
-              <li>Lorem ipsum</li>
-              <li>Lorem ipsum</li>
-              <li>Lorem ipsum</li>
-              <li>Lorem ipsum</li>
-              <li>Lorem ipsum</li>
+              {ingredients?.map((ingredient, index) => (
+                <li key={`ingredient-${postId}-${index}`}>{ingredient}</li>
+              ))}
             </ul>
 
             <h4 className={styles.sectionTitle}>Instructions:</h4>
             <ol className={styles.instructionsList}>
-              <li>Lorem ipsum odor amet, consectetuer adipiscing elit. 1</li>
-              <li>Lorem ipsum odor amet, consectetuer adipiscing elit. 2</li>
-              <li>Lorem ipsum odor amet, consectetuer adipiscing elit. 3</li>
-              <li>Lorem ipsum odor amet, consectetuer adipiscing elit. 4</li>
-              <li>Lorem ipsum odor amet, consectetuer adipiscing elit. 5</li>
-              <li>Lorem ipsum odor amet, consectetuer adipiscing elit. 6</li>
+              {instructions?.map((instruction, index) => (
+                <li key={`instruction-${postId}-${index}`}>{instruction}</li>
+              ))}
             </ol>
           </div>
         )}
       </div>
     </div>
   );
+};
+
+// PropTypes for better development experience
+FoodSocialCard.defaultProps = {
+  likes: 0,
+  isLiked: false,
+  ingredients: [],
+  instructions: [],
 };
 
 export default FoodSocialCard;

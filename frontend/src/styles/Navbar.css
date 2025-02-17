@@ -99,3 +99,24 @@
   border-right: 5px solid #ba5719;
   border-left: 5px solid #ba5719;
 }
+
+.create_post_nav {
+  padding: 10px 15px;
+  text-decoration: none;
+  font-size: 18px;
+  color: rgb(24, 23, 23);
+  display: block;
+  border: 1px solid #1d9c3f;
+  background-color: #bbf7a0;
+  font-weight: bold;
+  color: #1d9c3f;
+  border-radius: 30px;
+  min-width: 82%;
+  text-align: center;
+  margin: 5px 20px;
+}
+
+.create_post_nav:hover {
+  border-right: 5px solid #1d9c3f;
+  border-left: 5px solid #1d9c3f;
+}
