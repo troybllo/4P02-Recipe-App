@@ -10,6 +10,7 @@ function App() {
   return (
     <div className="app-container">
       <Navbar />
+      <Sidebar />
       <div className="main-content">
         <Routes>
           <Route path="/" element={<Home />} />
