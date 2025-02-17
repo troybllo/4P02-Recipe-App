@@ -12,14 +12,14 @@ export default function Sidebar() {
   return (
     <div className="relative">
       <button
+        className="fixed top-4 right-4 z-50 p-2 rounded-lg bg-white shadow-lg hover:bg-gray-100 focus:outline-none"
         onClick={toggleSidebar}
-        className="fixed top-4 right-2 z-50 p-2 rounded-lg bg-white shadow-lg hover:bg-gray-100 focus:outline-none"
       >
         {isOpen ? <X size={24} /> : <Menu size={24} />}
       </button>
       <div
-        className={`fixed top-0 left-0 h-full w-64 bg-white shadow-lg transform transition-transform duration-300 ease-in-out ${
-          isOpen ? "translate-x-0" : "-translate-x-full"
+        className={`fixed top-0 right-0 h-full w-64 bg-white shadow-lg transform transition-transform duration-300 ease-in-out ${
+          isOpen ? "translate-x-0" : "translate-x-full"
         }`}
       >
         <div className="pt-16 px-4">
@@ -34,7 +34,7 @@ export default function Sidebar() {
               href="#"
               className="block py-2 px-4 text-gray-700 hover:bg-gray-100 rounded-lg"
             >
-              About
+              Friends
             </Link>
             <Link
               href="#"
@@ -51,13 +51,6 @@ export default function Sidebar() {
           </nav>
         </div>
       </div>
-
-      {isOpen && (
-        <div
-          className="fixed left-0 inset-0 bg-black bg-opacity-50 z-40"
-          onClick={toggleSidebar}
-        />
-      )}
     </div>
   );
 }
