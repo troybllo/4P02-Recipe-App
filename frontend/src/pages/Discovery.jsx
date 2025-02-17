@@ -10,11 +10,11 @@ export default function Discovery() {
             <h1>Your Discovery</h1>
             <p>Discover new recipes here!</p>
         </div>
-        <div className="nav-search">
-            <input type="text" placeholder="Search..." className="nav-search-input"
+        <div className="nav-search-discovery">
+            <input type="text" placeholder="Search..." className="nav-search-input-discovery"
             />
-            <button className="nav-search-button">
-            <img src={searchIcon} />
+            <button className="nav-search-button-discovery">
+                <img src={searchIcon} />
             </button>
         </div>
       </>
