@@ -41,7 +41,7 @@ export default function Navbar() {
   };
 
   return (
-    <div className="flex flex-col fixed left-0 top-0 h-screen w-[12%] bg-[#eaf5e4] pt-5 border-r border-[#1d380e]">
+    <div className="flex flex-col fixed left-0 top-0 bottom-0 h-sfull w-[12%] bg-[#eaf5e4] pt-5 border-r border-[#1d380e]">
       <nav>
         <div className="flex items-center justify-center text-2xl font-bold mx-5 mb-8">
           <img src={feastlyLogo} alt="Feastly" className="w-auto h-auto" />

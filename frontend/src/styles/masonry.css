@@ -1,28 +1,31 @@
 .my-masonry-grid {
   display: flex;
-  margin-left:  calc(12% - 1rem); /* column gap offset to account for navbar width */
+  /* margin-left:  calc(12% - 1rem); column gap offset to account for navbar width */
+  margin-left: -1.5rem; /* Increased gap between columns */
   width: auto;
 }
   
 .my-masonry-grid_column {
-  padding-left: 1rem; /* must match the negative margin above */
+  padding-left: 1.5rem; /* must match the negative margin above */
   background-clip: padding-box;
  }
   
 .my-masonry-grid_column > div {
-  margin-bottom: 1rem;
+  margin-bottom: 1.5rem;
+  min-width: 280px; /* Ensure cards don't get too narrow */
 }
   
 
-/* Add styles for the main content container */
+/* styles for the main content container */
 .home-container {
-  margin-left: 6%; 
-  width: calc(100% - 12%); /* Adjust width to account for navbar */
+  margin-left: min(12%, 200px);
+  width: calc(100% - min(12%, 200px));
+  padding: 0 2rem; /* Add padding for better spacing */
 }
 
-/* Adjust header and filter section positioning */
+/* adjust header and filter section positioning */
 .header-section {
-  margin-left: 12%;
-  width: calc(100% - 12%);
+  margin-left: min(12%, 200px);
+  width: calc(100% - min(12%, 200px));
   padding: 2rem;
 }

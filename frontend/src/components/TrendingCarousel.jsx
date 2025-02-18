@@ -123,7 +123,10 @@ export default function TrendingCarousel() {
     if (!isPaused) {
       interval = setInterval(() => {
         container.scrollLeft += 2; // Adjust scroll speed here
-        if (container.scrollLeft >= container.scrollWidth - container.clientWidth) {
+        if (
+          container.scrollLeft >=
+          container.scrollWidth - container.clientWidth
+        ) {
           container.scrollLeft = 0;
         }
       }, 20); // Adjust interval timing (ms)
@@ -135,25 +138,33 @@ export default function TrendingCarousel() {
   }, [isPaused]);
 
   return (
-    <section className="max-w-screen-3xl mx-auto px-10 py-6 relative">
-      <h2 className="text-2xl font-bold mb-4">Trending</h2>
-      {/* Fixed-width wrapper to force overflow */}
-      <div className="overflow-hidden mx-auto" style={{ maxWidth: "960px" }}>
+    <div className="home-container">
+      <section className="max-w-screen-3xl mx-auto px-10 py-6 relative">
+        <h2 className="text-2xl font-bold mb-4 ml-10">Trending</h2>
+        {/* Fixed-width wrapper to force overflow */}
         <div
-          ref={scrollContainerRef}
-          className="flex space-x-4 overflow-x-auto pb-4 snap-x snap-mandatory"
-          onMouseEnter={() => setIsPaused(true)}
-          onMouseLeave={() => setIsPaused(false)}
+          className="overflow-hidden mx-auto px-10"
+          style={{ maxWidth: "960px" }}
         >
-          {trendingRecipes.map((recipe, index) => (
-            <div key={recipe.postId + index} className="flex-shrink-0 w-80 snap-start">
-              <FoodSocialCard {...recipe} />
-            </div>
-          ))}
+          <div
+            ref={scrollContainerRef}
+            className="flex space-x-4 overflow-x-auto pb-4 snap-x snap-mandatory"
+            onMouseEnter={() => setIsPaused(true)}
+            onMouseLeave={() => setIsPaused(false)}
+          >
+            {trendingRecipes.map((recipe, index) => (
+              <div
+                key={recipe.postId + index}
+                className="flex-shrink-0 w-80 snap-start"
+              >
+                <FoodSocialCard {...recipe} />
+              </div>
+            ))}
+          </div>
         </div>
-      </div>
-      {/* Faded overlay for upcoming recipes */}
-      <div className="absolute top-0 right-0 h-full w-16 pointer-events-none bg-gradient-to-l from-gray-50 to-transparent"></div>
-    </section>
+        {/* Faded overlay for upcoming recipes */}
+        <div className="absolute top-0 right-0 h-full w-16 pointer-events-none bg-gradient-to-l from-gray-50 to-transparent"></div>
+      </section>
+    </div>
   );
 }
