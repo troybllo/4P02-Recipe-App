@@ -1,19 +1,26 @@
 import React from "react";
-import "../styles/AboutPage.css"; // Make sure this CSS file exists
-import meal1 from "../assets/meal1.jpg"; // Replace with actual image paths
-import meal2 from "../assets/meal2.jpg";
-import meal3 from "../assets/meal3.jpg";
+import Navbar from "../components/Navbar";
+import meal4 from "../assets/meal4.jpg";
+import meal5 from "../assets/meal5.jpg";
+import meal6 from "../assets/meal6.jpg";
 
 export default function About() {
   return (
-    <div className="bg-gray-50 min-h-screen flex flex-col items-center p-6">
+    <div className="bg-gray-50 min-h-screen flex flex-col w-full">
+      {/* Title Bar */}
+      <div className="bg-gray-900 text-white text-lg font-semibold p-3 text-left w-full">
+        About Page
+      </div>
+
+      <Navbar />
+
       {/* Page Container */}
-      <div className="bg-white shadow-lg rounded-lg p-6 max-w-4xl w-full">
+      <div className="bg-white shadow-lg rounded-lg p-6 max-w-5xl mx-auto mt-6 border border-gray-300">
         
         {/* Header Section */}
         <div className="bg-green-200 p-4 text-center rounded-t-lg">
           <h1 className="text-3xl font-extrabold">About Feastly</h1>
-          <p className="text-gray-700 mt-2">
+          <p className="text-gray-700 mt-2 text-lg">
             Feastly is your ultimate meal-planning and recipe-sharing companion. 
             We aim to connect food lovers with a curated collection of recipes, 
             personalized meal plans, and an engaging community to inspire creativity in the kitchen.
@@ -21,29 +28,35 @@ export default function About() {
         </div>
 
         {/* Carousel Section */}
-        <div className="flex justify-center mt-6 space-x-4">
+        <div className="flex justify-center mt-6 space-x-6">
           {/* First Card */}
-          <div className="relative bg-white shadow-md rounded-lg p-4">
-            <img src={meal1} alt="Discover Recipes" className="w-64 h-40 rounded-md object-cover"/>
-            <button className="absolute left-2 bottom-2 text-white bg-black px-2 py-1 rounded-md text-sm">◀</button>
-            <button className="absolute right-2 bottom-2 text-white bg-black px-2 py-1 rounded-md text-sm">▶</button>
-            <h2 className="text-lg font-bold text-center mt-2">Discover Recipes</h2>
+          <div className="relative bg-white shadow-md rounded-2xl p-4 w-64 border border-gray-200">
+            <img src={meal4} alt="Discover Recipes" className="w-full h-44 rounded-md object-cover"/>
+            <h2 className="text-lg font-bold text-center mt-2 text-gray-800">Discover Recipes</h2>
+            <div className="flex justify-between mt-2">
+              <button className="bg-gray-800 text-white px-3 py-1 rounded-full text-sm">◀</button>
+              <button className="bg-gray-800 text-white px-3 py-1 rounded-full text-sm">▶</button>
+            </div>
           </div>
 
           {/* Second Card */}
-          <div className="relative bg-white shadow-md rounded-lg p-4">
-            <img src={meal2} alt="Save Favorites" className="w-64 h-40 rounded-md object-cover"/>
-            <button className="absolute left-2 bottom-2 text-white bg-black px-2 py-1 rounded-md text-sm">◀</button>
-            <button className="absolute right-2 bottom-2 text-white bg-black px-2 py-1 rounded-md text-sm">▶</button>
-            <h2 className="text-lg font-bold text-center mt-2">Save Favorites</h2>
+          <div className="relative bg-white shadow-md rounded-2xl p-4 w-64 border border-gray-200">
+            <img src={meal5} alt="Save Favorites" className="w-full h-44 rounded-md object-cover"/>
+            <h2 className="text-lg font-bold text-center mt-2 text-gray-800">Save Favorites</h2>
+            <div className="flex justify-between mt-2">
+              <button className="bg-gray-800 text-white px-3 py-1 rounded-full text-sm">◀</button>
+              <button className="bg-gray-800 text-white px-3 py-1 rounded-full text-sm">▶</button>
+            </div>
           </div>
 
           {/* Third Card */}
-          <div className="relative bg-white shadow-md rounded-lg p-4">
-            <img src={meal3} alt="Plan Your Meals" className="w-64 h-40 rounded-md object-cover"/>
-            <button className="absolute left-2 bottom-2 text-white bg-black px-2 py-1 rounded-md text-sm">◀</button>
-            <button className="absolute right-2 bottom-2 text-white bg-black px-2 py-1 rounded-md text-sm">▶</button>
-            <h2 className="text-lg font-bold text-center mt-2">Plan Your Meals</h2>
+          <div className="relative bg-white shadow-md rounded-2xl p-4 w-64 border border-gray-200">
+            <img src={meal6} alt="Plan Your Meals" className="w-full h-44 rounded-md object-cover"/>
+            <h2 className="text-lg font-bold text-center mt-2 text-gray-800">Plan Your Meals</h2>
+            <div className="flex justify-between mt-2">
+              <button className="bg-gray-800 text-white px-3 py-1 rounded-full text-sm">◀</button>
+              <button className="bg-gray-800 text-white px-3 py-1 rounded-full text-sm">▶</button>
+            </div>
           </div>
         </div>
 
