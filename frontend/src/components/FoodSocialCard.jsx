@@ -1,82 +1,68 @@
-// src/components/FoodSocialCard.jsx
 import React, { useState } from "react";
-import styles from "../styles/FoodSocialCard.module.css";
+import styles from "../styles/FoodSocialCard.module.css"; // Import styles
 
 const FoodSocialCard = ({
-  postId, // Unique identifier for the post
+  postId, 
   title,
   author,
-  authorId, // For user profile linking
-  datePosted, // ISO date string from backend
+  authorId,
+  datePosted,
   description,
   cookingTime,
   difficulty,
   servings,
-  imageUrl, // URL from backend storage
-  ingredients, // Array of ingredients
-  instructions, // Array of instructions
-  likes, // Initial likes count
-  isLiked, // Whether current user has liked
+  imageUrl,
+  ingredients,
+  instructions,
+  likes,
+  isLiked,
 }) => {
-  const [expanded, setExpanded] = useState(false);
+  const [isTitleExpanded, setIsTitleExpanded] = useState(false); // Title expand state
+  const [isRecipeExpanded, setIsRecipeExpanded] = useState(false); // Recipe expand state
   const [liked, setLiked] = useState(isLiked);
   const [likeCount, setLikeCount] = useState(likes);
   const [isLoading, setIsLoading] = useState(false);
 
-  // Format the date from ISO string
   const formattedDate = new Date(datePosted).toLocaleDateString("en-US", {
     year: "numeric",
     month: "long",
     day: "numeric",
   });
 
-  // Handle like toggle with backend integration
   const handleLike = async () => {
     if (isLoading) return;
-
     setIsLoading(true);
     try {
-      // Backend call will go here
-      // const response = await fetch(`/api/posts/${postId}/like`, {
-      //   method: liked ? 'DELETE' : 'POST',
-      //   headers: {
-      //     'Content-Type': 'application/json',
-      //     // Authorization header will go here
-      //   }
-      // });
-
-      // if (response.ok) {
       setLiked(!liked);
       setLikeCount((prevCount) => (liked ? prevCount - 1 : prevCount + 1));
-      // }
     } catch (error) {
       console.error("Error toggling like:", error);
-      // Add error handling/notification here
     } finally {
       setIsLoading(false);
     }
   };
 
-  // Handle share functionality
   const handleShare = async () => {
     try {
       await navigator.share({
         title: title,
         text: description,
-        url: window.location.href, // Will need to be updated with actual post URL
+        url: window.location.href,
       });
     } catch (error) {
       console.log("Error sharing:", error);
-      // Fallback to copying link to clipboard
       navigator.clipboard.writeText(window.location.href);
-      // Add notification of "Link copied" here
     }
   };
 
-  // Handle report/menu functionality
-  const handleMenuClick = () => {
-    // Implement report/menu functionality
-    console.log("Menu clicked for post:", postId);
+  // Handle title expansion
+  const handleTitleClick = () => {
+    setIsTitleExpanded(!isTitleExpanded); // Toggle title expansion
+  };
+
+  // Handle recipe content expansion
+  const handleRecipeClick = () => {
+    setIsRecipeExpanded(!isRecipeExpanded); // Toggle recipe content visibility
   };
 
   return (
@@ -84,14 +70,18 @@ const FoodSocialCard = ({
       <div className={styles.header}>
         <div className={styles.avatar}>{author[0]}</div>
         <div className={styles.headerContent}>
-          <h3 className={styles.title}>{title}</h3>
+          <h3
+            className={`${styles.title} ${isTitleExpanded ? styles.expanded : ""}`}
+            onClick={handleTitleClick}
+          >
+            {isTitleExpanded ? title : `${title.slice(0, 40)}...`} {/* Truncate or show full title */}
+          </h3>
           <p className={styles.authorInfo}>
             by {author} • {formattedDate}
           </p>
         </div>
         <button
           className={styles.iconButton}
-          onClick={handleMenuClick}
           aria-label="More options"
         >
           •••
@@ -103,7 +93,7 @@ const FoodSocialCard = ({
           src={imageUrl}
           alt={title}
           className={styles.image}
-          loading="lazy" // For better performance
+          loading="lazy"
         />
       </div>
 
@@ -135,16 +125,17 @@ const FoodSocialCard = ({
               📤
             </button>
           </div>
+
           <button
             className={styles.expandButton}
-            onClick={() => setExpanded(!expanded)}
-            aria-expanded={expanded}
+            onClick={handleRecipeClick} // Toggle recipe visibility separately
+            aria-expanded={isRecipeExpanded}
           >
-            {expanded ? "Hide Recipe ▼" : "Show Recipe ▶"}
+            {isRecipeExpanded ? "Hide Recipe ▼" : "Show Recipe ▶"}
           </button>
         </div>
 
-        {expanded && (
+        {isRecipeExpanded && (
           <div className={styles.expandedContent}>
             <h4 className={styles.sectionTitle}>Ingredients:</h4>
             <ul className={styles.ingredientsList}>
@@ -166,7 +157,6 @@ const FoodSocialCard = ({
   );
 };
 
-// PropTypes for better development experience
 FoodSocialCard.defaultProps = {
   likes: 0,
   isLiked: false,
