@@ -1,9 +1,10 @@
 import React, { useState } from "react";
-import { Menu, X } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Menu, X, Users, Bell } from "lucide-react";
 
 export default function Sidebar() {
   const [isOpen, setIsOpen] = useState(false);
+
+  const [activeTab, setActiveTab] = useState("friends");
 
   const toggleSidebar = () => {
     setIsOpen(!isOpen);
@@ -28,32 +29,64 @@ export default function Sidebar() {
         }`}
       >
         <div className="pt-16 px-4">
-          <nav className="space-y-4">
-            <Link
-              to="/"
-              className="block mx-2 my-1 px-4 py-2 flex items-center justify-center border border-[#575757] bg-[#ccdec2] rounded-full text-lg text-gray-900 hover:border-l-4 hover:border-r-4 hover:border-[#1d380e]"
-            >
-              Home
-            </Link>
-            <Link
-              to="/friends"
-              className="block mx-2 my-1 px-4 py-2 flex items-center justify-center border border-[#575757] bg-[#ccdec2] rounded-full text-lg text-gray-900 hover:border-l-4 hover:border-r-4 hover:border-[#1d380e]"
-            >
-              Friends
-            </Link>
-            <Link
-              to="/services"
-              className="block mx-2 my-1 px-4 py-2 flex items-center justify-center border border-[#575757] bg-[#ccdec2] rounded-full text-lg text-gray-900 hover:border-l-4 hover:border-r-4 hover:border-[#1d380e]"
-            >
-              Services
-            </Link>
-            <Link
-              to="/contact"
-              className="block mx-2 my-1 px-4 py-2 flex items-center justify-center border border-[#575757] bg-[#ccdec2] rounded-full text-lg text-gray-900 hover:border-l-4 hover:border-r-4 hover:border-[#1d380e]"
-            >
-              Contact
-            </Link>
-          </nav>
+          {activeTab === "friends" ? (
+            <div>
+              <h2 className="text-lg font-semibold text-gray-900 mb-4">
+                Friends
+              </h2>
+              <ul className="space-y-2">
+                <li className="p-2 bg-[#ccdec2] rounded border border-[#575757] text-gray-900">
+                  Friend 1
+                </li>
+                <li className="p-2 bg-[#ccdec2] rounded border border-[#575757] text-gray-900">
+                  Friend 2
+                </li>
+                <li className="p-2 bg-[#ccdec2] rounded border border-[#575757] text-gray-900">
+                  Friend 3
+                </li>
+              </ul>
+            </div>
+          ) : (
+            <div>
+              <h2 className="text-lg font-semibold text-gray-900 mb-4">
+                Notifications
+              </h2>
+              <ul className="space-y-2">
+                <li className="p-2 bg-[#ccdec2] rounded border border-[#575757] text-gray-900">
+                  Notification 1
+                </li>
+                <li className="p-2 bg-[#ccdec2] rounded border border-[#575757] text-gray-900">
+                  Notification 2
+                </li>
+                <li className="p-2 bg-[#ccdec2] rounded border border-[#575757] text-gray-900">
+                  Notification 3
+                </li>
+              </ul>
+            </div>
+          )}
+        </div>
+
+        <div className="absolute bottom-4 left-0 w-full flex justify-around">
+          <button
+            onClick={() => setActiveTab("friends")}
+            className={`p-2 rounded-full border ${
+              activeTab === "friends"
+                ? "bg-[#1d380e] text-white"
+                : "bg-[#ccdec2] border-[#575757]"
+            }`}
+          >
+            <Users size={24} />
+          </button>
+          <button
+            onClick={() => setActiveTab("notifications")}
+            className={`p-2 rounded-full border ${
+              activeTab === "notifications"
+                ? "bg-[#1d380e] text-white"
+                : "bg-[#ccdec2] border-[#575757]"
+            }`}
+          >
+            <Bell size={24} />
+          </button>
         </div>
       </div>
     </div>
