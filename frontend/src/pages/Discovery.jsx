@@ -122,13 +122,6 @@ const Discovery = () => {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />
-          <button className="absolute right-4 top-1/2 -translate-y-1/2">
-            <img
-              src="/api/placeholder/25/25"
-              alt="Search Icon"
-              className="w-6 h-6"
-            />
-          </button>
         </div>
       </div>
 
