@@ -2,7 +2,7 @@ import React from "react";
 import Navbar from "../components/Navbar";
 import meal4 from "../assets/meal4.jpeg";
 import meal5 from "../assets/meal5.jpeg";
-import meal6 from "../assets/meal6.jpeg";
+import meal6 from "../assets/meal6.png";
 
 export default function About() {
   return (
