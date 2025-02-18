@@ -1,8 +1,8 @@
 import React from "react";
 import Navbar from "../components/Navbar";
-import meal4 from "../assets/meal4.jpg";
-import meal5 from "../assets/meal5.jpg";
-import meal6 from "../assets/meal6.jpg";
+import meal4 from "../assets/meal4.jpeg";
+import meal5 from "../assets/meal5.jpeg";
+import meal6 from "../assets/meal6.jpeg";
 
 export default function About() {
   return (
