@@ -3,6 +3,11 @@ import { Link } from "react-router-dom";
 import SignIn from "./SignIn";
 import SignUp from "./Signup";
 import CreatePost from "./CreatePost";
+import feastlyLogo from "../images/feastly_black.png";
+import searchIcon from "../images/search.png";
+import homeIcon from "../images/homePic.png";
+import discoveryIcon from "../images/discovery.png";
+import aboutIcon from "../images/about.png";
 
 export default function Navbar() {
   const [isSignInOpen, setIsSignInOpen] = useState(false);
@@ -39,11 +44,7 @@ export default function Navbar() {
     <div className="flex flex-col fixed left-0 top-0 h-screen w-[12%] bg-[#eaf5e4] pt-5 border-r border-[#1d380e]">
       <nav>
         <div className="flex items-center justify-center text-2xl font-bold mx-5 mb-8">
-          <img
-            src="/images/feastly_black.png"
-            alt="Feastly"
-            className="w-auto h-auto"
-          />
+          <img src={feastlyLogo} alt="Feastly" className="w-auto h-auto" />
           <h3>Feastly</h3>
         </div>
 
@@ -54,7 +55,7 @@ export default function Navbar() {
             className="w-[75%] bg-transparent focus:outline-none text-lg"
           />
           <button className="w-[15%] flex justify-center">
-            <img src="/images/search.png" alt="Search" />
+            <img src={searchIcon} alt="Search" />
           </button>
         </div>
 
@@ -63,11 +64,7 @@ export default function Navbar() {
           className="mx-5 my-1 px-4 py-2 flex items-center justify-center border border-[#575757] bg-[#ccdec2] rounded-full text-lg text-gray-900 min-w-[80%] hover:border-l-4 hover:border-r-4 hover:border-[#1d380e]"
         >
           <div className="flex items-center justify-center">
-            <img
-              src="/images/homePic.png"
-              alt="Home"
-              className="w-auto h-auto"
-            />
+            <img src={homeIcon} alt="Home" className="w-auto h-auto" />
             <h3>Home</h3>
           </div>
         </Link>
@@ -78,7 +75,7 @@ export default function Navbar() {
         >
           <div className="flex items-center justify-center">
             <img
-              src="/images/discovery.png"
+              src={discoveryIcon}
               alt="Discovery"
               className="w-auto h-auto"
             />
@@ -91,11 +88,7 @@ export default function Navbar() {
           className="mx-5 my-1 px-4 py-2 flex items-center justify-center border border-[#575757] bg-[#ccdec2] rounded-full text-lg text-gray-900 min-w-[80%] hover:border-l-4 hover:border-r-4 hover:border-[#1d380e]"
         >
           <div className="flex items-center justify-center">
-            <img
-              src="/images/about.png"
-              alt="About"
-              className="w-auto h-auto"
-            />
+            <img src={aboutIcon} alt="About" className="w-auto h-auto" />
             <h3>About</h3>
           </div>
         </Link>
