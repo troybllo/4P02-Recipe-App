@@ -36,3 +36,12 @@
     transform: rotate(360deg);
   }
 }
+
+.app-container{
+  display: flex;
+}
+
+.main-content{
+  flex: 1;
+  background-color: #f9fbf8;
+}
