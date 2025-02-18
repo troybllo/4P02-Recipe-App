@@ -35,13 +35,16 @@ export default function Sidebar() {
                 Friends
               </h2>
               <ul className="space-y-2">
-                <li className="p-2 bg-[#ccdec2] rounded border border-[#575757] text-gray-900">
+                <li className="p-2 pl-10 bg-[#ccdec2] rounded border border-[#575757] text-gray-900 rounded-[30px] flex items-center">
+                  <img src="/path/to/image1.jpg" alt="Friend 1" className="w-6 h-6 mr-2 rounded-full" />
                   Friend 1
                 </li>
-                <li className="p-2 bg-[#ccdec2] rounded border border-[#575757] text-gray-900">
+                <li className="p-2 pl-10 bg-[#ccdec2] rounded border border-[#575757] text-gray-900 rounded-[30px] flex items-center">
+                  <img src="/path/to/image2.jpg" alt="Friend 2" className="w-6 h-6 mr-2 rounded-full" />
                   Friend 2
                 </li>
-                <li className="p-2 bg-[#ccdec2] rounded border border-[#575757] text-gray-900">
+                <li className="p-2 pl-10 bg-[#ccdec2] rounded border border-[#575757] text-gray-900 rounded-[30px] flex items-center">
+                  <img src="/path/to/image3.jpg" alt="Friend 3" className="w-6 h-6 mr-2 rounded-full" />
                   Friend 3
                 </li>
               </ul>
@@ -52,13 +55,13 @@ export default function Sidebar() {
                 Notifications
               </h2>
               <ul className="space-y-2">
-                <li className="p-2 bg-[#ccdec2] rounded border border-[#575757] text-gray-900">
+                <li className="p-2 pl-10 bg-[#ccdec2] rounded border border-[#575757] text-gray-900 rounded-[30px]">
                   Notification 1
                 </li>
-                <li className="p-2 bg-[#ccdec2] rounded border border-[#575757] text-gray-900">
+                <li className="p-2 pl-10 bg-[#ccdec2] rounded border border-[#575757] text-gray-900 rounded-[30px]">
                   Notification 2
                 </li>
-                <li className="p-2 bg-[#ccdec2] rounded border border-[#575757] text-gray-900">
+                <li className="p-2 pl-10 bg-[#ccdec2] rounded border border-[#575757] text-gray-900 rounded-[30px]">
                   Notification 3
                 </li>
               </ul>
