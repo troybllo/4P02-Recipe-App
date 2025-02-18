@@ -1,19 +1,20 @@
-.nav-search-discovery{
-    padding: 10px 50px;
-    font-size: 18px;
-    color: rgb(24, 23, 23);
-    display: block;
-    border: 1px solid #575757;
-    background-color: #ffffff;
-    border-radius: 20px;
-    max-width: 30%;
-    text-align: center;
-    margin: 5px 20px;
-    float: left;
-    justify-content: center;
+.nav-search-discovery {
+  padding: 10px 50px;
+  font-size: 18px;
+  color: rgb(24, 23, 23);
+  display: block;
+  border: 1px solid #575757;
+  background-color: #ffffff;
+  border-radius: 20px;
+  max-width: 30%;
+  text-align: center;
+  margin: 5px 20px;
+  float: left;
+  justify-content: center;
 }
 
-.nav-search-button-discovery{
-    max-width: 25px;
-    float: right;
+.nav-search-button-discovery {
+  max-width: 25px;
+  float: right;
 }
+

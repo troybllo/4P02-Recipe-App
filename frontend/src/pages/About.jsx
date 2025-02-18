@@ -7,7 +7,6 @@ import meal6 from "../assets/meal6.png";
 export default function About() {
   return (
     <div className="bg-gray-50 min-h-screen flex flex-col w-full">
-      {/* Title Bar */}
       <div className="bg-gray-900 text-white text-lg font-semibold p-3 text-left w-full">
         About Page
       </div>
