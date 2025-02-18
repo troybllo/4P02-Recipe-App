@@ -93,6 +93,16 @@ export default function Navbar() {
           </div>
         </Link>
 
+        <Link
+          to="/profile"
+          className="mx-5 my-1 px-4 py-2 flex items-center justify-center border border-[#575757] bg-[#ccdec2] rounded-full text-lg text-gray-900 min-w-[80%] hover:border-l-4 hover:border-r-4 hover:border-[#1d380e]"
+        >
+          <div className="flex items-center justify-center">
+            <img src={aboutIcon} alt="Profile" className="w-auto h-auto" />
+            <h3>Profile</h3>
+          </div>
+        </Link>
+
         <button
           onClick={() => setIsCreatePostOpen(true)}
           className="mx-5 my-1 px-4 py-2 flex items-center justify-center border border-[#1d9c3f] bg-[#bbf7a0] rounded-full text-lg font-bold text-[#1d9c3f] min-w-[82%] hover:border-l-4 hover:border-r-4 hover:border-[#1d9c3f]"
