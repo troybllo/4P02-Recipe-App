@@ -208,8 +208,10 @@ const allRecipes = [
 function getCategory(recipe) {
   const titleDesc = (recipe.title + " " + recipe.description).toLowerCase();
   if (titleDesc.includes("beef") || titleDesc.includes("steak")) return "beef";
-  if (titleDesc.includes("lobster") || titleDesc.includes("seafood")) return "seafood";
-  if (titleDesc.includes("vegetable") || titleDesc.includes("vegan")) return "vegan";
+  if (titleDesc.includes("lobster") || titleDesc.includes("seafood"))
+    return "seafood";
+  if (titleDesc.includes("vegetable") || titleDesc.includes("vegan"))
+    return "vegan";
   return "other";
 }
 
@@ -246,7 +248,7 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <header className="w-full py-10 flex flex-col items-center">
+      <header className="header-section py-10 flex flex-col items-center">
         <h1 className="text-4xl font-extrabold mb-2">Welcome to Feastly</h1>
         <p className="text-xl text-gray-600">
           Your go-to destination for mouth-watering recipes
@@ -254,9 +256,9 @@ export default function Home() {
       </header>
 
       {/* Search & Filter Section */}
-      <div className="max-w-screen-3xl mx-auto px-10 mb-8">
+      <div className="header-section mb-8">
         {/* Search Input */}
-        <div className="mb-4 flex justify-center">
+        <div className="mb- flex justify-center">
           <input
             type="text"
             placeholder="Search recipes..."
@@ -309,7 +311,7 @@ export default function Home() {
       </div>
 
       {/* Masonry Grid */}
-      <div className="max-w-screen-3xl mx-auto px-10">
+      <div className="home-container">
         <Masonry
           breakpointCols={breakpointColumnsObj}
           className="my-masonry-grid"
@@ -322,8 +324,9 @@ export default function Home() {
       </div>
 
       {/* Trending Carousel Section */}
-      <TrendingCarousel />
-
+      <div className="home-container">
+        <TrendingCarousel />
+      </div>
     </div>
   );
 }
