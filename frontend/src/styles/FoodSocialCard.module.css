@@ -1,12 +1,14 @@
 .card {
-    max-width: 28rem;
-    margin: 0 auto;
-    border: 1px solid #e5e7eb;
-    border-radius: 0.5rem;
-    background-color: white;
-    overflow: hidden;
-  }
-  
+  break-inside: avoid;
+  margin-bottom: 1rem; /* spacing between cards */
+  background: white;
+  padding: 1rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 700px; /* Increased from 600px */
+}
+
   .header {
     display: flex;
     align-items: center;
@@ -104,10 +106,14 @@
     background-color: #f3f4f6;
   }
   
+  /* Optional: If you want a smooth transition */
   .expandedContent {
-    margin-top: 1rem;
-    padding-top: 1rem;
-    border-top: 1px solid #e5e7eb;
+    position: static; /* Remove absolute positioning */
+    background: white;
+    padding: 1rem;
+    margin-top: 1rem; /* Adds some spacing between the main card content and expanded content */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    z-index: auto; /* Not needed if static */
   }
   
   .sectionTitle {
