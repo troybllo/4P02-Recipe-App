@@ -58,7 +58,7 @@ export default function Navbar() {
           </div>
 
           {/* Middle: Search box (hide on small screens, for example) */}
-          <div className="hidden md:flex items-center bg-white border border-[#575757] rounded-full px-2 py-1 ml-4">
+          <div className="hidden lg:flex items-center bg-white border border-[#575757] rounded-full px-2 py-1 ml-4">
             <input
               type="text"
               placeholder="Search..."
@@ -70,7 +70,7 @@ export default function Navbar() {
           </div>
 
           {/* Right side: Nav links + Create Post + Sign In */}
-          <div className="hidden md:flex items-center space-x-4 ml-auto">
+          <div className="hidden lg:flex items-center space-x-4 ml-auto">
             <Link
               to="/"
               className="px-3 py-2 flex items-center bg-[#ccdec2] border border-[#575757] rounded-full text-gray-900 hover:border-2 hover:border-[#1d380e]"
@@ -115,17 +115,17 @@ export default function Navbar() {
 
           {/* Hamburger button for mobile screens */}
           <button
-            className="md:hidden p-2 rounded-full bg-[#ccdec2] border border-[#575757]"
+            className="lg:hidden p-2 rounded-full bg-[#ccdec2] border border-[#575757]"
             onClick={() => setIsMenuOpen(!isMenuOpen)}
           >
-            {isMenuOpen ? <X size={34} /> : <Menu size={24} />}
+            {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
           </button>
         </div>
       </div>
 
       {/* Mobile menu (visible only when isMenuOpen && small screen) */}
       {isMenuOpen && (
-        <div className="md:hidden mt-16 fixed top-0 left-0 right-0 bg-[#eaf5e4] border-b border-[#1d380e] shadow-lg z-40">
+        <div className="lg:hidden mt-16 fixed top-0 left-0 right-0 bg-[#eaf5e4] border-b border-[#1d380e] shadow-lg z-40">
           <div className="p-4 space-y-2">
             <Link
               to="/"
