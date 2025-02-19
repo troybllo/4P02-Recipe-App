@@ -102,7 +102,7 @@ const Discovery = () => {
   };
 
   return (
-    <div className="w-full">
+    <div className="w-full mt-20">
       <div className="flex flex-col items-center mb-8">
         <img
           src={discoveryLogo}

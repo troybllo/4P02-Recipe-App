@@ -234,7 +234,7 @@ const Profile = () => {
 
     return (
         <>
-            <div className="text-center mt-10">
+            <div className="text-center my-20">
                 <div className="flex mb-5 justify-center items-center">
                     <div className="flex items-center border-b-2 border-gray-300 pb-5">
                         <img src={profilePic} alt="Profile Pic" className="rounded-full w-32 h-32 mr-5" />
