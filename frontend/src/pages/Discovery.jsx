@@ -102,19 +102,24 @@ const Discovery = () => {
   };
 
   return (
-    <div className="w-full mt-20">
-      <div className="flex flex-col items-center mb-8">
+    <div className="w-full mt-[7rem]">
+      <div className="relative flex flex-col items-center justify-center mb-8">
         <img
           src={discoveryLogo}
           alt="Discovery Diamond"
-          className="w-24 h-24"
+          className="w-28 h-28 absolute"
+          style={{ zIndex: 0 }}
         />
-        <h1 className="text-2xl font-bold mt-2">Your Discovery</h1>
-        <p className="text-gray-600">Discover new recipes here!</p>
+        <h1 className="text-3xl font-bold mt-2 relative" style={{ zIndex: 1 }}>
+          Your Discovery
+        </h1>
+        <p className="text-gray-600 relative" style={{ zIndex: 1 }}>
+          Discover new recipes here!
+        </p>
       </div>
 
-      <div className="flex justify-center w-full mb-8">
-        <div className="relative w-full max-w-[30%] mx-5 my-1 p-3 px-12 bg-white border border-gray-500 rounded-full text-lg text-gray-900">
+      <div className="flex justify-center w-full mb-2">
+        <div className="relative w-full max-w-[30%] mx-5 my-1 p-2 px-12 bg-white border border-gray-500 rounded-full text-lg text-gray-900">
           <input
             type="text"
             placeholder="Search..."
@@ -125,7 +130,7 @@ const Discovery = () => {
         </div>
       </div>
 
-      <div className="flex flex-wrap justify-center gap-2 mb-8 px-60">
+      <div className="flex flex-wrap justify-center gap-2 mb-4 px-60">
         {Object.entries(activeFilters).map(([category, values]) =>
           values.map((value) => (
             <span
@@ -174,7 +179,7 @@ const Discovery = () => {
         {["Featured Picks", "Latest Recipes", "Staffs Picks", "Trending"].map(
           (section) => (
             <div key={section} className="flex flex-col">
-              <h1 className="font-extralight text-3xl mb-4">{section}</h1>
+              <h1 className="font-extralight text-4xl mb-4">{section}</h1>
               <div className="grid grid-cols-4 gap-6">
                 {filteredRecipes.slice(0, 4).map((recipe) => (
                   <FoodSocialCard key={recipe.id} {...recipe} />

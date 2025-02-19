@@ -9,9 +9,9 @@ import meal4 from "../assets/meal5.jpg";
 import meal5 from "../assets/meal6.webp";
 
 const breakpointColumnsObj = {
-    default: 5,
-    1440: 6,
-    1920: 4,
+    default: 3,
+    1440: 3,
+    1920: 3,
     1680: 3,
     1280: 3,
     824: 2,
@@ -230,7 +230,7 @@ const Profile = () => {
         return formattedBio.trim();
     };
 
-    
+    let page = "Posts";
 
     return (
         <>
@@ -253,6 +253,9 @@ const Profile = () => {
                 </div>
                 <div className="flex justify-center">
                     <div className="home-container ">
+                      
+                      
+
                         <Masonry 
                             breakpointCols={breakpointColumnsObj}
                             className="my-masonry-grid max-w-[1200px]"
