@@ -1,31 +1,40 @@
+:root {
+  --masonry-gap: 1rem;
+}
+
+@media (min-width: 1280px) {
+  :root {
+    --masonry-gap: 1rem;
+  }
+}
+
+@media (min-width: 1600px) {
+  :root {
+    --masonry-gap: 1rem;
+  }
+}
+
 .my-masonry-grid {
   display: flex;
-  /* margin-left:  calc(12% - 1rem); column gap offset to account for navbar width */
-  margin-left: -1.5rem; /* Increased gap between columns */
+  /* Negative margin on both sides for symmetrical spacing */
+  margin-left: calc(-0.5 * var(--masonry-gap));
+  margin-right: calc(-0.5 * var(--masonry-gap));
   width: auto;
+  padding: 0 3rem;
 }
-  
+
 .my-masonry-grid_column {
-  padding-left: 1.5rem; /* must match the negative margin above */
+  /* Matching left/right padding to keep columns spaced */
+  padding-left: var(--masonry-gap);
+  padding-right: var(--masonry-gap);
   background-clip: padding-box;
- }
-  
+}
+
 .my-masonry-grid_column > div {
-  margin-bottom: 1.5rem;
-  min-width: 280px; /* Ensure cards don't get too narrow */
-}
-  
-
-/* styles for the main content container */
-.home-container {
-  margin-left: min(12%, 200px);
-  width: calc(100% - min(12%, 200px));
-  padding: 0 2rem; /* Add padding for better spacing */
+  /* Vertical spacing between items in the same column */
+  margin-bottom: var(--masonry-gap);
 }
 
-/* adjust header and filter section positioning */
-.header-section {
-  margin-left: min(12%, 200px);
-  width: calc(100% - min(12%, 200px));
-  padding: 2rem;
-}
+/* Styles for the main content container */
+
+
