@@ -55,6 +55,26 @@ const dummyStories = [
     username: "Roger",
     img: "https://via.placeholder.com/150/FF00FF/000000?text=User5",
   },
+  {
+    username: "Gordon Ramsey",
+    img: "https://via.placeholder.com/150/FF0000/FFFFFF?text=User1",
+  },
+  {
+    username: "Jaque pepan",
+    img: "https://via.placeholder.com/150/00FF00/FFFFFF?text=User2",
+  },
+  {
+    username: "Wolfgang puck",
+    img: "https://via.placeholder.com/150/0000FF/FFFFFF?text=User3",
+  },
+  {
+    username: "The Bear",
+    img: "https://via.placeholder.com/150/FFFF00/000000?text=User4",
+  },
+  {
+    username: "Roger",
+    img: "https://via.placeholder.com/150/FF00FF/000000?text=User5",
+  },
   // ... add as many as you want
 ];
 

@@ -214,6 +214,8 @@ function getCategory(recipe) {
     return "seafood";
   if (titleDesc.includes("vegetable") || titleDesc.includes("vegan"))
     return "vegan";
+  if (titleDesc.includes("chili") || titleDesc.includes("spicy"))
+    return "spicy";
   return "other";
 }
 
@@ -311,10 +313,37 @@ export default function Home() {
         >
           Beef
         </button>
+
+        <button
+          onClick={() => handleFilterClick("spicy")}
+          className={`px-4 py-2 rounded-full font-medium transition-colors 
+            ${
+              activeFilter === "beef"
+                ? "bg-red-600 text-white"
+                : "bg-red-100 text-red-800 hover:bg-red-200"
+            }
+            focus:outline-none focus:ring-2 focus:ring-red-400`}
+        >
+          Spicy
+        </button>
+
       </div>
     </div>
 
       </header>
+        {/* Masonry Grid Container */}
+        <div className="w-full px-4">
+          <Masonry
+            breakpointCols={breakpointColumnsObj}
+            className="my-masonry-grid"
+            columnClassName="my-masonry-grid_column"
+          >
+            {filteredRecipes.map((recipe, index) => (
+              <FoodSocialCard key={recipe.postId + index} {...recipe} />
+            ))}
+          </Masonry>
+        </div>
+
         {/* Masonry Grid Container */}
         <div className="w-full px-4">
           <Masonry
