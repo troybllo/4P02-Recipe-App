@@ -1,94 +1,147 @@
 import React, { useState } from "react";
-import { Menu, X, Users, Bell } from "lucide-react";
+import { Menu, X, Users, Bell, ChevronLeft, ChevronRight } from "lucide-react";
 
 export default function Sidebar() {
   const [isOpen, setIsOpen] = useState(false);
-
+  const [isCollapsed, setIsCollapsed] = useState(false);
   const [activeTab, setActiveTab] = useState("friends");
 
-  const toggleSidebar = () => {
-    setIsOpen(!isOpen);
-  };
+  const toggleSidebar = () => setIsOpen(!isOpen);
+  const toggleCollapse = () => setIsCollapsed(!isCollapsed);
 
   return (
     <div className="relative">
+      {/* Button to open/close the sidebar */}
       <button
-        className="fixed top-4 right-4 z-50 p-2 rounded-full bg-[#ccdec2] border border-[#575757] hover:border-l-4 hover:border-r-4 hover:border-[#1d380e] focus:outline-none"
+        className="fixed top-4 right-4 z-50 p-2 rounded-full bg-[#ccdec2] border border-[#575757]"
         onClick={toggleSidebar}
       >
-        {isOpen ? (
-          <X size={24} className="text-gray-900" />
-        ) : (
-          <Menu size={24} className="text-gray-900" />
-        )}
+        {isOpen ? <X size={24} /> : <Menu size={24} />}
       </button>
 
+      {/* Sidebar container */}
       <div
-        className={`fixed top-0 right-0 h-full w-64 bg-[#eaf5e4] border-l border-[#1d380e] shadow-lg transform transition-transform duration-300 ease-in-out ${
-          isOpen ? "translate-x-0" : "translate-x-full"
-        }`}
+        className={`
+          fixed top-0 left-0 h-full bg-[#eaf5e4] border-r border-[#1d380e]
+          shadow-lg transform transition-transform duration-300 ease-in-out
+
+          /* Slide in/out */
+          ${isOpen ? "translate-x-0" : "-translate-x-full"}
+
+          /* Collapsed or expanded width */
+          ${isCollapsed ? "w-16" : "w-64"}
+
+          /* Extra padding on the right side (10px) */
+          pr-[10px]
+        `}
       >
-        <div className="pt-16 px-4">
+        {/* Collapse Button */}
+        {isOpen && (
+          <button
+            onClick={toggleCollapse}
+            className="absolute top-4 right-4 p-1 rounded-full hover:bg-gray-300"
+          >
+            {isCollapsed ? <ChevronRight size={20} /> : <ChevronLeft size={20} />}
+          </button>
+        )}
+
+        {/* Top spacing + left padding. Increase as desired */}
+        <div className={`pt-16 ${isCollapsed ? "px-2" : "px-6"}`}>
           {activeTab === "friends" ? (
             <div>
-              <h2 className="text-lg font-semibold text-gray-900 mb-4">
-                Friends
-              </h2>
-              <ul className="space-y-2">
-                <li className="p-2 pl-10 bg-[#ccdec2] rounded border border-[#575757] text-gray-900 rounded-[30px] flex items-center">
-                  <img src="/path/to/image1.jpg" alt="Friend 1" className="w-6 h-6 mr-2 rounded-full" />
-                  Friend 1
+              {/* Title row for "Friends" */}
+              {!isCollapsed && (
+                <h2 className="text-xl font-semibold text-gray-900 mb-4">
+                  Friends
+                </h2>
+              )}
+
+              {/* Friends List */}
+              <ul className="space-y-3">
+                <li
+                  className={`
+                    relative flex items-center
+                    bg-[#ccdec2] border border-[#575757] text-gray-900
+                    rounded-[30px] hover:border-2 hover:border-[#1d380e]
+
+                    /* Make the item bigger in both modes */
+                    ${isCollapsed ? "w-14 h-14 justify-center" : "p-3 pl-12"}
+                  `}
+                >
+                  {/* Larger icon for better visibility */}
+                  <Users size={28} className={!isCollapsed ? "mr-3" : ""} />
+                  {/* Only show text if expanded */}
+                  {!isCollapsed && <span className="text-base">Friend 1</span>}
                 </li>
-                <li className="p-2 pl-10 bg-[#ccdec2] rounded border border-[#575757] text-gray-900 rounded-[30px] flex items-center">
-                  <img src="/path/to/image2.jpg" alt="Friend 2" className="w-6 h-6 mr-2 rounded-full" />
-                  Friend 2
-                </li>
-                <li className="p-2 pl-10 bg-[#ccdec2] rounded border border-[#575757] text-gray-900 rounded-[30px] flex items-center">
-                  <img src="/path/to/image3.jpg" alt="Friend 3" className="w-6 h-6 mr-2 rounded-full" />
-                  Friend 3
+
+                <li
+                  className={`
+                    relative flex items-center
+                    bg-[#ccdec2] border border-[#575757] text-gray-900
+                    rounded-[30px] hover:border-2 hover:border-[#1d380e]
+                    ${isCollapsed ? "w-14 h-14 justify-center" : "p-3 pl-12"}
+                  `}
+                >
+                  <Users size={28} className={!isCollapsed ? "mr-3" : ""} />
+                  {!isCollapsed && <span className="text-base">Friend 2</span>}
                 </li>
               </ul>
             </div>
           ) : (
             <div>
-              <h2 className="text-lg font-semibold text-gray-900 mb-4">
-                Notifications
-              </h2>
-              <ul className="space-y-2">
-                <li className="p-2 pl-10 bg-[#ccdec2] rounded border border-[#575757] text-gray-900 rounded-[30px]">
-                  Notification 1
+              {/* Title row for "Notifications" */}
+              {!isCollapsed && (
+                <h2 className="text-xl font-semibold text-gray-900 mb-4">
+                  Notifications
+                </h2>
+              )}
+
+              {/* Notifications List */}
+              <ul className="space-y-3">
+                <li
+                  className={`
+                    relative flex items-center
+                    bg-[#ccdec2] border border-[#575757] text-gray-900
+                    rounded-[30px] hover:border-2 hover:border-[#1d380e]
+                    ${isCollapsed ? "w-14 h-14 justify-center" : "p-3 pl-12"}
+                  `}
+                >
+                  {!isCollapsed && <span className="text-base">Notification 1</span>}
                 </li>
-                <li className="p-2 pl-10 bg-[#ccdec2] rounded border border-[#575757] text-gray-900 rounded-[30px]">
-                  Notification 2
-                </li>
-                <li className="p-2 pl-10 bg-[#ccdec2] rounded border border-[#575757] text-gray-900 rounded-[30px]">
-                  Notification 3
+                <li
+                  className={`
+                    relative flex items-center
+                    bg-[#ccdec2] border border-[#575757] text-gray-900
+                    rounded-[30px] hover:border-2 hover:border-[#1d380e]
+                    ${isCollapsed ? "w-14 h-14 justify-center" : "p-3 pl-12"}
+                  `}
+                >
+                  {!isCollapsed && <span className="text-base">Notification 2</span>}
                 </li>
               </ul>
             </div>
           )}
         </div>
 
+        {/* Bottom tabs */}
         <div className="absolute bottom-4 left-0 w-full flex justify-around">
           <button
             onClick={() => setActiveTab("friends")}
-            className={`p-2 rounded-full border ${
-              activeTab === "friends"
-                ? "bg-[#1d380e] text-white"
-                : "bg-[#ccdec2] border-[#575757]"
-            }`}
+            className={`
+              p-3 rounded-full border
+              ${activeTab === "friends" ? "bg-[#1d380e] text-white" : "bg-[#ccdec2] border-[#575757]"}
+            `}
           >
-            <Users size={24} />
+            <Users size={28} />
           </button>
           <button
             onClick={() => setActiveTab("notifications")}
-            className={`p-2 rounded-full border ${
-              activeTab === "notifications"
-                ? "bg-[#1d380e] text-white"
-                : "bg-[#ccdec2] border-[#575757]"
-            }`}
+            className={`
+              p-3 rounded-full border
+              ${activeTab === "notifications" ? "bg-[#1d380e] text-white" : "bg-[#ccdec2] border-[#575757]"}
+            `}
           >
-            <Bell size={24} />
+            <Bell size={28} />
           </button>
         </div>
       </div>
