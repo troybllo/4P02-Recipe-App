@@ -65,6 +65,10 @@ const FoodSocialCard = ({
     setIsRecipeExpanded(!isRecipeExpanded); // Toggle recipe content visibility
   };
 
+  const handleRecipeDownload = () => {
+    // Downloads a PDF of the recipe with all the details
+  }
+
   return (
     <div className={styles.card}>
       <div className={styles.header}>
@@ -80,12 +84,12 @@ const FoodSocialCard = ({
             by {author} • {formattedDate}
           </p>
         </div>
-        <button
+        {/* <button
           className={styles.iconButton}
           aria-label="More options"
         >
           •••
-        </button>
+        </button> */}
       </div>
 
       <div className={styles.imageContainer}>
@@ -123,6 +127,13 @@ const FoodSocialCard = ({
               aria-label="Share"
             >
               📤
+            </button>
+            <button
+              className={styles.downloadButton}
+              onClick={handleRecipeDownload}
+              aria-label="Download"
+            >
+              ⏬
             </button>
           </div>
 
