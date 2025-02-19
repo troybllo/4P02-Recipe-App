@@ -220,7 +220,7 @@ function getCategory(recipe) {
 // Masonry breakpoints
 const breakpointColumnsObj = {
   default: 5,
-  1650: 4,
+  1700: 4,
   1490: 3,
   1250: 2,
   940: 1,
@@ -255,12 +255,14 @@ export default function Home() {
         <p className="text-gray-600">Discover new recipes and more!</p>
 
         {/* Search & Filter Section */}
-      <div className="mb-10 flex flex-col items-center">
-
-        {/* Stories go here */}
-        <StoryCarousel />
+      <div className="mb-10 flex flex-col items-center p-[5px]">
 
         <div className="flex justify-center mb-4">
+          {/* Stories go here */}
+          <StoryCarousel />
+        </div>
+
+        <div className="flex justify-center mb-4 p-[15px]">
           <input
             type="text"
             placeholder="Search recipes..."
