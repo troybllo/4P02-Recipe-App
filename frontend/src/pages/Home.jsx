@@ -251,7 +251,8 @@ export default function Home() {
         <h1 className="text-2xl font-bold mt-2">Feastly</h1>
         <p className="text-gray-600">Your go-to destination for mouth-watering recipes</p>
 
-        {/* Search bar */}
+      {/* Not sure why we needed 2 search bars so commented out for now */}
+        {/* Search bar
         <div className="mt-4">
           <input
             type="text"
@@ -260,10 +261,10 @@ export default function Home() {
                        rounded-full focus:outline-none focus:ring-2 
                        focus:ring-blue-400"
           />
-        </div>
+        </div> */}
 
         {/* Filter buttons */}
-        <div className="mb-10 flex flex-col items-center">
+        <div className="mt-5 mb-10 flex flex-col items-center">
           <div className="flex justify-center mb-4">
             <input
               type="text"
