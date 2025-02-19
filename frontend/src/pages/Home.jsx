@@ -217,7 +217,7 @@ function getCategory(recipe) {
 
 // Masonry breakpoints for the main grid (if needed elsewhere)
 const breakpointColumnsObj = {
-  default: 5,
+  default: 4,
   1680: 4,
   1280: 3,
   824: 2,
