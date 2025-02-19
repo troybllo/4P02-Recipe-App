@@ -1,7 +1,7 @@
 // src/pages/Home.jsx
 import React, { useState } from "react";
 import Masonry from "react-masonry-css";
-import styles from "../styles/masonry.css";
+import styles from "../styles/masonry.css"; // import your masonry CSS
 import FoodSocialCard from "../components/FoodSocialCard";
 import TrendingCarousel from "../components/TrendingCarousel";
 import meal1 from "../assets/meal1.jpg";
@@ -9,6 +9,8 @@ import meal2 from "../assets/vegtable stir fry.jfif";
 import meal3 from "../assets/meal3.jpg";
 import meal4 from "../assets/meal5.jpg";
 import meal5 from "../assets/meal6.webp";
+import StoryCarousel from "../components/StoryCarousel"; // adjust path as needed
+
 
 // Example recipe objects
 const recipe1 = {
@@ -215,118 +217,114 @@ function getCategory(recipe) {
   return "other";
 }
 
-// Masonry breakpoints for the main grid (if needed elsewhere)
+// Masonry breakpoints
 const breakpointColumnsObj = {
   default: 5,
-  1680: 4,
-  1280: 3,
-  824: 2,
-  640: 1,
+  1650: 4,
+  1490: 3,
+  1250: 2,
+  940: 1,
 };
 
 export default function Home() {
   const [activeFilter, setActiveFilter] = useState(null);
-  const [searchQuery, setSearchQuery] = useState("");
-
-  // Combined filtering logic
-  const filteredRecipes = allRecipes.filter((recipe) => {
-    const matchesFilter = activeFilter
-      ? getCategory(recipe) === activeFilter
-      : true;
-    const matchesSearch = searchQuery
-      ? (recipe.title + " " + recipe.description)
-          .toLowerCase()
-          .includes(searchQuery.toLowerCase())
-      : true;
-    return matchesFilter && matchesSearch;
-  });
-
-  const handleFilterClick = (filterName) => {
-    setActiveFilter((prev) => (prev === filterName ? null : filterName));
-  };
+    const [searchQuery, setSearchQuery] = useState("");
+  
+    // Combined filtering logic
+    const filteredRecipes = allRecipes.filter((recipe) => {
+      const matchesFilter = activeFilter
+        ? getCategory(recipe) === activeFilter
+        : true;
+      const matchesSearch = searchQuery
+        ? (recipe.title + " " + recipe.description)
+            .toLowerCase()
+            .includes(searchQuery.toLowerCase())
+        : true;
+      return matchesFilter && matchesSearch;
+    });
+  
+    const handleFilterClick = (filterName) => {
+      setActiveFilter((prev) => (prev === filterName ? null : filterName));
+    };
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <header className="header-section py-10 flex flex-col items-center">
-        <h1 className="text-4xl font-extrabold mb-2">Welcome to Feastly</h1>
-        <p className="text-xl text-gray-600">
-          Your go-to destination for mouth-watering recipes
-        </p>
-      </header>
+    <div className="min-h-screen bg-gray-50 pt-16">
+      {/* Simple centered header */}
+      <header className="flex flex-col items-center text-center bg-[#eaf5e4] py-8">
+        <h1 className="text-2xl font-bold mt-2">Feastly</h1>
+        <p className="text-gray-600">Discover new recipes and more!</p>
 
-      {/* Search & Filter Section */}
-      <div className="header-section mb-8">
-        {/* Search Input */}
-        <div className="mb- flex justify-center">
+        {/* Search & Filter Section */}
+      <div className="mb-10 flex flex-col items-center">
+
+        {/* Stories go here */}
+        <StoryCarousel />
+
+        <div className="flex justify-center mb-4">
           <input
             type="text"
             placeholder="Search recipes..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full max-w-md px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+            className="w-[50ch] max-w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
           />
         </div>
-        {/* Filter Buttons */}
-        <div className="flex justify-center space-x-4">
-          <button
-            onClick={() => handleFilterClick("vegan")}
-            className={`px-4 py-2 rounded-full font-medium transition-colors 
-              ${
-                activeFilter === "vegan"
-                  ? "bg-green-600 text-white"
-                  : "bg-green-100 text-green-800 hover:bg-green-200"
-              } 
-              focus:outline-none focus:ring-2 focus:ring-green-400`}
-          >
-            Vegan
-          </button>
-
-          <button
-            onClick={() => handleFilterClick("seafood")}
-            className={`px-4 py-2 rounded-full font-medium transition-colors 
-              ${
-                activeFilter === "seafood"
-                  ? "bg-blue-600 text-white"
-                  : "bg-blue-100 text-blue-800 hover:bg-blue-200"
-              }
-              focus:outline-none focus:ring-2 focus:ring-blue-400`}
-          >
-            Seafood
-          </button>
-
-          <button
-            onClick={() => handleFilterClick("beef")}
-            className={`px-4 py-2 rounded-full font-medium transition-colors 
-              ${
-                activeFilter === "beef"
-                  ? "bg-red-600 text-white"
-                  : "bg-red-100 text-red-800 hover:bg-red-200"
-              }
-              focus:outline-none focus:ring-2 focus:ring-red-400`}
-          >
-            Beef
-          </button>
-        </div>
-      </div>
-
-      {/* Masonry Grid */}
-      <div className="home-container">
-        <Masonry
-          breakpointCols={breakpointColumnsObj}
-          className="my-masonry-grid"
-          columnClassName="my-masonry-grid_column"
+  
+      <div className="flex flex-wrap justify-center gap-4">
+        <button
+          onClick={() => handleFilterClick("vegan")}
+          className={`px-4 py-2 rounded-full font-medium transition-colors
+            ${
+              activeFilter === "vegan"
+                ? "bg-green-600 text-white"
+                : "bg-green-100 text-green-800 hover:bg-green-200"
+            }
+            focus:outline-none focus:ring-2 focus:ring-green-400`}
         >
-          {filteredRecipes.map((recipe, index) => (
-            <FoodSocialCard key={recipe.postId + index} {...recipe} />
-          ))}
-        </Masonry>
+          Vegan
+        </button>
+  
+        <button
+          onClick={() => handleFilterClick("seafood")}
+          className={`px-4 py-2 rounded-full font-medium transition-colors 
+            ${
+              activeFilter === "seafood"
+                ? "bg-blue-600 text-white"
+                : "bg-blue-100 text-blue-800 hover:bg-blue-200"
+            }
+            focus:outline-none focus:ring-2 focus:ring-blue-400`}
+        >
+          Seafood
+        </button>
+  
+        <button
+          onClick={() => handleFilterClick("beef")}
+          className={`px-4 py-2 rounded-full font-medium transition-colors 
+            ${
+              activeFilter === "beef"
+                ? "bg-red-600 text-white"
+                : "bg-red-100 text-red-800 hover:bg-red-200"
+            }
+            focus:outline-none focus:ring-2 focus:ring-red-400`}
+        >
+          Beef
+        </button>
       </div>
+    </div>
 
-      {/* Trending Carousel Section */}
-      <div className="home-container">
-        <TrendingCarousel />
-      </div>
+      </header>
+        {/* Masonry Grid Container */}
+        <div className="w-full px-4">
+          <Masonry
+            breakpointCols={breakpointColumnsObj}
+            className="my-masonry-grid"
+            columnClassName="my-masonry-grid_column"
+          >
+            {filteredRecipes.map((recipe, index) => (
+              <FoodSocialCard key={recipe.postId + index} {...recipe} />
+            ))}
+          </Masonry>
+        </div>
     </div>
   );
 }
