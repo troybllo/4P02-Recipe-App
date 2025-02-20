@@ -54,6 +54,7 @@ export default function Navbar() {
       {/* Fixed top bar */}
       <div className="fixed top-0 left-0 right-0 h-16 bg-[#eaf5e4] border-b border-[#869a7b] shadow-lg z-50">
         <div className="max-w-7xl mx-auto px-4 h-full flex items-center justify-between">
+          {/* Left side: Logo */}
           <div className="flex items-center">
             <Link to="/about" className="flex">
               <img src={feastlyLogo} alt="Feastly" className="w-10 h-10 mr-2" />
@@ -72,35 +73,35 @@ export default function Navbar() {
                 <div className="hidden lg:flex items-center space-x-4 ml-auto">
                 <Link
                   to="/"
-                  className="px-3 py-2 flex items-center bg-[#ccdec2] border border-[#869a7b] rounded-full text-gray-900 hover:border-2 hover:border-[#1d380e]"
+                  className="px-3 py-2 flex items-center bg-[#fbfff9] border border-[#869a7b] rounded-full text-gray-900 hover:border-[#1d380e] hover:bg-[#e6f4e0] "
                 >
                   <img src={homeIcon} alt="Home" className="w-auto h-auto mr-2" />
                   <span>Home</span>
                 </Link>
                 <Link
                   to="/discovery"
-                  className="px-3 py-2 flex items-center bg-[#ccdec2] border border-[#869a7b] rounded-full text-gray-900 hover:border-2 hover:border-[#1d380e]"
+                  className="px-3 py-2 flex items-center bg-[#fbfff9] border border-[#869a7b] rounded-full text-gray-900 hover:border-[#1d380e] hover:bg-[#e6f4e0] "
                 >
                   <img src={discoveryIcon} alt="Discovery" className="w-auto h-auto mr-2" />
                   <span>Discovery</span>
                 </Link>
                 <Link
                   to="/profile"
-                  className="px-3 py-2 flex items-center bg-[#ccdec2] border border-[#869a7b] rounded-full text-gray-900 hover:border-2 hover:border-[#1d380e]"
+                  className="px-3 py-2 flex items-center bg-[#fbfff9] border border-[#869a7b] rounded-full text-gray-900 hover:border-[#1d380e] hover:bg-[#e6f4e0] "
                 >
                   <img src={aboutIcon} alt="Profile" className="w-auto h-auto mr-2" />
                   <span>Profile</span>
                 </Link>
                 <button
                   onClick={() => setIsCreatePostOpen(true)}
-                  className="px-3 py-2 flex bg-[#bbf7a0] justify-center items-center border border-[#1d9c3f] rounded-full text-[#1d9c3f] font-bold hover:border-2 hover:border-[#1d9c3f]"
+                  className="px-3 py-2 flex bg-[#d5f9c5] justify-center items-center border border-[#1d9c3f] rounded-full text-[#1d9c3f] font-bold hover:border-[#1d9c3f]"
                 >
                   <img src={createPostIcon} alt="Profile" className="w-6 h-6 mr-2 object-contain" />
                   <span>Create Post</span>
                 </button>
                 <button
                   onClick={() => setIsSignInOpen(true)}
-                  className="px-3 py-2 flex bg-[#ffcf94] border border-[#ba5719] rounded-full text-[#ba5719] font-bold hover:border-2 hover:border-[#ba5719]"
+                  className="px-3 py-2 flex bg-[#f9dcb8] border border-[#ba5719] rounded-full text-[#ba5719] font-bold hover:border-2 hover:border-[#ba5719]"
                 >
                   <img src={profileIcon} alt="Profile" className="w-auto h-auto mr-2 object-contain" />
                   <span>Sign In</span>
