@@ -78,7 +78,7 @@ const FoodSocialCard = ({
             className={`${styles.title} ${isTitleExpanded ? styles.expanded : ""}`}
             onClick={handleTitleClick}
           >
-            {isTitleExpanded ? title : `${title.slice(0, 40)}...`} {/* Truncate or show full title */}
+            {isTitleExpanded ? title : `${title.slice(0, 30)}...`} {/* Truncate or show full title */}
           </h3>
           <p className={styles.authorInfo}>
             by {author} • {formattedDate}

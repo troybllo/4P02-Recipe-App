@@ -2,8 +2,8 @@
 import React, { useRef, useEffect, useState } from "react";
 import FoodSocialCard from "../components/FoodSocialCard";
 import meal1 from "../assets/meal1.jpg";
-import meal4 from "../assets/meal5.jpg";
-import meal5 from "../assets/meal6.webp";
+import meal4 from "../assets/meal4.jpg";
+import meal5 from "../assets/meal5.webp";
 
 // Sample trending recipes array
 const trendingRecipes = [
