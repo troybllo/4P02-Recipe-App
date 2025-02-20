@@ -15,6 +15,7 @@ const breakpointColumnsObj = {
     1920: 3,
     1680: 3,
     1280: 3,
+    1080: 2,
     824: 2,
     640: 1,
   };
@@ -265,21 +266,21 @@ const Profile = () => {
       <>
       <div className="text-center my-20">
         <div className="flex mb-5 justify-center items-center">
-        <div className="flex items-center border-b-2 py-5">
-          <div className="items-center justify-center mr-5">
-          <img src={profilePic} alt="Profile Pic" className="rounded-full w-32 h-32" />
-          <button
-            onClick={() => setIsEditProfileOpen(true)}>
-            <p className="border-2 border-gray-300 rounded-full px-4 py-1 mt-3 text-xs justify-center items-center">Edit Profile</p>
-          </button>
+          <div className="flex items-center border-b-2 py-5">
+            <div className="items-center justify-center mr-5">
+              <img src={profilePic} alt="Profile Pic" className="rounded-full w-32 h-32" />
+              <button
+                onClick={() => setIsEditProfileOpen(true)}>
+                <p className="border-2 border-gray-300 rounded-full px-4 py-1 mt-3 text-xs justify-center items-center">Edit Profile</p>
+              </button>
+              </div>
+            <div className="text-left ml-4">
+              <p className="text-xs font-thin text-gray-500 pb-1">Username: </p>
+              <h2 className="inline-block">{username}</h2>
+              <p className="text-xs font-thin text-gray-500 pt-4 pb-1">Short Bio: </p>
+              <p className="whitespace-pre-wrap text-sm">{formatBio(bio)}</p>
+            </div>
           </div>
-          <div className="text-left ml-4">
-          <p className="text-xs font-thin text-gray-500 pb-1">Username: </p>
-          <h2 className="inline-block">{username}</h2>
-          <p className="text-xs font-thin text-gray-500 pt-4 pb-1">Short Bio: </p>
-          <p className="whitespace-pre-wrap text-sm">{formatBio(bio)}</p>
-          </div>
-        </div>
         </div>
         <div className="flex justify-center mb-5">
         <button 
@@ -299,7 +300,7 @@ const Profile = () => {
         <div className="home-container max-w-[1200px]">
           <Masonry 
           breakpointCols={breakpointColumnsObj}
-          className="my-masonry-grid items-center justify-center"
+          className="my-masonry-grid justify-center"
           columnClassName="my-masonry-grid_column"
           >
           {showPosts ? (

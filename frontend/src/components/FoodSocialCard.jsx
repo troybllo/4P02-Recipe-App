@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import styles from "../styles/FoodSocialCard.module.css"; // Import styles
+import EditPost from "../components/EditPost";
 
 const FoodSocialCard = ({
   postId, 
@@ -28,6 +29,12 @@ const FoodSocialCard = ({
     month: "long",
     day: "numeric",
   });
+
+  const [isEditPostOpen, setIsEditPostOpen] = useState(false);
+
+  const handleEditPost = () => {
+    setIsEditPostOpen(false);
+  }
 
   const handleLike = async () => {
     if (isLoading) return;
@@ -69,36 +76,54 @@ const FoodSocialCard = ({
     // Downloads a PDF of the recipe with all the details
   }
 
+  // Made-up variables for logged in state and current user ID
+  const isLoggedIn = true; // Assume user is logged in (replace with auth logic)
+  const currentUserId = "user_789"; // Replace with actual current user ID
+  const isOwner = isLoggedIn && currentUserId === authorId;
+
   return (
+    <>
     <div className={styles.card}>
       <div className={styles.header}>
-        <div className={styles.avatar}>{author[0]}</div>
-        <div className={styles.headerContent}>
+        <div className={styles.avatar} style={{ flexShrink: 0 }}>
+          {author[0]}
+        </div>
+        <div className={styles.headerContent} style={{ maxWidth: "200px" }}>
           <h3
             className={`${styles.title} ${isTitleExpanded ? styles.expanded : ""}`}
             onClick={handleTitleClick}
+            style={{
+              whiteSpace: "nowrap",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              maxWidth: "100%",
+            }}
           >
-            {isTitleExpanded ? title : `${title.slice(0, 30)}...`} {/* Truncate or show full title */}
+            {isTitleExpanded ? title : `${title.slice(0, 30)}...`}
           </h3>
-          <p className={styles.authorInfo}>
-            by {author} • {formattedDate}
+          <p
+            className={styles.authorInfo}
+            style={{
+              whiteSpace: "nowrap",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              maxWidth: "100%",
+            }}
+          >
+            by {author} {formattedDate}
           </p>
         </div>
-        {/* <button
-          className={styles.iconButton}
-          aria-label="More options"
-        >
-          •••
-        </button> */}
+        {/* Show edit button only if user is logged in and is the owner */}
+        {isOwner && (
+          <button className={styles.iconButton} aria-label="Edit Post"
+          onClick={()=>setIsEditPostOpen(true)}>
+            •••
+          </button>
+        )}
       </div>
 
       <div className={styles.imageContainer}>
-        <img
-          src={imageUrl}
-          alt={title}
-          className={styles.image}
-          loading="lazy"
-        />
+        <img src={imageUrl} alt={title} className={styles.image} loading="lazy" />
       </div>
 
       <div className={styles.content}>
@@ -121,11 +146,7 @@ const FoodSocialCard = ({
               {liked ? "❤️" : "🤍"}
               <span className={styles.likeCount}>{likeCount}</span>
             </button>
-            <button
-              className={styles.iconButton}
-              onClick={handleShare}
-              aria-label="Share"
-            >
+            <button className={styles.iconButton} onClick={handleShare} aria-label="Share">
               📤
             </button>
             <button
@@ -139,10 +160,10 @@ const FoodSocialCard = ({
 
           <button
             className={styles.expandButton}
-            onClick={handleRecipeClick} // Toggle recipe visibility separately
+            onClick={handleRecipeClick}
             aria-expanded={isRecipeExpanded}
           >
-            {isRecipeExpanded ? "Hide Recipe ▼" : "Show Recipe ▶"}
+            {isRecipeExpanded ? "Shrink Recipe" : "Expand Recipe"}
           </button>
         </div>
 
@@ -165,6 +186,21 @@ const FoodSocialCard = ({
         )}
       </div>
     </div>
+    <EditPost
+      isOpen={isEditPostOpen}
+      onClose={()=>setIsEditPostOpen(false)}
+      onSubmit={handleEditPost}
+      postId={postId}
+      title={title}
+      description={description}
+      cookingTime={cookingTime}
+      difficulty={difficulty}
+      servings={servings}
+      ingredients={ingredients}
+      instructions={instructions}
+      imageUrl={imageUrl}
+    />
+    </>
   );
 };
 
