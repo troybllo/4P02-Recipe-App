@@ -55,11 +55,11 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-gray-50 pt-16">
       {/* Simple centered header */}
-      <header className="flex flex-col items-center text-center bg-[#eaf5e4] py-8">
-        <h1 className="text-2xl font-bold mt-2">Feastly</h1>
-        <p className="text-gray-600">Discover new recipes and more!</p>
+        <header className="flex flex-col items-center text-center bg-gradient-to-b from-[#eaf5e4] to-gray-50 py-8">
+          <h1 className="text-2xl font-bold mt-2">Feastly</h1>
+          <p className="text-gray-600">Discover new recipes and more!</p>
 
-        {/* Search & Filter Section */}
+          {/* Search & Filter Section */}
       <div className="mb-10 flex flex-col items-center p-[5px]">
 
         <div className="flex justify-center mb-4">

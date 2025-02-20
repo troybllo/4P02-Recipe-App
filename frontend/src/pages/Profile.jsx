@@ -287,7 +287,7 @@ const Profile = () => {
         <div className="home-container max-w-[1200px]">
           <Masonry 
           breakpointCols={breakpointColumnsObj}
-          className="my-masonry-grid"
+          className="my-masonry-grid items-center justify-center"
           columnClassName="my-masonry-grid_column"
           >
           {showPosts ? (
@@ -297,12 +297,12 @@ const Profile = () => {
             </div>
             ))
           ) : (
-            <div className="flex flex-col items-center justify-center ">
+            <div className="flex flex-col items-center justify-center">
             <p className="text-lg font-semibold">No saved posts yet</p>
             <p className="text-gray-500 mt-2">You haven't saved any recipes yet. Start exploring and save your favorite recipes to see them here.</p>
-            <button className="mt-5 px-4 py-2 bg-blue-500 text-white rounded-full hover:bg-blue-600"
+            <button className="mt-5 px-4 py-2 bg-[#ccdec2] text-[#1d380e] rounded-full hover:border-1 border-[#1d380e]"
               onClick={() => window.location.href = '/discovery'}>
-              Explore Recipes
+              Discover Recipes
             </button>
             </div>
           )}
