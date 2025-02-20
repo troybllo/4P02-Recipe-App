@@ -33,7 +33,7 @@ const Profile = () => {
       datePosted: "2024-02-17T15:30:00Z",
       description:
         "A traditional Spanish paella with seafood and saffron rice. Perfect for family gatherings and special occasions.",
-      cookingTime: "1 hour",
+      cookingTime: "1h",
       difficulty: "Medium",
       servings: 6,
       imageUrl: meal1,
@@ -66,7 +66,7 @@ const Profile = () => {
       datePosted: "2024-02-18T10:00:00Z",
       description:
         "A healthy and quick vegetable stir-fry with a soy sauce-based dressing. Perfect for a light lunch or dinner.",
-      cookingTime: "25 mins",
+      cookingTime: "25m",
       difficulty: "Easy",
       servings: 4,
       imageUrl: meal2,
@@ -100,7 +100,7 @@ const Profile = () => {
       datePosted: "2024-02-19T12:00:00Z",
       description:
         "A gourmet dish featuring tender beef fillet served with creamy potato puree, roasted fennel, asparagus, and smoked garlic thyme butter.",
-      cookingTime: "1 hour 15 mins",
+      cookingTime: "1h 15m",
       difficulty: "High",
       servings: 2,
       imageUrl: meal3,
@@ -141,7 +141,7 @@ const Profile = () => {
       datePosted: "2024-03-01T12:00:00Z",
       description:
         "My tips and tricks for the most perfect steak! And the melted garlic herb butter is out of this world! (4.93 stars from 38 ratings, 134 comments)",
-      cookingTime: "30 minutes",
+      cookingTime: "30m",
       difficulty: "Medium",
       servings: 8,
       imageUrl: meal4,
@@ -181,7 +181,7 @@ const Profile = () => {
       datePosted: "2024-09-09T12:00:00Z",
       description:
         "Skip the stockpot and cook your crustaceans on an open fire instead. This quick, 20-minute recipe yields 1–2 servings.",
-      cookingTime: "20 minutes",
+      cookingTime: "20 mins",
       difficulty: "Medium",
       servings: 2,
       imageUrl: meal5,
@@ -253,9 +253,6 @@ const Profile = () => {
                 </div>
                 <div className="flex justify-center">
                     <div className="home-container ">
-                      
-                      
-
                         <Masonry 
                             breakpointCols={breakpointColumnsObj}
                             className="my-masonry-grid max-w-[1200px]"
