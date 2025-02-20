@@ -120,9 +120,11 @@
 
 /* Optional: If you want a smooth transition */
 .expandedContent {
+  transition: max-height 0.3s ease-in-out;
   position: static; /* Remove absolute positioning */
   background: white;
-  padding: 1rem;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
   margin: -0.5rem; /* Adds some spacing between the main card content and expanded content */
   border-top: 2px solid #f3f4f6;
   margin-top: 5px;

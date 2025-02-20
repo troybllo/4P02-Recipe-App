@@ -230,44 +230,87 @@ const Profile = () => {
         return formattedBio.trim();
     };
 
-    let page = "Posts";
+    let followers = 420;
+    let following = 69;
 
+    const [showPosts, setShowPosts] = React.useState(true);
+
+    const handlePosts = () => {
+      setShowPosts(true);
+    };
+
+    const handleSaved = () => {
+      setShowPosts(false);
+    };
+    React.useEffect(() => {
+      document.body.style.overflowY = "scroll";
+      document.body.style.overflowX = "hidden";
+      return () => {
+      document.body.style.overflowY = "auto";
+      document.body.style.overflowX = "auto";
+      };
+    }, []);
     return (
-        <>
-            <div className="text-center my-20">
-                <div className="flex mb-5 justify-center items-center">
-                    <div className="flex items-center border-b-2 border-gray-300 pb-5">
-                        <img src={profilePic} alt="Profile Pic" className="rounded-full w-32 h-32 mr-5" />
-                        <div className="text-left ml-4">
-                            <p className="text-xs font-thin text-gray-500 pt-4 pb-1">Username: </p>
-                            <h2 className="inline-block border-2 border-gray-300 rounded-full px-7 py-2">{username}</h2>
-                            <p className="text-xs font-thin text-gray-500 pt-4 pb-1">Short Bio: </p>
-                            <p className="whitespace-pre-wrap">{formatBio(bio)}</p>
-                        </div>
-                    </div>
-                </div>
-                <div className="flex justify-center mb-5"></div>
-                <div className="flex justify-center mb-5">
-                    <button className="mr-2 flex items-center justify-center border-2 border-gray-300 rounded-full px-6 py-1 min-w-[100px] hover:bg-gray-200">Posts</button>
-                    <button className="mr-2 flex items-center justify-center border-2 border-gray-300 rounded-full px-6 py-1 min-w-[100px] hover:bg-gray-200">Saved</button>
-                </div>
-                <div className="flex justify-center">
-                    <div className="home-container ">
-                        <Masonry 
-                            breakpointCols={breakpointColumnsObj}
-                            className="my-masonry-grid max-w-[1200px]"
-                            columnClassName="my-masonry-grid_column"
-                        >
-                            {allRecipes.map((recipe, index) => (
-                            <div key={recipe.postId + index}> 
-                                <FoodSocialCard {...recipe} />
-                            </div>
-                            ))}
-                        </Masonry>
-                    </div>
-                </div>
+      <>
+      <div className="text-center my-20">
+        <div className="flex mb-5 justify-center items-center">
+        <div className="flex items-center border-b-2 py-5">
+          <div className="items-center justify-center mr-5">
+          <img src={profilePic} alt="Profile Pic" className="rounded-full w-32 h-32" />
+          <button>
+            <p className="border-2 border-gray-300 rounded-full px-4 py-1 mt-3 text-xs justify-center items-center">Edit Profile</p>
+          </button>
+          </div>
+          <div className="text-left ml-4">
+          <p className="text-xs font-thin text-gray-500 pb-1">Username: </p>
+          <h2 className="inline-block">{username}</h2>
+          <p className="text-xs font-thin text-gray-500 pt-4 pb-1">Short Bio: </p>
+          <p className="whitespace-pre-wrap text-sm">{formatBio(bio)}</p>
+          </div>
+        </div>
+        </div>
+        <div className="flex justify-center mb-5">
+        <button 
+          className={`mr-2 flex items-center justify-center border-2 border-gray-300 rounded-full px-6 py-1 min-w-[100px] hover:bg-gray-200 ${showPosts ? 'bg-gray-200' : ''}`}
+          onClick={handlePosts}
+        >
+          Posts
+        </button>
+        <button 
+          className={`mr-2 flex items-center justify-center border-2 border-gray-300 rounded-full px-6 py-1 min-w-[100px] hover:bg-gray-200 ${!showPosts ? 'bg-gray-200' : ''}`}
+          onClick={handleSaved}
+        >
+          Saved
+        </button>
+        </div>
+        <div className="flex justify-center">
+        <div className="home-container max-w-[1200px]">
+          <Masonry 
+          breakpointCols={breakpointColumnsObj}
+          className="my-masonry-grid"
+          columnClassName="my-masonry-grid_column"
+          >
+          {showPosts ? (
+            allRecipes.map((recipe, index) => (
+            <div key={recipe.postId + index}> 
+              <FoodSocialCard {...recipe} />
             </div>
-        </>
+            ))
+          ) : (
+            <div className="flex flex-col items-center justify-center ">
+            <p className="text-lg font-semibold">No saved posts yet</p>
+            <p className="text-gray-500 mt-2">You haven't saved any recipes yet. Start exploring and save your favorite recipes to see them here.</p>
+            <button className="mt-5 px-4 py-2 bg-blue-500 text-white rounded-full hover:bg-blue-600"
+              onClick={() => window.location.href = '/discovery'}>
+              Explore Recipes
+            </button>
+            </div>
+          )}
+          </Masonry>
+        </div>
+        </div>
+      </div>
+      </>
     );
 }
 
