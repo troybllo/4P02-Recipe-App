@@ -165,7 +165,7 @@ export default function Home() {
       </header>
 
       {/* Masonry Grid Container */}
-      <div className="w-full px-0 p-[15px]">
+      <div className="w-full mx-[-15px] items-center">
         <Masonry
           breakpointCols={breakpointColumnsObj}
           className="my-masonry-grid"
