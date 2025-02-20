@@ -175,12 +175,12 @@ const Discovery = () => {
         ))}
       </div>
 
-      <div className="flex flex-col gap-20 px-60">
+      <div className="flex flex-col gap-50 px-10">
         {["Featured Picks", "Latest Recipes", "Staffs Picks", "Trending"].map(
           (section) => (
             <div key={section} className="flex flex-col">
-              <h1 className="font-extralight text-4xl mb-4">{section}</h1>
-              <div className="grid grid-cols-4 gap-6">
+              <h1 className="font-extralight text-4xl mb-4 mt-4">{section}</h1>
+              <div className="grid grid-cols-4 gap-4">
                 {filteredRecipes.slice(0, 4).map((recipe) => (
                   <FoodSocialCard key={recipe.id} {...recipe} />
                 ))}

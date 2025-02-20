@@ -41,7 +41,7 @@ function getCategory(recipe) {
 
 // Masonry breakpoints
 const breakpointColumnsObj = {
-  default: 5,
+  default: 4,
   1700: 4,
   1490: 3,
   1250: 2,
@@ -165,7 +165,7 @@ export default function Home() {
       </header>
 
       {/* Masonry Grid Container */}
-      <div className="w-full px-4 p-[15px]">
+      <div className="w-full px-0 p-[15px]">
         <Masonry
           breakpointCols={breakpointColumnsObj}
           className="my-masonry-grid"

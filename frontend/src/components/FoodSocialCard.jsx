@@ -130,7 +130,7 @@ const FoodSocialCard = ({
         <div className={styles.metadata}>
           <span title="Cooking Time">⏱️ {cookingTime}</span>
           <span title="Difficulty">📊 {difficulty}</span>
-          <span title="Servings">👥 Serves {servings}</span>
+          <span title="Servings">👥 {servings}</span>
         </div>
 
         <p className={styles.description}>{description}</p>
@@ -163,7 +163,7 @@ const FoodSocialCard = ({
             onClick={handleRecipeClick}
             aria-expanded={isRecipeExpanded}
           >
-            {isRecipeExpanded ? "Shrink Recipe" : "Expand Recipe"}
+            {isRecipeExpanded ? "Shrink" : "Expand"}
           </button>
         </div>
 
