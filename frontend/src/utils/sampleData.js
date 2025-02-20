@@ -1,8 +1,8 @@
 import meal1 from "../assets/meal1.jpg";
-import meal2 from "../assets/vegtable stir fry.jfif";
+import meal2 from "../assets/meal2.jfif";
 import meal3 from "../assets/meal3.jpg";
-import meal4 from "../assets/meal5.jpg";
-import meal5 from "../assets/meal6.webp";
+import meal4 from "../assets/meal4.jpg";
+import meal5 from "../assets/meal5.webp";
 
 export const recipes = [
   {

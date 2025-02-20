@@ -1,31 +1,15 @@
-import React from "react";
-import FoodSocialCard from "../components/FoodSocialCard";
-import { recipes } from "../utils/sampleData";
-import Masonry from "react-masonry-css";
+// src/data/recipes.js
 import meal1 from "../assets/meal1.jpg";
 import meal2 from "../assets/meal2.jfif";
 import meal3 from "../assets/meal3.jpg";
 import meal4 from "../assets/meal4.jpg";
 import meal5 from "../assets/meal5.webp";
+import meal6 from "../assets/meal6.webp";
+import meal7 from "../assets/meal7.jpg";
 
-const breakpointColumnsObj = {
-    default: 3,
-    1440: 3,
-    1920: 3,
-    1680: 3,
-    1280: 3,
-    824: 2,
-    640: 1,
-  };
 
-const Profile = () => {
-
-    const profilePic = "https://img.freepik.com/premium-vector/pixel-art-tree_735839-72.jpg";
-    const PostsIcon = "https://img.freepik.com/premium-vector/pixel-art-tree_735839-72.jpg";
-    const username = "Swa";
-    const bio = "I love healthy foods for my bouldering training. I also love to cook and bake. I'm a software engineer by day and a chef by night.";
-
-    const recipe1 = {
+export const recipes = [
+    {
       postId: "post_123",
       title: "Authentic Spanish Paella",
       author: "Chef Maria",
@@ -33,10 +17,10 @@ const Profile = () => {
       datePosted: "2024-02-17T15:30:00Z",
       description:
         "A traditional Spanish paella with seafood and saffron rice. Perfect for family gatherings and special occasions.",
-      cookingTime: "1h",
+      cookingTime: "1 hour",
       difficulty: "Medium",
       servings: 6,
-      imageUrl: meal1,
+      imageUrl: meal1, // Update the path if needed
       ingredients: [
         "2 cups Spanish rice",
         "1 lb mixed seafood",
@@ -56,9 +40,8 @@ const Profile = () => {
       ],
       likes: 42,
       isLiked: false,
-    };
-    
-    const recipe2 = {
+    },
+    {
       postId: "post_124",
       title: "Vegetable Stir-Fry",
       author: "Chef Lee",
@@ -66,7 +49,7 @@ const Profile = () => {
       datePosted: "2024-02-18T10:00:00Z",
       description:
         "A healthy and quick vegetable stir-fry with a soy sauce-based dressing. Perfect for a light lunch or dinner.",
-      cookingTime: "25m",
+      cookingTime: "25 mins",
       difficulty: "Easy",
       servings: 4,
       imageUrl: meal2,
@@ -89,9 +72,8 @@ const Profile = () => {
       ],
       likes: 30,
       isLiked: false,
-    };
-    
-    const recipe3 = {
+    },
+    {
       postId: "post_125",
       title:
         "Beef Fillet, Potato Puree, Roasted Fennel, Asparagus, Smoked Garlic & Thyme Butter",
@@ -100,7 +82,7 @@ const Profile = () => {
       datePosted: "2024-02-19T12:00:00Z",
       description:
         "A gourmet dish featuring tender beef fillet served with creamy potato puree, roasted fennel, asparagus, and smoked garlic thyme butter.",
-      cookingTime: "1h 15m",
+      cookingTime: "1 hour 15 mins",
       difficulty: "High",
       servings: 2,
       imageUrl: meal3,
@@ -131,9 +113,8 @@ const Profile = () => {
       ],
       likes: 55,
       isLiked: false,
-    };
-    
-    const recipe4 = {
+    },
+    {
       postId: "post_126",
       title: "The Perfect Steak with Garlic Butter",
       author: "Chef John",
@@ -141,7 +122,7 @@ const Profile = () => {
       datePosted: "2024-03-01T12:00:00Z",
       description:
         "My tips and tricks for the most perfect steak! And the melted garlic herb butter is out of this world! (4.93 stars from 38 ratings, 134 comments)",
-      cookingTime: "30m",
+      cookingTime: "30 minutes",
       difficulty: "Medium",
       servings: 8,
       imageUrl: meal4,
@@ -171,9 +152,8 @@ const Profile = () => {
       ],
       likes: 68,
       isLiked: false,
-    };
-    
-    const recipe5 = {
+    },
+    {
       postId: "post_127",
       title: "Grilled Lobster with Garlic-Parsley Butter",
       author: "Chef Curtis Stone",
@@ -181,7 +161,7 @@ const Profile = () => {
       datePosted: "2024-09-09T12:00:00Z",
       description:
         "Skip the stockpot and cook your crustaceans on an open fire instead. This quick, 20-minute recipe yields 1–2 servings.",
-      cookingTime: "20 mins",
+      cookingTime: "20 minutes",
       difficulty: "Medium",
       servings: 2,
       imageUrl: meal5,
@@ -203,72 +183,92 @@ const Profile = () => {
       ],
       likes: 0,
       isLiked: false,
-    };
+    },
+    {
+      postId: "post_128",
+      title: "The Best Homemade Lasagna",
+      author: "Elise Bauer",
+      authorId: "user_890", // Update as needed
+      datePosted: "2025-02-17T12:00:00Z",
+      description:
+        "This classic lasagna recipe is made with a rich meat sauce layered with noodles and a blend of ricotta, mozzarella, and Parmesan cheeses. It's perfect for feeding a big family and freezes well for later enjoyment.",
+      cookingTime: "105 mins", // 15 mins prep + 90 mins cook
+      difficulty: "Medium",
+      servings: 8,
+      imageUrl: meal6, // Replace with the correct import from your assets
+      ingredients: [
+        "For the meat sauce:",
+        "2 teaspoons extra virgin olive oil",
+        "1 pound ground beef chuck",
+        "1/2 medium onion, diced",
+        "1/2 large bell pepper, diced",
+        "2 cloves garlic, minced",
+        "1 (28-ounce) can tomato sauce",
+        "3 ounces tomato paste",
+        "1 (14-ounce) can crushed tomatoes",
+        "2 tablespoons chopped fresh oregano (or 2 teaspoons dried)",
+        "1/4 cup chopped fresh parsley",
+        "1 tablespoon Italian seasoning",
+        "1 tablespoon red or white wine vinegar",
+        "1 tablespoon to 1/4 cup sugar (to taste, optional)",
+        "Salt, to taste",
+        "For assembling the lasagna:",
+        "1/2 pound dry lasagna noodles (about 9 noodles)",
+        "15 ounces ricotta cheese",
+        "1 1/2 pounds mozzarella cheese, grated or sliced",
+        "1/4 pound freshly grated Parmesan cheese"
+      ],
+      instructions: [
+        "Bring a large pot of salted water to a boil. Add the lasagna noodles and cook until al dente, then drain and rinse with cool water.",
+        "In a large skillet, heat olive oil over medium-high heat. Brown the ground beef and drain excess fat.",
+        "Add the diced onions, bell pepper, and garlic to the skillet. Sauté until the vegetables are softened.",
+        "Transfer the beef mixture to a medium pot. Add tomato sauce, tomato paste, crushed tomatoes, oregano, parsley, Italian seasoning, vinegar, sugar, and salt. Bring to a simmer and cook for 15 to 45 minutes, stirring occasionally.",
+        "Preheat the oven to 375°F.",
+        "Spread a thin layer of meat sauce in a 9x13-inch baking dish. Arrange a layer of lasagna noodles over the sauce. Add another layer of sauce, followed by a layer of mozzarella, dollops of ricotta, and a sprinkle of Parmesan cheese. Repeat the layers twice, finishing with a top layer of sauce and mozzarella.",
+        "Cover the dish with aluminum foil and bake for 45 minutes. Remove the foil in the last 10 minutes to allow the top to brown.",
+        "Let the lasagna cool for at least 15 minutes before cutting and serving."
+      ],
+      likes: 120,
+      isLiked: false
+    },
+    {
+      postId: "post_130",
+      title: "Beet Salad with Arugula and Balsamic Vinaigrette",
+      author: "Natasha Kravchuk",
+      authorId: "user_001", // Update as needed
+      datePosted: "2023-10-31T00:00:00Z",
+      description:
+        "This roasted Beet Salad with arugula and balsamic vinaigrette is the perfect salad for Fall or Winter. It’s a beautiful blend of sweet roasted beets, peppery arugula, crunchy pecans, and creamy feta (or goat cheese), all drizzled with a tangy balsamic vinaigrette.",
+      cookingTime: "1 hr 15 mins",
+      difficulty: "Easy",
+      servings: 6,
+      imageUrl: meal7, // Replace with your imported image or URL
+      ingredients: [
+        // Beet Salad Ingredients
+        "6 medium beets (approx. 2 lbs), roasted",
+        "5 oz (about 6 cups) baby arugula, rinsed and spun dry",
+        "4 oz (1/2 cup) feta cheese, crumbled (or goat cheese)",
+        "1/2 cup pecans, toasted",
+        "1/2 cup dried cranberries",
+        // Balsamic Vinaigrette Ingredients
+        "1/2 cup extra virgin olive oil",
+        "3 tbsp balsamic vinegar",
+        "1 tbsp Dijon mustard",
+        "1 garlic clove, pressed or minced",
+        "1/4 tsp salt",
+        "1/8 tsp black pepper"
+      ],
+      instructions: [
+        "Preheat the oven to 400°F. Wrap each beet tightly in foil and roast for about 1 hour or until the largest beet is easily pierced. Unwrap, cool to room temperature, peel, and slice into wedges.",
+        "Toast the pecans in a dry skillet over medium heat until golden and fragrant. Remove from heat and let cool.",
+        "In a large bowl, combine the baby arugula, roasted beet wedges, crumbled feta, toasted pecans, and dried cranberries.",
+        "In a mason jar, combine the olive oil, balsamic vinegar, Dijon mustard, garlic, salt, and black pepper. Seal and shake well until emulsified.",
+        "Drizzle the vinaigrette over the salad just before serving and toss gently to combine."
+      ],
+      likes: 200,
+      isLiked: false
+    }
     
-    // Combine recipes into an array
-    const allRecipes = [
-      recipe1,
-      recipe2,
-      recipe3,
-      recipe2,
-      recipe4,
-      recipe3,
-      recipe1,
-      recipe5,
-      recipe4,
-    ];
-
-    const formatBio = (bio) => {
-        const words = bio.split(" ");
-        let formattedBio = "";
-        for (let i = 0; i < words.length; i++) {
-            formattedBio += words[i] + " ";
-            if ((i + 1) % 10 === 0) {
-                formattedBio += "\n";
-            }
-        }
-        return formattedBio.trim();
-    };
-
-    let page = "Posts";
-
-    return (
-        <>
-            <div className="text-center my-20">
-                <div className="flex mb-5 justify-center items-center">
-                    <div className="flex items-center border-b-2 border-gray-300 pb-5">
-                        <img src={profilePic} alt="Profile Pic" className="rounded-full w-32 h-32 mr-5" />
-                        <div className="text-left ml-4">
-                            <p className="text-xs font-thin text-gray-500 pt-4 pb-1">Username: </p>
-                            <h2 className="inline-block border-2 border-gray-300 rounded-full px-7 py-2">{username}</h2>
-                            <p className="text-xs font-thin text-gray-500 pt-4 pb-1">Short Bio: </p>
-                            <p className="whitespace-pre-wrap">{formatBio(bio)}</p>
-                        </div>
-                    </div>
-                </div>
-                <div className="flex justify-center mb-5"></div>
-                <div className="flex justify-center mb-5">
-                    <button className="mr-2 flex items-center justify-center border-2 border-gray-300 rounded-full px-6 py-1 min-w-[100px] hover:bg-gray-200">Posts</button>
-                    <button className="mr-2 flex items-center justify-center border-2 border-gray-300 rounded-full px-6 py-1 min-w-[100px] hover:bg-gray-200">Saved</button>
-                </div>
-                <div className="flex justify-center">
-                    <div className="home-container ">
-                        <Masonry 
-                            breakpointCols={breakpointColumnsObj}
-                            className="my-masonry-grid max-w-[1200px]"
-                            columnClassName="my-masonry-grid_column"
-                        >
-                            {allRecipes.map((recipe, index) => (
-                            <div key={recipe.postId + index}> 
-                                <FoodSocialCard {...recipe} />
-                            </div>
-                            ))}
-                        </Masonry>
-                    </div>
-                </div>
-            </div>
-        </>
-    );
-}
-
-export default Profile;
+    
+  ];
+  
