@@ -297,7 +297,14 @@ const Profile = () => {
             </div>
             ))
           ) : (
-            <p>No saved recipes yet.</p>
+            <div className="flex flex-col items-center justify-center ">
+            <p className="text-lg font-semibold">No saved posts yet</p>
+            <p className="text-gray-500 mt-2">You haven't saved any recipes yet. Start exploring and save your favorite recipes to see them here.</p>
+            <button className="mt-5 px-4 py-2 bg-blue-500 text-white rounded-full hover:bg-blue-600"
+              onClick={() => window.location.href = '/discovery'}>
+              Explore Recipes
+            </button>
+            </div>
           )}
           </Masonry>
         </div>

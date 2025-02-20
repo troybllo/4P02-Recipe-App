@@ -16,13 +16,10 @@ export default function About() {
       {/* Page Container */}
       <div className="bg-white shadow-lg rounded-lg p-6 max-w-5xl mx-auto mt-6 border border-gray-300">
         {/* Header Section */}
-        <div className="bg-green-200 p-4 text-center rounded-t-lg">
-          <h1 className="text-3xl font-extrabold">About Feastly</h1>
-          <p className="text-gray-700 mt-2 text-lg">
-            Feastly is your ultimate meal-planning and recipe-sharing companion.
-            We aim to connect food lovers with a curated collection of recipes,
-            personalized meal plans, and an engaging community to inspire
-            creativity in the kitchen.
+        <div className="p-4 text-center rounded-t-lg">
+          <h1 className="text-3xl font-bold">Feastly</h1>
+          <p className="text-gray-700 mt-2 text-l">
+            The ultimate hub of all foodies, from students to home chefs to professional chefs.
           </p>
         </div>
 
@@ -30,61 +27,46 @@ export default function About() {
         <div className="flex justify-center mt-6 space-x-6">
           {/* First Card */}
           <div className="relative bg-white shadow-md rounded-2xl p-4 w-64 border border-gray-200">
+            <h2 className="text-lg font-bold text-center mt-2 text-gray-800 border-2 rounded-full py-1">
+              Discover Recipes
+            </h2>
             <img
               src={meal4}
               alt="Discover Recipes"
-              className="w-full h-44 rounded-md object-cover"
+              className="w-full h-44 rounded-md object-cover mt-3"
             />
-            <h2 className="text-lg font-bold text-center mt-2 text-gray-800">
-              Discover Recipes
-            </h2>
             <div className="flex justify-between mt-2">
-              <button className="bg-gray-800 text-white px-3 py-1 rounded-full text-sm">
-                ◀
-              </button>
-              <button className="bg-gray-800 text-white px-3 py-1 rounded-full text-sm">
-                ▶
-              </button>
+              <p>Explore various categories of recipes. Filter between multiple different categories to find your favorite recipe to cook tonight.</p>
             </div>
           </div>
 
           {/* Second Card */}
           <div className="relative bg-white shadow-md rounded-2xl p-4 w-64 border border-gray-200">
+            <h2 className="text-lg font-bold text-center mt-2 text-gray-800 border-2 rounded-full py-1">
+              Save Recipes
+            </h2>
             <img
               src={meal5}
-              alt="Save Favorites"
-              className="w-full h-44 rounded-md object-cover"
+              alt="Discover Recipes"
+              className="w-full h-44 rounded-md object-cover mt-3"
             />
-            <h2 className="text-lg font-bold text-center mt-2 text-gray-800">
-              Save Favorites
-            </h2>
             <div className="flex justify-between mt-2">
-              <button className="bg-gray-800 text-white px-3 py-1 rounded-full text-sm">
-                ◀
-              </button>
-              <button className="bg-gray-800 text-white px-3 py-1 rounded-full text-sm">
-                ▶
-              </button>
+              <p>Make sure to never forget any recipes by creating collections and saving to them whenever you see a recipe you like! Login is required</p>
             </div>
           </div>
 
           {/* Third Card */}
           <div className="relative bg-white shadow-md rounded-2xl p-4 w-64 border border-gray-200">
+            <h2 className="text-lg font-bold text-center mt-2 text-gray-800 border-2 rounded-full py-1">
+              Plan your Meals
+            </h2>
             <img
               src={meal6}
-              alt="Plan Your Meals"
-              className="w-full h-44 rounded-md object-cover"
+              alt="Discover Recipes"
+              className="w-full h-44 rounded-md object-cover mt-3"
             />
-            <h2 className="text-lg font-bold text-center mt-2 text-gray-800">
-              Plan Your Meals
-            </h2>
             <div className="flex justify-between mt-2">
-              <button className="bg-gray-800 text-white px-3 py-1 rounded-full text-sm">
-                ◀
-              </button>
-              <button className="bg-gray-800 text-white px-3 py-1 rounded-full text-sm">
-                ▶
-              </button>
+              <p>Explore various categories of recipes. Filter between multiple different categories to find your favorite recipe to cook tonight.</p>
             </div>
           </div>
         </div>
