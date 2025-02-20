@@ -1,5 +1,5 @@
-import React from "react";
 import FoodSocialCard from "../components/FoodSocialCard";
+import React, { useState } from "react";
 import { recipes } from "../utils/sampleData";
 import Masonry from "react-masonry-css";
 import meal1 from "../assets/meal1.jpg";
@@ -7,6 +7,7 @@ import meal2 from "../assets/meal2.jfif";
 import meal3 from "../assets/meal3.jpg";
 import meal4 from "../assets/meal4.jpg";
 import meal5 from "../assets/meal5.webp";
+import EditProfile from "../components/EditProfile";
 
 const breakpointColumnsObj = {
     default: 3,
@@ -18,12 +19,15 @@ const breakpointColumnsObj = {
     640: 1,
   };
 
+export const username = "Swa";
+export const bio = "I love healthy foods for my bouldering training. I also love to cook and bake. I'm a software engineer by day and a chef by night.";
+
+
+
 const Profile = () => {
 
     const profilePic = "https://img.freepik.com/premium-vector/pixel-art-tree_735839-72.jpg";
     const PostsIcon = "https://img.freepik.com/premium-vector/pixel-art-tree_735839-72.jpg";
-    const username = "Swa";
-    const bio = "I love healthy foods for my bouldering training. I also love to cook and bake. I'm a software engineer by day and a chef by night.";
 
     const recipe1 = {
       postId: "post_123",
@@ -250,6 +254,13 @@ const Profile = () => {
       document.body.style.overflowX = "auto";
       };
     }, []);
+
+    const [isEditProfileOpen, setIsEditProfileOpen] = useState(false);
+
+    const handleEditProfile = () => {
+      setIsEditProfileOpen(false);
+    }
+
     return (
       <>
       <div className="text-center my-20">
@@ -257,7 +268,8 @@ const Profile = () => {
         <div className="flex items-center border-b-2 py-5">
           <div className="items-center justify-center mr-5">
           <img src={profilePic} alt="Profile Pic" className="rounded-full w-32 h-32" />
-          <button>
+          <button
+            onClick={() => setIsEditProfileOpen(true)}>
             <p className="border-2 border-gray-300 rounded-full px-4 py-1 mt-3 text-xs justify-center items-center">Edit Profile</p>
           </button>
           </div>
@@ -310,6 +322,11 @@ const Profile = () => {
         </div>
         </div>
       </div>
+      <EditProfile
+          isOpen={isEditProfileOpen}
+          onClose={()=> setIsEditProfileOpen(false)}
+          onSubmit={handleEditProfile}
+      />
       </>
     );
 }
