@@ -1,11 +1,14 @@
 // src/data/stories.js
 import post1 from "../assets/pizza.jpg";
 import post2 from "../assets/french omelette.jpg";
-
+import post3 from "../assets/meal1.jpg";
+import post4 from "../assets/meal2.jpg";
+import profile1 from "../assets/Gordon.jfif";
 export const stories = [
     {
       username: "Gordon Ramsey",
-      img: post1,
+      profilePic: profile1,
+      images: [post1, post2, post3, post4],
       dishTitle: "Heavenly Garlic Pizza",
       cookName: "Ayaka Shoka",
       postDate: "September 4th 2024",
@@ -18,7 +21,8 @@ export const stories = [
     },
     {
       username: "Jaque pepan",
-      img: post2,
+      profilePic: profile1,
+      images: [post4, post3],
       dishTitle: "Classic French Omelette",
       cookName: "Chef Pepin",
       postDate: "March 12th 2025",
@@ -30,7 +34,8 @@ export const stories = [
     },
     {
       username: "Gordon Ramsey",
-      img: post1,
+      profilePic: profile1,
+      images: [post3, post1],
       dishTitle: "Heavenly Garlic Pizza",
       cookName: "Ayaka Shoka",
       postDate: "September 4th 2024",
@@ -43,7 +48,8 @@ export const stories = [
     },
     {
       username: "Jaque pepan",
-      img: post2,
+      profilePic: profile1,
+      images: [post2, post4],
       dishTitle: "Classic French Omelette",
       cookName: "Chef Pepin",
       postDate: "March 12th 2025",
@@ -55,7 +61,8 @@ export const stories = [
     },
     {
       username: "Gordon Ramsey",
-      img: post1,
+      profilePic: profile1,
+      images: [post1],
       dishTitle: "Heavenly Garlic Pizza",
       cookName: "Ayaka Shoka",
       postDate: "September 4th 2024",
@@ -68,7 +75,8 @@ export const stories = [
     },
     {
       username: "Jaque pepan",
-      img: post2,
+      profilePic: profile1,
+      images: [post2],
       dishTitle: "Classic French Omelette",
       cookName: "Chef Pepin",
       postDate: "March 12th 2025",
@@ -80,7 +88,8 @@ export const stories = [
     },
     {
       username: "Gordon Ramsey",
-      img: post1,
+      profilePic: profile1,
+      images: [post1],
       dishTitle: "Heavenly Garlic Pizza",
       cookName: "Ayaka Shoka",
       postDate: "September 4th 2024",
@@ -93,7 +102,8 @@ export const stories = [
     },
     {
       username: "Jaque pepan",
-      img: post2,
+      profilePic: profile1,
+      images: [post2, post4],
       dishTitle: "Classic French Omelette",
       cookName: "Chef Pepin",
       postDate: "March 12th 2025",

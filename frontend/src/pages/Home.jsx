@@ -6,6 +6,7 @@ import FoodSocialCard from "../components/FoodSocialCard";
 import TrendingCarousel from "../components/TrendingCarousel";
 import StoryCarousel from "../components/StoryCarousel"; // adjust path as needed
 import { recipes } from "../data/recipes"; // Import recipes data
+import { Link } from "react-router-dom";
 
 // Helper function to infer category from various fields
 function getCategory(recipe) {
@@ -171,8 +172,10 @@ export default function Home() {
           className="my-masonry-grid"
           columnClassName="my-masonry-grid_column"
         >
-          {filteredRecipes.map((recipe, index) => (
-            <FoodSocialCard key={recipe.postId + index} {...recipe} />
+          {filteredRecipes.map((recipe) => (
+            <Link to={`/recipe/${recipe.postId}`} key={recipe.postId}>
+              <FoodSocialCard {...recipe} />
+            </Link>
           ))}
         </Masonry>
       </div>

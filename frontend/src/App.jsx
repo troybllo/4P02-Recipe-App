@@ -6,6 +6,8 @@ import About from "./pages/About";
 import Navbar from "./components/Navbar";
 import Sidebar from "./components/Sidebar";
 import Profile from "./pages/Profile";
+import RecipeDetail from "./pages/RecipeDetail";
+
 
 function App() {
   return (
@@ -17,6 +19,11 @@ function App() {
           <Route path="/discovery" element={<Discovery />} />
           <Route path="/about" element={<About />} />
           <Route path="/profile" element={<Profile />} />
+
+          <Route path="/" element={<Home />} />
+          {/* Other routes */}
+          <Route path="/recipe/:id" element={<RecipeDetail />} />
+          
         </Routes>
       </div>
     </div>

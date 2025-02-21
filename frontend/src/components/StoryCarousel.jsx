@@ -85,8 +85,9 @@ export default function StoryCarousel() {
             >
               {/* Gradient ring */}
               <div className="w-16 h-16 bg-gradient-to-tr from-yellow-400 via-pink-500 to-purple-500 p-[2px] rounded-full">
+                {/* If the story has multiple images, just show the first as the thumbnail */}
                 <img
-                  src={story.img}
+                  src={story.images?.[0] || story.img}
                   alt={story.username}
                   className="w-full h-full rounded-full object-cover border-2 border-white"
                 />
@@ -97,6 +98,7 @@ export default function StoryCarousel() {
               </p>
             </div>
           ))}
+          
         </div>
 
         {/* Next chunk arrow (show only if not on last page) */}
