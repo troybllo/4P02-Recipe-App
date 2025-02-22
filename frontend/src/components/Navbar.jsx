@@ -94,14 +94,14 @@ export default function Navbar() {
                 </Link>
                 <button
                   onClick={() => setIsCreatePostOpen(true)}
-                  className="px-3 py-2 flex bg-[#d5f9c5] justify-center items-center border border-[#1d9c3f] rounded-full text-[#1d9c3f] font-bold hover:border-[#1d9c3f]"
+                  className="px-3 py-2 flex bg-[#d5f9c5] justify-center items-center border border-[#1d9c3f] rounded-full text-[#1d9c3f] font-bold hover:border-[#187832] hover:text-[#187832] hover:bg-[#81e89d]"
                 >
                   <img src={createPostIcon} alt="Profile" className="w-6 h-6 mr-2 object-contain" />
                   <span>Create Post</span>
                 </button>
                 <button
                   onClick={() => setIsSignInOpen(true)}
-                  className="px-3 py-2 flex bg-[#f9dcb8] border border-[#ba5719] rounded-full text-[#ba5719] font-bold hover:border-2 hover:border-[#ba5719]"
+                  className="px-3 py-2 flex bg-[#f9dcb8] border border-[#ba5719] rounded-full text-[#ba5719] font-bold hover:border-1 hover:border-[#8c4420] hover:text-[#8c4420] hover:bg-[#ffc784]"
                 >
                   <img src={profileIcon} alt="Profile" className="w-auto h-auto mr-2 object-contain" />
                   <span>Sign In</span>
