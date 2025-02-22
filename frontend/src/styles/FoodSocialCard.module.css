@@ -26,7 +26,6 @@
   align-items: center;
   justify-content: center;
   font-weight: 500;
-  margin: auto; /* Center horizontally */
 }
 
 .headerContent {
@@ -107,15 +106,17 @@
 
 .expandButton {
   padding: 0.5rem 1rem;
-  border: none;
   background: none;
   cursor: pointer;
   border-radius: 0.375rem;
   font-size: 0.875rem;
+  background-color: f3f4f6;
+  border: 1px solid #f9dcb8;
 }
 
 .expandButton:hover {
-  background-color: #f3f4f6;
+  background-color: #f9dcb8;
+  color: #ba5719;
 }
 
 /* Optional: If you want a smooth transition */

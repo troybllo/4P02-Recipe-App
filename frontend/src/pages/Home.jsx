@@ -16,17 +16,16 @@ function getCategory(recipe) {
   const instructions = Array.isArray(recipe.instructions)
     ? recipe.instructions.join(" ")
     : "";
-    const combinedText = (
-      recipe.title +
-      " " +
-      recipe.description +
-      " " +
-      (Array.isArray(recipe.ingredients) ? recipe.ingredients.join(" ") : "") +
-      " " +
-      (Array.isArray(recipe.instructions) ? recipe.instructions.join(" ") : "")
-    ).toLowerCase();
-    console.log(combinedText); // Check if this contains "garlic"
-    
+  const combinedText = (
+    recipe.title +
+    " " +
+    recipe.description +
+    " " +
+    (Array.isArray(recipe.ingredients) ? recipe.ingredients.join(" ") : "") +
+    " " +
+    (Array.isArray(recipe.instructions) ? recipe.instructions.join(" ") : "")
+  ).toLowerCase();
+  console.log(combinedText); // Check if this contains "garlic"
   
   if (combinedText.includes("beef") || combinedText.includes("steak"))
     return "beef";
@@ -87,18 +86,14 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-gray-50 pt-16">
       {/* Simple centered header */}
-        <header className="flex flex-col items-center text-center bg-gradient-to-b from-[#eaf5e4] to-gray-50 py-8">
-          <h1 className="text-2xl font-bold mt-2">Feastly</h1>
-          <p className="text-gray-600">Discover new recipes and more!</p>
-
-        {/* Search & Filter Section */}
-        <div className="mb-10 flex flex-col items-center p-[5px]">
+      <header className="flex flex-col items-center text-center bg-gradient-to-b from-[#eaf5e4] to-gray-50 py-8">
+        <div className="mb-0 flex flex-col items-center p-[5px]">
           <div className="flex justify-center mb-4">
             {/* Stories go here */}
             <StoryCarousel />
           </div>
 
-          <div className="flex justify-center mb-4 p-[15px]">
+          <div className="flex justify-center mb-1 p-[10px]">
             <input
               type="text"
               placeholder="Search recipes..."
@@ -165,14 +160,14 @@ export default function Home() {
       </header>
 
       {/* Masonry Grid Container */}
-      <div className="w-full px-4 p-[15px]">
+      <div className="w-full mx-[-15px] items-center">
         <Masonry
           breakpointCols={breakpointColumnsObj}
           className="my-masonry-grid"
           columnClassName="my-masonry-grid_column"
         >
-          {filteredRecipes.map((recipe, index) => (
-            <FoodSocialCard key={recipe.postId + index} {...recipe} />
+          {filteredRecipes.map((recipe) => (
+            <FoodSocialCard key={recipe.postId} {...recipe} />
           ))}
         </Masonry>
       </div>

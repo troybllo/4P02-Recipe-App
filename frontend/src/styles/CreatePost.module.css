@@ -98,13 +98,13 @@
   }
   
   .submitButton {
-    background-color: #4f46e5;
+    background-color: #869a7b;
     color: white;
     border: none;
   }
   
   .submitButton:hover {
-    background-color: #4338ca;
+    background-color: #1d380e;
   }
   
   .cancelButton:hover {

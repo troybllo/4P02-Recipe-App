@@ -17,7 +17,7 @@ export const recipes = [
       datePosted: "2024-02-17T15:30:00Z",
       description:
         "A traditional Spanish paella with seafood and saffron rice. Perfect for family gatherings and special occasions.",
-      cookingTime: "1 hour",
+      cookingTime: "1 hr",
       difficulty: "Medium",
       servings: 6,
       imageUrl: meal1, // Update the path if needed
@@ -36,7 +36,7 @@ export const recipes = [
         "Add rice and saffron, stirring to coat with oil.",
         "Pour in fish stock and bring to a simmer.",
         "Add seafood and cook until rice is done.",
-        "Let rest for 5-10 minutes before serving.",
+        "Let rest for 5-10 m before serving.",
       ],
       likes: 42,
       isLiked: false,
@@ -49,7 +49,7 @@ export const recipes = [
       datePosted: "2024-02-18T10:00:00Z",
       description:
         "A healthy and quick vegetable stir-fry with a soy sauce-based dressing. Perfect for a light lunch or dinner.",
-      cookingTime: "25 mins",
+      cookingTime: "25 m",
       difficulty: "Easy",
       servings: 4,
       imageUrl: meal2,
@@ -66,7 +66,7 @@ export const recipes = [
       instructions: [
         "Heat sesame oil in a large pan over medium heat.",
         "Add garlic and ginger, cooking until fragrant.",
-        "Add the vegetables and stir-fry for 5-7 minutes.",
+        "Add the vegetables and stir-fry for 5-7 m.",
         "Pour in the soy sauce and toss to coat.",
         "Sprinkle sesame seeds on top before serving.",
       ],
@@ -82,7 +82,7 @@ export const recipes = [
       datePosted: "2024-02-19T12:00:00Z",
       description:
         "A gourmet dish featuring tender beef fillet served with creamy potato puree, roasted fennel, asparagus, and smoked garlic thyme butter.",
-      cookingTime: "1 hour 15 mins",
+      cookingTime: "1 hr 15 m",
       difficulty: "High",
       servings: 2,
       imageUrl: meal3,
@@ -106,8 +106,8 @@ export const recipes = [
       instructions: [
         "For the smoked garlic thyme butter, soften butter and mix with garlic and thyme. Chill for at least 2 hours before serving.",
         "For potato puree, boil potatoes with a pinch of salt until tender. Mash and add butter, cream, and milk. Blend until smooth.",
-        "Pre-heat oven to 180°C (350°F). Roast fennel for 10-15 minutes until almost tender.",
-        "Season and cook beef fillet to desired doneness, rest for 5 minutes before serving.",
+        "Pre-heat oven to 180°C (350°F). Roast fennel for 10-15 m until almost tender.",
+        "Season and cook beef fillet to desired doneness, rest for 5 m before serving.",
         "Steam asparagus, then assemble the dish by placing potato puree in the center, followed by asparagus, beef, fennel, and a slice of smoked butter.",
         "Garnish with sorrel leaves and serve.",
       ],
@@ -118,11 +118,11 @@ export const recipes = [
       postId: "post_126",
       title: "The Perfect Steak with Garlic Butter",
       author: "Chef John",
-      authorId: "user_792",
+      authorId: "user_789",
       datePosted: "2024-03-01T12:00:00Z",
       description:
         "My tips and tricks for the most perfect steak! And the melted garlic herb butter is out of this world! (4.93 stars from 38 ratings, 134 comments)",
-      cookingTime: "30 minutes",
+      cookingTime: "30 m",
       difficulty: "Medium",
       servings: 8,
       imageUrl: meal4,
@@ -146,7 +146,7 @@ export const recipes = [
         "Pat both sides of the steaks dry with paper towels. Drizzle with olive oil and season with salt and pepper.",
         "Remove skillet from the oven and heat over medium-high heat.",
         "Place the steak in the skillet and cook until a dark crust forms, about 1 minute. Flip and cook for an additional 60 seconds.",
-        "Place skillet into the oven and cook until desired doneness (about 4-5 minutes for medium-rare). Let rest for 3-5 minutes.",
+        "Place skillet into the oven and cook until desired doneness (about 4-5 m for medium-rare). Let rest for 3-5 m.",
         "Serve immediately with the garlic compound butter.",
         "To make the garlic compound butter, combine the softened butter, parsley, garlic, lemon zest, thyme, rosemary, basil, salt, pepper, and cayenne in a bowl. Shape into a log using parchment paper and chill until needed.",
       ],
@@ -161,7 +161,7 @@ export const recipes = [
       datePosted: "2024-09-09T12:00:00Z",
       description:
         "Skip the stockpot and cook your crustaceans on an open fire instead. This quick, 20-minute recipe yields 1–2 servings.",
-      cookingTime: "20 minutes",
+      cookingTime: "20 m",
       difficulty: "Medium",
       servings: 2,
       imageUrl: meal5,
@@ -179,7 +179,7 @@ export const recipes = [
         "In a small bowl, mix butter, parsley, chile flakes, garlic, and lemon zest. Season with salt and pepper, then set aside.",
         "Using a cleaver, split the lobster in half lengthwise through its head and tail. Discard the tomalley; break off and crack the claws. Place lobster halves and claws on a baking sheet, shell side down.",
         "Drizzle with olive oil and season with salt and pepper.",
-        "Heat a grill to high. Place the lobster halves (flesh side down) and claws on the hottest part of the grill and cook for 2–3 minutes. Flip, spread with garlic-parsley butter, and grill for an additional 3–5 minutes until the meat is tender.",
+        "Heat a grill to high. Place the lobster halves (flesh side down) and claws on the hottest part of the grill and cook for 2–3 m. Flip, spread with garlic-parsley butter, and grill for an additional 3–5 m until the meat is tender.",
       ],
       likes: 0,
       isLiked: false,
@@ -188,11 +188,11 @@ export const recipes = [
       postId: "post_128",
       title: "The Best Homemade Lasagna",
       author: "Elise Bauer",
-      authorId: "user_890", // Update as needed
+      authorId: "user_789", // Update as needed
       datePosted: "2025-02-17T12:00:00Z",
       description:
         "This classic lasagna recipe is made with a rich meat sauce layered with noodles and a blend of ricotta, mozzarella, and Parmesan cheeses. It's perfect for feeding a big family and freezes well for later enjoyment.",
-      cookingTime: "105 mins", // 15 mins prep + 90 mins cook
+      cookingTime: "105 m", // 15 m prep + 90 m cook
       difficulty: "Medium",
       servings: 8,
       imageUrl: meal6, // Replace with the correct import from your assets
@@ -222,11 +222,11 @@ export const recipes = [
         "Bring a large pot of salted water to a boil. Add the lasagna noodles and cook until al dente, then drain and rinse with cool water.",
         "In a large skillet, heat olive oil over medium-high heat. Brown the ground beef and drain excess fat.",
         "Add the diced onions, bell pepper, and garlic to the skillet. Sauté until the vegetables are softened.",
-        "Transfer the beef mixture to a medium pot. Add tomato sauce, tomato paste, crushed tomatoes, oregano, parsley, Italian seasoning, vinegar, sugar, and salt. Bring to a simmer and cook for 15 to 45 minutes, stirring occasionally.",
+        "Transfer the beef mixture to a medium pot. Add tomato sauce, tomato paste, crushed tomatoes, oregano, parsley, Italian seasoning, vinegar, sugar, and salt. Bring to a simmer and cook for 15 to 45 m, stirring occasionally.",
         "Preheat the oven to 375°F.",
         "Spread a thin layer of meat sauce in a 9x13-inch baking dish. Arrange a layer of lasagna noodles over the sauce. Add another layer of sauce, followed by a layer of mozzarella, dollops of ricotta, and a sprinkle of Parmesan cheese. Repeat the layers twice, finishing with a top layer of sauce and mozzarella.",
-        "Cover the dish with aluminum foil and bake for 45 minutes. Remove the foil in the last 10 minutes to allow the top to brown.",
-        "Let the lasagna cool for at least 15 minutes before cutting and serving."
+        "Cover the dish with aluminum foil and bake for 45 m. Remove the foil in the last 10 m to allow the top to brown.",
+        "Let the lasagna cool for at least 15 m before cutting and serving."
       ],
       likes: 120,
       isLiked: false
@@ -235,11 +235,11 @@ export const recipes = [
       postId: "post_130",
       title: "Beet Salad with Arugula and Balsamic Vinaigrette",
       author: "Natasha Kravchuk",
-      authorId: "user_001", // Update as needed
+      authorId: "user_789", // Update as needed
       datePosted: "2023-10-31T00:00:00Z",
       description:
         "This roasted Beet Salad with arugula and balsamic vinaigrette is the perfect salad for Fall or Winter. It’s a beautiful blend of sweet roasted beets, peppery arugula, crunchy pecans, and creamy feta (or goat cheese), all drizzled with a tangy balsamic vinaigrette.",
-      cookingTime: "1 hr 15 mins",
+      cookingTime: "1 hr 15 m",
       difficulty: "Easy",
       servings: 6,
       imageUrl: meal7, // Replace with your imported image or URL
