@@ -45,3 +45,12 @@
   flex: 1;
   background-color: #f9fbf8;
 }
+
+/* App.css */
+.ProseMirror:focus {
+  outline: none !important;
+}
+
+.ProseMirror-focused .ProseMirror-selectednode {
+  outline: none !important;
+}

@@ -59,19 +59,11 @@ export default function StoryPostModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-70">
-      {/* 
-        DESKTOP-ONLY ARROWS on the dark overlay 
-        (hidden on mobile via "hidden md:block")
-      */}
+      {/* Desktop-only navigation arrows */}
       {selectedIndex > 0 && (
         <button
           onClick={handlePrevStory}
-          className="
-            hidden md:block
-            absolute z-50
-            left-8 top-1/2 transform -translate-y-1/2
-            bg-gray-200 hover:bg-gray-300 text-2xl font-bold px-5 py-3 rounded-full
-          "
+          className="hidden md:block absolute z-50 left-8 top-1/2 transform -translate-y-1/2 bg-gray-200 hover:bg-gray-300 text-2xl font-bold px-5 py-3 rounded-full"
         >
           &lt;
         </button>
@@ -79,18 +71,13 @@ export default function StoryPostModal({
       {selectedIndex < stories.length - 1 && (
         <button
           onClick={handleNextStory}
-          className="
-            hidden md:block
-            absolute z-50
-            right-8 top-1/2 transform -translate-y-1/2
-            bg-gray-200 hover:bg-gray-300 text-2xl font-bold px-5 py-3 rounded-full
-          "
+          className="hidden md:block absolute z-50 right-8 top-1/2 transform -translate-y-1/2 bg-gray-200 hover:bg-gray-300 text-2xl font-bold px-5 py-3 rounded-full"
         >
           &gt;
         </button>
       )}
 
-      {/* WHITE MODAL */}
+      {/* White modal container */}
       <div className="relative bg-white w-full max-w-4xl rounded-md shadow-lg p-4 md:p-6">
         {/* Close Button */}
         <button
@@ -101,38 +88,40 @@ export default function StoryPostModal({
         </button>
 
         <div className="flex flex-col md:flex-row">
-          {/* Left: Image */}
+          {/* Left: Fixed-size Image Container */}
           <div className="relative md:w-1/2 flex items-center justify-center mb-4 md:mb-0">
-            <img
-              src={displayedImage}
-              alt={dishTitle}
-              className="max-h-[450px] w-auto rounded-md object-cover"
-            />
-
-            {/* If multiple images, show mini carousel arrows at bottom of the image */}
-            {images.length > 1 && (
-              <div className="absolute bottom-2 left-0 right-0 flex items-center justify-center">
-                {currentImageIndex > 0 && (
-                  <button
-                    onClick={handlePrevImage}
-                    className="bg-gray-100 hover:bg-gray-200 text-sm font-bold px-2 py-1 rounded-full mr-2"
-                  >
-                    &lt;
-                  </button>
-                )}
-                <span className="text-sm text-gray-800 mx-1">
-                  {currentImageIndex + 1} / {images.length}
-                </span>
-                {currentImageIndex < images.length - 1 && (
-                  <button
-                    onClick={handleNextImage}
-                    className="bg-gray-100 hover:bg-gray-200 text-sm font-bold px-2 py-1 rounded-full ml-2"
-                  >
-                    &gt;
-                  </button>
-                )}
-              </div>
-            )}
+            {/* Fixed square container */}
+            <div className="w-80 h-80 md:w-96 md:h-96 relative rounded-md overflow-hidden">
+              <img
+                src={displayedImage}
+                alt={dishTitle}
+                className="w-full h-full object-cover"
+              />
+              {/* Mini carousel arrows for multiple images */}
+              {images.length > 1 && (
+                <div className="absolute bottom-2 left-0 right-0 flex items-center justify-center">
+                  {currentImageIndex > 0 && (
+                    <button
+                      onClick={handlePrevImage}
+                      className="bg-gray-100 hover:bg-gray-200 text-sm font-bold px-2 py-1 rounded-full mr-2"
+                    >
+                      &lt;
+                    </button>
+                  )}
+                  <span className="text-sm text-gray-800 mx-1">
+                    {currentImageIndex + 1} / {images.length}
+                  </span>
+                  {currentImageIndex < images.length - 1 && (
+                    <button
+                      onClick={handleNextImage}
+                      className="bg-gray-100 hover:bg-gray-200 text-sm font-bold px-2 py-1 rounded-full ml-2"
+                    >
+                      &gt;
+                    </button>
+                  )}
+                </div>
+              )}
+            </div>
           </div>
 
           {/* Right: Details */}
@@ -153,11 +142,13 @@ export default function StoryPostModal({
               </div>
             </div>
 
-            <h2 className="text-xl font-bold mb-1">Dish: &quot;{dishTitle}&quot;</h2>
-            <p className="text-sm text-gray-600 mb-1">
+            <h2 className="text-xl font-bold mb-1 pt-5">
+              Dish: &quot;{dishTitle}&quot;
+            </h2>
+            <p className="text-sm text-gray-600 mb-1 ">
               Cooked by <strong>{cookName}</strong>
             </p>
-            <p className="text-sm text-gray-800 mb-3">{description}</p>
+            <p className="text-sm text-gray-800 mb-3 pt-5">{description}</p>
 
             {/* Tags */}
             {tags.length > 0 && (
@@ -192,7 +183,7 @@ export default function StoryPostModal({
               </button>
             </div>
 
-            {/* "Save" and "See Full Recipe" Buttons */}
+            {/*"Save" and "See Full Recipe" Buttons
             <div className="flex items-center justify-end mt-4 space-x-3">
               <button className="bg-gray-200 px-3 py-2 rounded hover:bg-gray-300">
                 Save
@@ -200,17 +191,12 @@ export default function StoryPostModal({
               <button className="bg-orange-300 px-3 py-2 rounded hover:bg-orange-400 font-semibold">
                 See Full Recipe
               </button>
-            </div>
+            </div>*/}
           </div>
         </div>
 
-        {/* 
-          MOBILE-ONLY STORY ARROWS 
-          (shown on small screens, hidden on md+)
-          Place them below the entire content, side by side
-        */}
+        {/* Mobile-only story navigation arrows */}
         <div className="block md:hidden mt-4 flex items-center justify-center space-x-4">
-          {/* Prev Button */}
           {selectedIndex > 0 && (
             <button
               onClick={handlePrevStory}
@@ -219,7 +205,6 @@ export default function StoryPostModal({
               &lt; Prev
             </button>
           )}
-          {/* Next Button */}
           {selectedIndex < stories.length - 1 && (
             <button
               onClick={handleNextStory}

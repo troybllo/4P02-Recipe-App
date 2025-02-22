@@ -1,5 +1,5 @@
 // src/components/StoryCarousel.jsx
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import StoryPostModal from "./StoryPostModal";
 import { stories } from "../data/stories"; // Import stories data
 
@@ -19,9 +19,30 @@ export default function StoryCarousel() {
   const [currentIndex, setCurrentIndex] = useState(0); // For chunk pagination
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(null); // For story modal
+  const [chunkSize, setChunkSize] = useState(5); // default for small screens
 
-  // Break stories into pages of 5
-  const storyChunks = chunkArray(stories, 5);
+  // Update chunk size based on screen width
+  useEffect(() => {
+    const updateChunkSize = () => {
+      const width = window.innerWidth;
+      if (width < 640) {
+        setChunkSize(5);
+      } else if (width < 1024) {
+        setChunkSize(7);
+      } else {
+        setChunkSize(10);
+      }
+    };
+
+    // Initial call
+    updateChunkSize();
+
+    window.addEventListener("resize", updateChunkSize);
+    return () => window.removeEventListener("resize", updateChunkSize);
+  }, []);
+
+  // Break stories into pages based on chunkSize
+  const storyChunks = chunkArray(stories, chunkSize);
 
   // Go to previous chunk if available
   const handlePrev = () => {
@@ -37,9 +58,9 @@ export default function StoryCarousel() {
     }
   };
 
-  // The user clicks a story => open the modal with its global index
+  // When user clicks a story, open modal with its global index
   const handleStoryClick = (indexInChunk) => {
-    const globalIndex = currentIndex * 5 + indexInChunk;
+    const globalIndex = currentIndex * chunkSize + indexInChunk;
     setSelectedIndex(globalIndex);
     setIsModalOpen(true);
   };
@@ -47,7 +68,7 @@ export default function StoryCarousel() {
   // If no stories, show nothing
   if (!storyChunks.length) return null;
 
-  // Current batch of 5 stories
+  // Current batch of stories
   const currentStories = storyChunks[currentIndex];
 
   return (
@@ -98,7 +119,6 @@ export default function StoryCarousel() {
               </p>
             </div>
           ))}
-          
         </div>
 
         {/* Next chunk arrow (show only if not on last page) */}

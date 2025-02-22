@@ -6,7 +6,6 @@ import FoodSocialCard from "../components/FoodSocialCard";
 import TrendingCarousel from "../components/TrendingCarousel";
 import StoryCarousel from "../components/StoryCarousel"; // adjust path as needed
 import { recipes } from "../data/recipes"; // Import recipes data
-import { Link } from "react-router-dom";
 
 // Helper function to infer category from various fields
 function getCategory(recipe) {
@@ -17,17 +16,16 @@ function getCategory(recipe) {
   const instructions = Array.isArray(recipe.instructions)
     ? recipe.instructions.join(" ")
     : "";
-    const combinedText = (
-      recipe.title +
-      " " +
-      recipe.description +
-      " " +
-      (Array.isArray(recipe.ingredients) ? recipe.ingredients.join(" ") : "") +
-      " " +
-      (Array.isArray(recipe.instructions) ? recipe.instructions.join(" ") : "")
-    ).toLowerCase();
-    console.log(combinedText); // Check if this contains "garlic"
-    
+  const combinedText = (
+    recipe.title +
+    " " +
+    recipe.description +
+    " " +
+    (Array.isArray(recipe.ingredients) ? recipe.ingredients.join(" ") : "") +
+    " " +
+    (Array.isArray(recipe.instructions) ? recipe.instructions.join(" ") : "")
+  ).toLowerCase();
+  console.log(combinedText); // Check if this contains "garlic"
   
   if (combinedText.includes("beef") || combinedText.includes("steak"))
     return "beef";
@@ -42,7 +40,7 @@ function getCategory(recipe) {
 
 // Masonry breakpoints
 const breakpointColumnsObj = {
-  default: 4,
+  default: 5,
   1700: 4,
   1490: 3,
   1250: 2,
@@ -88,18 +86,14 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-gray-50 pt-16">
       {/* Simple centered header */}
-        <header className="flex flex-col items-center text-center bg-gradient-to-b from-[#eaf5e4] to-gray-50 py-8">
-          {/* <h1 className="text-2xl font-bold mt-2">Home Feed</h1>
-          <p className="text-gray-600">Discover new recipes and more!</p> */}
-
-        {/* Search & Filter Section */}
+      <header className="flex flex-col items-center text-center bg-gradient-to-b from-[#eaf5e4] to-gray-50 py-8">
         <div className="mb-0 flex flex-col items-center p-[5px]">
           <div className="flex justify-center mb-4">
             {/* Stories go here */}
             <StoryCarousel />
           </div>
 
-          <div className="flex justify-center mb-1 p-[15px]">
+          <div className="flex justify-center mb-1 p-[10px]">
             <input
               type="text"
               placeholder="Search recipes..."
@@ -173,9 +167,7 @@ export default function Home() {
           columnClassName="my-masonry-grid_column"
         >
           {filteredRecipes.map((recipe) => (
-            <Link to={`/recipe/${recipe.postId}`} key={recipe.postId}>
-              <FoodSocialCard {...recipe} />
-            </Link>
+            <FoodSocialCard key={recipe.postId} {...recipe} />
           ))}
         </Masonry>
       </div>
