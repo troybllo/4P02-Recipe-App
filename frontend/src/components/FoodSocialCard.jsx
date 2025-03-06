@@ -4,7 +4,7 @@ import styles from "../styles/FoodSocialCard.module.css"; // Import styles
 import EditPost from "../components/EditPost";
 
 const FoodSocialCard = ({
-  postId, 
+  postId,
   title,
   author,
   authorId,
@@ -35,7 +35,7 @@ const FoodSocialCard = ({
 
   const handleEditPost = () => {
     setIsEditPostOpen(false);
-  }
+  };
 
   const handleLike = async () => {
     if (isLoading) return;
@@ -113,7 +113,11 @@ const FoodSocialCard = ({
             </p>
           </div>
           {isOwner && (
-            <button className={styles.iconButton} aria-label="Edit Post" onClick={() => setIsEditPostOpen(true)}>
+            <button
+              className={styles.iconButton}
+              aria-label="Edit Post"
+              onClick={() => setIsEditPostOpen(true)}
+            >
               •••
             </button>
           )}
@@ -122,7 +126,12 @@ const FoodSocialCard = ({
         <div className={styles.imageContainer}>
           {/* Only the image is wrapped with a Link */}
           <Link to={`/recipe/${postId}`}>
-            <img src={imageUrl} alt={title} className={styles.image} loading="lazy" />
+            <img
+              src={imageUrl}
+              alt={title}
+              className={styles.image}
+              loading="lazy"
+            />
           </Link>
         </div>
 
@@ -146,15 +155,27 @@ const FoodSocialCard = ({
                 {liked ? "❤️" : "🤍"}
                 <span className={styles.likeCount}>{likeCount}</span>
               </button>
-              <button className={styles.iconButton} onClick={handleShare} aria-label="Share">
+              <button
+                className={styles.iconButton}
+                onClick={handleShare}
+                aria-label="Share"
+              >
                 📤
               </button>
-              <button className={styles.downloadButton} onClick={handleRecipeDownload} aria-label="Download">
+              <button
+                className={styles.downloadButton}
+                onClick={handleRecipeDownload}
+                aria-label="Download"
+              >
                 ⏬
               </button>
             </div>
 
-            <button className={styles.expandButton} onClick={handleRecipeClick} aria-expanded={isRecipeExpanded}>
+            <button
+              className={styles.expandButton}
+              onClick={handleRecipeClick}
+              aria-expanded={isRecipeExpanded}
+            >
               {isRecipeExpanded ? "Shrink" : "Expand"}
             </button>
           </div>

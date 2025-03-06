@@ -1,9 +1,10 @@
 // src/data/stories.js
-import post1 from "../assets/pizza.jpg";
-import post2 from "../assets/french omelette.jpg";
-import post3 from "../assets/meal1.jpg";
-import post4 from "../assets/meal2.jpg";
-import profile1 from "../assets/Gordon.jfif";
+import post1 from "../assets/images/pizza.jpg";
+import post2 from "../assets/images/french omelette.jpg";
+import post3 from "../assets/images/meal1.jpg";
+import post4 from "../assets/images/meal2.jpg";
+import profile1 from "../assets/images/Gordon.jpg";
+
 export const stories = [
   {
     username: "Gordon Ramsey",
@@ -115,4 +116,3 @@ export const stories = [
   },
   // ... add more stories as needed
 ];
-
