@@ -15,6 +15,7 @@
     "@tiptap/react": "^2.11.5",
     "@tiptap/starter-kit": "^2.11.5",
     "cra-template": "1.2.0",
+    "expo": "^52.0.37",
     "lexical": "^0.25.0",
     "lucide": "^0.475.0",
     "lucide-react": "^0.475.0",
