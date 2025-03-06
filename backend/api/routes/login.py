@@ -12,9 +12,13 @@ def login():
     username = data.get('username') if data else None
     password = data.get('password') if data else None
 
-    token, status_code, error = authenticate_user(username, password)
+    token, status_code, error, user_doc = authenticate_user(username, password)
+
     if token:
-        # Firebase custom_token is bytes, so decode to string
-        return jsonify({"firebase_custom_token": token.decode('utf-8')}), status_code
+        # Note: custom_token is bytes; decode to string
+        return jsonify({
+            "firebase_custom_token": token.decode('utf-8'),
+            "userId": user_doc["userId"]  # the random doc ID from Firestore
+        }), status_code
     else:
         return jsonify({"error": error}), status_code

@@ -3,14 +3,17 @@ from flask import Flask
 from flask_cors import CORS
 import firebase_admin
 from firebase_admin import credentials, get_app, initialize_app
+import cloudinary
 from .routes.registration import register_blueprint
 from .routes.login import login_blueprint
+from .routes.recipes import recipes_blueprint
 
 def create_app():
     """
     Create and configure an instance of the Flask application.
     We'll call 'setup_firebase()' here once, so we have a default
     Firebase app ready (test or production, depending on environment).
+    Then we configure Cloudinary using CLOUDINARY_URL.
     """
     app = Flask(__name__)
     CORS(app)
@@ -18,19 +21,25 @@ def create_app():
     # Initialize Firebase Admin (default app)
     setup_firebase()
 
-    # blueprint registrations
+    # Configure Cloudinary using CLOUDINARY_URL, e.g.
+    #   export CLOUDINARY_URL=cloudinary://<api_key>:<api_secret>@<cloud_name>
+    cloudinary.config(
+        cloudinary_url=os.getenv("CLOUDINARY_URL")
+    )
+
+    # Register blueprints
     app.register_blueprint(register_blueprint, url_prefix='/api')
     app.register_blueprint(login_blueprint, url_prefix='/api')
+    app.register_blueprint(recipes_blueprint, url_prefix='/api')
+
 
     return app
-
 
 def setup_firebase():
     """
     If FLASK_ENV == 'testing', use Firebase_Test.
     Otherwise, use GOOGLE_APPLICATION_CREDENTIALS for dev or prod.
     """
-    # Check if there's already a default app:
     try:
         # If default app already exists, do nothing
         get_app()
@@ -38,7 +47,6 @@ def setup_firebase():
     except ValueError:
         pass  # Means no default app has been initialized yet
 
-    # Pick which creds to use
     env_mode = os.getenv("FLASK_ENV", "development").lower()
     if env_mode == "testing":
         cred_path = os.getenv("Firebase_Test")
@@ -49,6 +57,5 @@ def setup_firebase():
         if not cred_path:
             raise ValueError("GOOGLE_APPLICATION_CREDENTIALS not set (non-testing mode).")
 
-    # Initialize the *default* app with whichever creds we found
     cred = credentials.Certificate(cred_path)
-    initialize_app(cred)  # default app
+    initialize_app(cred)
