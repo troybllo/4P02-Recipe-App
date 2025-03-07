@@ -77,7 +77,7 @@ const Profile = () => {
   return (
     <>
       <div className="text-center my-20">
-        <div className="flex mb-5 justify-center items-center">
+        <div className="flex mb-5 justify-center items-center ">
           <div className="flex items-center border-b-2 py-5">
             <div className="items-center justify-center mr-5">
               <img
@@ -157,4 +157,3 @@ const Profile = () => {
 };
 
 export default Profile;
-
