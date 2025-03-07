@@ -1,15 +1,28 @@
-// src/data/stories.js
-import post1 from "../assets/images/pizza.jpg";
-import post2 from "../assets/images/french omelette.jpg";
-import post3 from "../assets/images/meal1.jpg";
-import post4 from "../assets/images/meal2.jpg";
-import profile1 from "../assets/images/Gordon.jpg";
+/// src/data/stories.js
+
+// Helper function to map image names to require() statements
+export const getImageSource = (imageName: any) => {
+  switch (imageName) {
+    case "pizza.jpg":
+      return require("../assets/images/pizza.jpg");
+    case "french omelette.jpg":
+      return require("../assets/images/french omelette.jpg");
+    case "meal1.jpg":
+      return require("../assets/images/meal1.jpg");
+    case "meal2.jpg":
+      return require("../assets/images/meal2.jpg");
+    case "Gordon.jpg":
+      return require("../assets/images/Gordon.jpg");
+    default:
+      return require("../assets/images/meal2.jpg"); // Fallback image
+  }
+};
 
 export const stories = [
   {
     username: "Gordon Ramsey",
-    profilePic: profile1,
-    images: [post1, post2, post3, post4],
+    profilePic: "Gordon.jpg", // Use the image name
+    images: ["pizza.jpg", "french omelette.jpg", "meal1.jpg", "meal2.jpg"], // Use image names
     dishTitle: "Heavenly Garlic Pizza",
     cookName: "Ayaka Shoka",
     postDate: "September 4th 2024",
@@ -22,8 +35,8 @@ export const stories = [
   },
   {
     username: "Jaque pepan",
-    profilePic: profile1,
-    images: [post4, post3],
+    profilePic: "Gordon.jpg", // Use the image name
+    images: ["meal2.jpg", "meal1.jpg"], // Use image names
     dishTitle: "Classic French Omelette",
     cookName: "Chef Pepin",
     postDate: "March 12th 2025",
@@ -35,8 +48,8 @@ export const stories = [
   },
   {
     username: "Gordon Ramsey",
-    profilePic: profile1,
-    images: [post3, post1],
+    profilePic: "Gordon.jpg", // Use the image name
+    images: ["meal1.jpg", "pizza.jpg"], // Use image names
     dishTitle: "Heavenly Garlic Pizza",
     cookName: "Ayaka Shoka",
     postDate: "September 4th 2024",
@@ -49,8 +62,8 @@ export const stories = [
   },
   {
     username: "Jaque pepan",
-    profilePic: profile1,
-    images: [post2, post4],
+    profilePic: "Gordon.jpg", // Use the image name
+    images: ["french omelette.jpg", "meal2.jpg"], // Use image names
     dishTitle: "Classic French Omelette",
     cookName: "Chef Pepin",
     postDate: "March 12th 2025",
@@ -62,8 +75,8 @@ export const stories = [
   },
   {
     username: "Gordon Ramsey",
-    profilePic: profile1,
-    images: [post1],
+    profilePic: "Gordon.jpg", // Use the image name
+    images: ["pizza.jpg"], // Use image names
     dishTitle: "Heavenly Garlic Pizza",
     cookName: "Ayaka Shoka",
     postDate: "September 4th 2024",
@@ -76,8 +89,8 @@ export const stories = [
   },
   {
     username: "Jaque pepan",
-    profilePic: profile1,
-    images: [post2],
+    profilePic: "Gordon.jpg", // Use the image name
+    images: ["french omelette.jpg"], // Use image names
     dishTitle: "Classic French Omelette",
     cookName: "Chef Pepin",
     postDate: "March 12th 2025",
@@ -89,8 +102,8 @@ export const stories = [
   },
   {
     username: "Gordon Ramsey",
-    profilePic: profile1,
-    images: [post1],
+    profilePic: "Gordon.jpg", // Use the image name
+    images: ["pizza.jpg"], // Use image names
     dishTitle: "Heavenly Garlic Pizza",
     cookName: "Ayaka Shoka",
     postDate: "September 4th 2024",
@@ -103,8 +116,8 @@ export const stories = [
   },
   {
     username: "Jaque pepan",
-    profilePic: profile1,
-    images: [post2, post4],
+    profilePic: "Gordon.jpg", // Use the image name
+    images: ["french omelette.jpg", "meal2.jpg"], // Use image names
     dishTitle: "Classic French Omelette",
     cookName: "Chef Pepin",
     postDate: "March 12th 2025",

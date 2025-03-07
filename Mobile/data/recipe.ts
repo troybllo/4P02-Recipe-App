@@ -1,10 +1,23 @@
-import meal1 from "../assets/images/meal1.jpg";
-import meal2 from "../assets/images/meal2.jpg";
-import meal3 from "../assets/images/meal3.jpg";
-import meal4 from "../assets/images/meal4.jpg";
-import meal5 from "../assets/images/meal5.webp";
-import meal6 from "../assets/images/meal6.webp";
-import meal7 from "../assets/images/meal7.jpg";
+export const getImageSource = (imageName: string) => {
+  switch (imageName) {
+    case "meal1.jpg":
+      return require("../assets/images/meal1.jpg");
+    case "meal2.jpg":
+      return require("../assets/images/meal2.jpg");
+    case "meal3.jpg":
+      return require("../assets/images/meal3.jpg");
+    case "meal4.jpg":
+      return require("../assets/images/meal4.jpg");
+    case "meal5.webp":
+      return require("../assets/images/meal5.webp");
+    case "meal6.webp":
+      return require("../assets/images/meal6.webp");
+    case "meal7.jpg":
+      return require("../assets/images/meal7.jpg");
+    default:
+      return require("../assets/images/meal1.jpg"); // Fallback image
+  }
+};
 
 export const recipes = [
   {
@@ -18,7 +31,7 @@ export const recipes = [
     cookingTime: "1 hr",
     difficulty: "Medium",
     servings: 6,
-    imageUrl: meal1, // Update the path if needed
+    imageUrl: "meal1.jpg", // Update the path if needed
     ingredients: [
       "2 cups Spanish rice",
       "1 lb mixed seafood",
@@ -50,7 +63,7 @@ export const recipes = [
     cookingTime: "25 m",
     difficulty: "Easy",
     servings: 4,
-    imageUrl: meal2,
+    imageUrl: "meal2.jpg",
     ingredients: [
       "1 cup broccoli florets",
       "1 red bell pepper, sliced",
@@ -83,7 +96,7 @@ export const recipes = [
     cookingTime: "1 hr 15 m",
     difficulty: "High",
     servings: 2,
-    imageUrl: meal3,
+    imageUrl: "meal3.jpg",
     ingredients: [
       "2 x beef fillet (250g-300g)",
       "Sea salt & cracked pepper",
@@ -123,7 +136,7 @@ export const recipes = [
     cookingTime: "30 m",
     difficulty: "Medium",
     servings: 8,
-    imageUrl: meal4,
+    imageUrl: "meal4,jpg",
     ingredients: [
       "4 (12-ounce) rib-eye steaks, 1 1/4-inch-thick, at room temperature",
       "4 tablespoons olive oil",
@@ -162,7 +175,7 @@ export const recipes = [
     cookingTime: "20 m",
     difficulty: "Medium",
     servings: 2,
-    imageUrl: meal5,
+    imageUrl: "meal5.webp",
     ingredients: [
       "8 Tbsp. unsalted butter, softened",
       "2 Tbsp. finely chopped parsley",
@@ -193,7 +206,7 @@ export const recipes = [
     cookingTime: "105 m", // 15 m prep + 90 m cook
     difficulty: "Medium",
     servings: 8,
-    imageUrl: meal6, // Replace with the correct import from your assets
+    imageUrl: "meal6.webp", // Replace with the correct import from your assets
     ingredients: [
       "For the meat sauce:",
       "2 teaspoons extra virgin olive oil",
@@ -240,7 +253,7 @@ export const recipes = [
     cookingTime: "1 hr 15 m",
     difficulty: "Easy",
     servings: 6,
-    imageUrl: meal7, // Replace with your imported image or URL
+    imageUrl: "meal7.jpg", // Replace with your imported image or URL
     ingredients: [
       // Beet Salad Ingredients
       "6 medium beets (approx. 2 lbs), roasted",

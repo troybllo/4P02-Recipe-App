@@ -1,19 +1,8 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { recipes } from "../../data/recipe";
-import { Button, StyleSheet, TouchableOpacity } from "react-native";
-import { View, Text } from "react-native";
-import { Image } from "react-native";
-
-const breakpointColumnsObj = {
-  default: 3,
-  1440: 3,
-  1920: 3,
-  1680: 3,
-  1280: 3,
-  1080: 2,
-  824: 2,
-  640: 1,
-};
+import { StyleSheet, TouchableOpacity, View, Text, Image } from "react-native";
+import { FoodSocialGrid } from "../../components/FoodCardMini"; // Import the new component
+import { Recipe } from "@/types/Recipe";
 
 export const username = "otmux";
 export const bio = "I love healthy foods for my bouldering training!";
@@ -24,8 +13,6 @@ const ownerRecipes = recipes.filter((recipe) => {
 
 export default function Profile() {
   const profilePic =
-    "https://img.freepik.com/premium-vector/pixel-art-tree_735839-72.jpg";
-  const PostsIcon =
     "https://img.freepik.com/premium-vector/pixel-art-tree_735839-72.jpg";
 
   const formatBio = (bio: string) => {
@@ -40,6 +27,9 @@ export default function Profile() {
     return formattedBio.trim();
   };
 
+  const [selectedButton, setSelectedButton] = useState<"posts" | "saved">(
+    "posts",
+  );
   const [showPosts, setShowPosts] = useState(true);
 
   const handlePosts = () => {
@@ -56,16 +46,17 @@ export default function Profile() {
     setIsEditProfileOpen(false);
   };
 
+  const handleRecipePress = (recipe: Recipe) => {
+    // Navigate to the detailed view of the recipe
+    console.log("Recipe pressed:", recipe.title);
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.container2}>
         <View style={styles.container3}>
           <View style={styles.profile1}>
-            <Image
-              source={{ uri: profilePic }}
-              alt="Profile Pic"
-              style={styles.profileImg}
-            />
+            <Image source={{ uri: profilePic }} style={styles.profileImg} />
 
             <TouchableOpacity
               onPress={() => setIsEditProfileOpen(true)}
@@ -82,23 +73,54 @@ export default function Profile() {
           </View>
         </View>
       </View>
+      <View style={styles.filterContainer}>
+        <TouchableOpacity
+          style={[
+            styles.postsBut,
+            selectedButton === "posts" && styles.activeButton,
+          ]}
+          onPress={() => {
+            setSelectedButton("posts");
+            handlePosts();
+          }}
+        >
+          <Text style={styles.postsButText}>Posts</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[
+            styles.postsBut,
+            selectedButton === "saved" && styles.activeButton,
+          ]}
+          onPress={() => {
+            setSelectedButton("saved");
+            handleSaved();
+          }}
+        >
+          <Text style={styles.postsButText}>Saved</Text>
+        </TouchableOpacity>
+      </View>
+      <View style={styles.postContainer}>
+        {showPosts ? (
+          <FoodSocialGrid recipes={ownerRecipes} onPress={handleRecipePress} />
+        ) : (
+          <Text>No saved posts yet</Text>
+        )}
+      </View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    textAlign: "center",
-    width: "auto",
+    flex: 1,
+    paddingTop: 20,
   },
   container2: {
-    display: "flex",
     marginBottom: 20,
     justifyContent: "center",
     alignItems: "flex-start",
   },
   container3: {
-    display: "flex",
     flexDirection: "row",
     alignItems: "center",
     borderBottomWidth: 2,
@@ -112,8 +134,8 @@ const styles = StyleSheet.create({
   },
   profile2: {
     textAlign: "left",
-    flex: 1, // This will make it take available space
-    maxWidth: "70%", // Adjust based on your layout needs
+    flex: 1,
+    maxWidth: "70%",
   },
   profileImg: {
     borderRadius: 9999,
@@ -136,18 +158,18 @@ const styles = StyleSheet.create({
   },
   usernameHeading: {
     fontSize: 12,
-    fontWeight: "thin",
+    fontWeight: "300",
     lineHeight: 16,
     color: "gray",
     paddingBottom: 4,
   },
   username: {
     fontSize: 16,
-    fontWeight: "heavy",
+    fontWeight: "bold",
   },
   bioHeading: {
     fontSize: 12,
-    fontWeight: "thin",
+    fontWeight: "300",
     lineHeight: 16,
     color: "gray",
     paddingTop: 16,
@@ -156,9 +178,35 @@ const styles = StyleSheet.create({
   bio: {
     fontSize: 14,
     lineHeight: 20,
-    fontWeight: "heavy",
+    fontWeight: "bold",
     flexWrap: "wrap",
     flexShrink: 1,
     width: "100%",
+  },
+  filterContainer: {
+    flexDirection: "row",
+    justifyContent: "center",
+    marginBottom: 20,
+  },
+  postContainer: {
+    flex: 1,
+  },
+  postsBut: {
+    marginRight: 8,
+    alignItems: "center",
+    justifyContent: "center",
+    borderWidth: 2,
+    borderColor: "gray",
+    borderRadius: 9999,
+    paddingHorizontal: 24,
+    paddingVertical: 4,
+    minWidth: 100,
+  },
+  activeButton: {
+    backgroundColor: "lightgray",
+  },
+  postsButText: {
+    fontSize: 16,
+    lineHeight: 16,
   },
 });

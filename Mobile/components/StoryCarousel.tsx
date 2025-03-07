@@ -8,7 +8,7 @@ import {
   StyleSheet,
 } from "react-native";
 import StoryPostModal from "./StoryPostModal";
-import { stories } from "../data/stories"; // Import stories data
+import { getImageSource, stories } from "../data/stories"; // Import stories data
 
 // Define a type for story objects
 type Story = {
@@ -131,13 +131,11 @@ const StoryCarousel: React.FC = () => {
             >
               {/* Gradient ring */}
               <View style={styles.gradientRing}>
-                {/* If the story has multiple images, just show the first as the thumbnail */}
                 <Image
-                  source={{ uri: story.images?.[0] || story.img }}
+                  source={getImageSource(story.images)} // Use the helper function
                   style={styles.storyImage}
                 />
               </View>
-              {/* Username */}
               <Text
                 style={styles.username}
                 numberOfLines={1}
@@ -148,8 +146,6 @@ const StoryCarousel: React.FC = () => {
             </TouchableOpacity>
           ))}
         </View>
-
-        {/* Next chunk arrow (show only if not on last page) */}
         {currentIndex < storyChunks.length - 1 && (
           <TouchableOpacity onPress={handleNext} style={styles.arrowButton}>
             <Text style={styles.arrowText}>&gt;</Text>

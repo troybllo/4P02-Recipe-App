@@ -2,6 +2,7 @@ import React from "react";
 import { View, Text, Image, StyleSheet, TouchableOpacity } from "react-native";
 import { Ionicons } from "@expo/vector-icons"; // Assuming you're using Expo
 import { Recipe } from "../types/Recipe";
+import { getImageSource } from "@/data/recipe";
 
 // Now FoodSocialCardProps is exactly the same as Recipe
 type FoodSocialCardProps = Recipe;
@@ -24,8 +25,7 @@ const FoodSocialCard: React.FC<FoodSocialCardProps> = ({
   return (
     <View style={styles.card}>
       {/* Image */}
-      <Image source={{ uri: imageUrl }} style={styles.image} />
-
+      <Image source={getImageSource(imageUrl)} style={styles.image} />
       {/* Content */}
       <View style={styles.content}>
         <Text style={styles.title}>{title}</Text>

@@ -18,6 +18,4 @@ export interface Recipe {
 }
 
 // If you need FoodSocialCardProps separately
-export interface FoodSocialCardProps extends Recipe {
-  // Any additional props specific to the FoodSocialCard component
-}
+export interface FoodSocialCardProps extends Recipe {}
