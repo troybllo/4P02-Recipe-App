@@ -11,6 +11,7 @@ import {
   SafeAreaView,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons"; // Assuming you're using Expo
+import { getImageSource } from "@/data/stories";
 
 // Define types
 type Story = {
@@ -129,12 +130,9 @@ const StoryPostModal: React.FC<StoryPostModalProps> = ({
         <View style={styles.imageContainer}>
           {loading && <ActivityIndicator size="large" style={styles.loader} />}
           <Image
-            source={imageSource}
+            source={getImageSource(imageSource)} // Use the helper function
             style={styles.storyImage}
-            onLoad={handleImageLoad}
-            resizeMode="contain"
           />
-
           {/* Navigation Overlay */}
           <View style={styles.navOverlay}>
             <TouchableOpacity

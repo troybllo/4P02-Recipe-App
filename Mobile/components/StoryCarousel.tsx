@@ -8,7 +8,11 @@ import {
   StyleSheet,
 } from "react-native";
 import StoryPostModal from "./StoryPostModal";
-import { getImageSource, stories } from "../data/stories"; // Import stories data
+import {
+  getImageProfileSource,
+  getImageSource,
+  stories,
+} from "../data/stories"; // Import stories data
 
 // Define a type for story objects
 type Story = {
@@ -132,7 +136,7 @@ const StoryCarousel: React.FC = () => {
               {/* Gradient ring */}
               <View style={styles.gradientRing}>
                 <Image
-                  source={getImageSource(story.images)} // Use the helper function
+                  source={getImageProfileSource(story.images)} // Use the helper function
                   style={styles.storyImage}
                 />
               </View>

@@ -18,6 +18,15 @@ export const getImageSource = (imageName: any) => {
   }
 };
 
+export const getImageProfileSource = (imageName: any) => {
+  switch (imageName) {
+    case "Gordan.jpg":
+      return require("../assets/images/Gordon.jpg");
+    default:
+      return require("../assets/images/Gordon.jpg");
+  }
+};
+
 export const stories = [
   {
     username: "Gordon Ramsey",
