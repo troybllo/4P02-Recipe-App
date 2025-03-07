@@ -15,7 +15,6 @@ import FoodSocialCard from "../../components/FoodSocialCard";
 import StoryCarousel from "../../components/StoryCarousel";
 import { recipes } from "../../data/recipe"; // Import recipes data
 
-// TypeScript interfaces
 interface Recipe {
   postId: string;
   title: string;
