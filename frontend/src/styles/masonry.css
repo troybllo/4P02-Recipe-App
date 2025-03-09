@@ -1,0 +1,40 @@
+:root {
+  --masonry-gap: 1rem;
+}
+
+@media (min-width: 1280px) {
+  :root {
+    --masonry-gap: 1rem;
+  }
+}
+
+@media (min-width: 1600px) {
+  :root {
+    --masonry-gap: 1rem;
+  }
+}
+
+.my-masonry-grid {
+  display: flex;
+  /* Negative margin on both sides for symmetrical spacing */
+  margin-left: calc(-0.5 * var(--masonry-gap));
+  margin-right: calc(-0.5 * var(--masonry-gap));
+  width: auto;
+  padding: 0 3rem;
+}
+
+.my-masonry-grid_column {
+  /* Matching left/right padding to keep columns spaced */
+  padding-left: var(--masonry-gap);
+  padding-right: var(--masonry-gap);
+  background-clip: padding-box;
+}
+
+.my-masonry-grid_column > div {
+  /* Vertical spacing between items in the same column */
+  margin-bottom: var(--masonry-gap);
+}
+
+/* Styles for the main content container */
+
+

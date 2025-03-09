@@ -1,0 +1,118 @@
+// src/data/stories.js
+import post1 from "../assets/pizza.jpg";
+import post2 from "../assets/french omelette.jpg";
+import post3 from "../assets/meal1.jpg";
+import post4 from "../assets/meal2.jpg";
+import profile1 from "../assets/Gordon.jfif";
+export const stories = [
+    {
+      username: "Gordon Ramsey",
+      profilePic: profile1,
+      images: [post1, post2, post3, post4],
+      dishTitle: "Heavenly Garlic Pizza",
+      cookName: "Ayaka Shoka",
+      postDate: "September 4th 2024",
+      description:
+        "A crispy pizza made from fresh ingredients in the oven. Student-friendly. My opinions are in the comments below!",
+      timeTaken: "30m",
+      difficulty: "Medium",
+      calories: "~550cal",
+      ingredients: "8",
+    },
+    {
+      username: "Jaque pepan",
+      profilePic: profile1,
+      images: [post4, post3],
+      dishTitle: "Classic French Omelette",
+      cookName: "Chef Pepin",
+      postDate: "March 12th 2025",
+      description: "A fluffy omelette made with the best French techniques...",
+      timeTaken: "15m",
+      difficulty: "Easy",
+      calories: "~300cal",
+      ingredients: "4",
+    },
+    {
+      username: "Gordon Ramsey",
+      profilePic: profile1,
+      images: [post3, post1],
+      dishTitle: "Heavenly Garlic Pizza",
+      cookName: "Ayaka Shoka",
+      postDate: "September 4th 2024",
+      description:
+        "A crispy pizza made from fresh ingredients in the oven. Student-friendly. My opinions are in the comments below!",
+      timeTaken: "30m",
+      difficulty: "Medium",
+      calories: "~550cal",
+      ingredients: "8",
+    },
+    {
+      username: "Jaque pepan",
+      profilePic: profile1,
+      images: [post2, post4],
+      dishTitle: "Classic French Omelette",
+      cookName: "Chef Pepin",
+      postDate: "March 12th 2025",
+      description: "A fluffy omelette made with the best French techniques...",
+      timeTaken: "15m",
+      difficulty: "Easy",
+      calories: "~300cal",
+      ingredients: "4",
+    },
+    {
+      username: "Gordon Ramsey",
+      profilePic: profile1,
+      images: [post1],
+      dishTitle: "Heavenly Garlic Pizza",
+      cookName: "Ayaka Shoka",
+      postDate: "September 4th 2024",
+      description:
+        "A crispy pizza made from fresh ingredients in the oven. Student-friendly. My opinions are in the comments below!",
+      timeTaken: "30m",
+      difficulty: "Medium",
+      calories: "~550cal",
+      ingredients: "8",
+    },
+    {
+      username: "Jaque pepan",
+      profilePic: profile1,
+      images: [post2],
+      dishTitle: "Classic French Omelette",
+      cookName: "Chef Pepin",
+      postDate: "March 12th 2025",
+      description: "A fluffy omelette made with the best French techniques...",
+      timeTaken: "15m",
+      difficulty: "Easy",
+      calories: "~300cal",
+      ingredients: "4",
+    },
+    {
+      username: "Gordon Ramsey",
+      profilePic: profile1,
+      images: [post1],
+      dishTitle: "Heavenly Garlic Pizza",
+      cookName: "Ayaka Shoka",
+      postDate: "September 4th 2024",
+      description:
+        "A crispy pizza made from fresh ingredients in the oven. Student-friendly. My opinions are in the comments below!",
+      timeTaken: "30m",
+      difficulty: "Medium",
+      calories: "~550cal",
+      ingredients: "8",
+    },
+    {
+      username: "Jaque pepan",
+      profilePic: profile1,
+      images: [post2, post4],
+      dishTitle: "Classic French Omelette",
+      cookName: "Chef Pepin",
+      postDate: "March 12th 2025",
+      description: "A fluffy omelette made with the best French techniques...",
+      timeTaken: "15m",
+      difficulty: "Easy",
+      calories: "~300cal",
+      ingredients: "4",
+    },
+    // ... add more stories as needed
+  ];
+  
