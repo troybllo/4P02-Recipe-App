@@ -35,19 +35,15 @@ export default function Signup({
     e.preventDefault();
     setError("");
     setIsLoading(true);
-
     try {
-      const response = await fetch("http://backend/register", {
+      const response = await fetch(" http://127.0.0.1:5000/api/register", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "Access-Control-Allow-Origin": "*",
         },
         body: JSON.stringify(formData),
       });
-
       const data = await response.json();
-
       if (response.ok) {
         onSignUpSuccess?.(data);
         onClose();
@@ -57,7 +53,7 @@ export default function Signup({
     } catch (error) {
       setError("Network error: " + error);
     } finally {
-      isLoading(false);
+      setIsLoading(false);
     }
   }
 

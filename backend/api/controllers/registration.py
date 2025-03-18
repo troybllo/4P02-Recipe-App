@@ -1,11 +1,16 @@
 from flask import request, jsonify
 from werkzeug.security import generate_password_hash
-from ..services.database_interface import add_user_to_firebase, get_user_by_username, get_user_by_email
+from ..services.database_interface import (
+    add_user_to_firebase,
+    get_user_by_username,
+    get_user_by_email,
+)
 from ..models.user import User
 import re
 
+
 def register_user():
-    if request.content_type != 'application/json':
+    if request.content_type != "application/json":
         return jsonify({"error": "Invalid JSON format"}), 400
 
     try:
@@ -50,7 +55,7 @@ def register_user():
         country=country,
         preferences=preferences,
         friend_list=[],
-        created_recipes=[]
+        created_recipes=[],
     )
 
     # Convert to dict for Firestore
@@ -61,14 +66,16 @@ def register_user():
         "country": new_user.country,
         "preferences": new_user.preferences,
         "friend_list": new_user.friend_list,
-        "created_recipes": new_user.created_recipes
+        "created_recipes": new_user.created_recipes,
     }
 
     # This now returns: {"message": "...", "userId": "..."}
     result = add_user_to_firebase(user_dict)
 
-    return jsonify({
-        "message": "User registered successfully",
-        "user": user_dict,               # includes the final doc fields
-        "userId": result["userId"]       # for convenience in your client
-    }), 201
+    return jsonify(
+        {
+            "message": "User registered successfully",
+            "user": user_dict,  # includes the final doc fields
+            "userId": result["userId"],  # for convenience in your client
+        }
+    ), 201

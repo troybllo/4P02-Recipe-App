@@ -1,0 +1,2 @@
+Object.defineProperty(exports,"__esModule",{value:true});exports.useUpdateGestureConfig=void 0;var _react=require("react");var useUpdateGestureConfig=function useUpdateGestureConfig(gesture,config){var enabled=config.enabled;(0,_react.useEffect)(function(){if(typeof enabled!=="undefined")gesture.enabled(enabled);},[enabled,gesture]);};exports.useUpdateGestureConfig=useUpdateGestureConfig;
+//# sourceMappingURL=useUpdateGestureConfig.js.map

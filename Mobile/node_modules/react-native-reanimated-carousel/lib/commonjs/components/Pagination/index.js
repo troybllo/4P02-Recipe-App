@@ -1,0 +1,2 @@
+Object.defineProperty(exports,"__esModule",{value:true});exports.Pagination=void 0;var _Basic=require("./Basic");var _Custom=require("./Custom");var Pagination={Basic:_Basic.Basic,Custom:_Custom.Custom};exports.Pagination=Pagination;
+//# sourceMappingURL=index.js.map

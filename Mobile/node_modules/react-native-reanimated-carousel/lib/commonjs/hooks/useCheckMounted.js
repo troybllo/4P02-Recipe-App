@@ -1,0 +1,2 @@
+var _interopRequireDefault=require("@babel/runtime/helpers/interopRequireDefault");Object.defineProperty(exports,"__esModule",{value:true});exports.useCheckMounted=useCheckMounted;var _react=_interopRequireDefault(require("react"));function useCheckMounted(){var mounted=_react.default.useRef(false);_react.default.useEffect(function(){mounted.current=true;return function(){mounted.current=false;};},[]);return mounted;}
+//# sourceMappingURL=useCheckMounted.js.map

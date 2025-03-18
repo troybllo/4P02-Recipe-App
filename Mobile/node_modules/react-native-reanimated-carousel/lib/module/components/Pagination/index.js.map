@@ -1,0 +1,1 @@
+{"version":3,"sources":["index.tsx"],"names":["Basic","Custom","Pagination"],"mappings":"AAAA,SAASA,KAAT,QAAsB,SAAtB;AACA,SAASC,MAAT,QAAuB,UAAvB;AAEA,OAAO,MAAMC,UAAU,GAAG;AACxBF,EAAAA,KADwB;AAExBC,EAAAA;AAFwB,CAAnB","sourcesContent":["import { Basic } from \"./Basic\";\nimport { Custom } from \"./Custom\";\n\nexport const Pagination = {\n  Basic,\n  Custom,\n};\n"]}
