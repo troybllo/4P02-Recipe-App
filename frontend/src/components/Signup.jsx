@@ -31,6 +31,12 @@ export default function Signup({
     }));
   }
 
+  const handleClose = () => {
+    setFormData({ username: "", password: "", email: "" });
+    setError("");
+    onClose();
+  };
+
   async function handleSubmit(e) {
     e.preventDefault();
     setError("");

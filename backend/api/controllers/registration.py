@@ -56,6 +56,8 @@ def register_user():
         preferences=preferences,
         friend_list=[],
         created_recipes=[],
+        saved_recipes=[],
+        followers=[],
     )
 
     # Convert to dict for Firestore

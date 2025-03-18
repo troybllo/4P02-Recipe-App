@@ -31,6 +31,12 @@ export default function SignIn({
     }));
   };
 
+  const handleClose = () => {
+    setFormData({ username: "", password: "" });
+    setError("");
+    onClose();
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
@@ -41,7 +47,6 @@ export default function SignIn({
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "Access-Control-Allow-Origin": "*",
         },
         body: JSON.stringify(formData),
       });
@@ -50,6 +55,11 @@ export default function SignIn({
 
       if (response.ok) {
         localStorage.setItem("token", data.access_token);
+        // Reset the form data
+        setFormData({
+          username: "",
+          password: "",
+        });
         onSignInSuccess?.(data.access_token);
         onClose();
       } else {
@@ -61,7 +71,6 @@ export default function SignIn({
       setIsLoading(false);
     }
   };
-
   return (
     <>
       <Backdrop onClick={onClose} />
