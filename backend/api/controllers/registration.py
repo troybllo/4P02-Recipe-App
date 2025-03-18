@@ -50,7 +50,9 @@ def register_user():
         country=country,
         preferences=preferences,
         friend_list=[],
-        created_recipes=[]
+        created_recipes=[],
+        saved_recipes= [],
+        followers = [] 
     )
 
     # Convert to dict for Firestore
@@ -61,7 +63,9 @@ def register_user():
         "country": new_user.country,
         "preferences": new_user.preferences,
         "friend_list": new_user.friend_list,
-        "created_recipes": new_user.created_recipes
+        "created_recipes": new_user.created_recipes,
+        "saved_recipes": new_user.saved_recipes,
+        "followers":new_user.followers
     }
 
     # This now returns: {"message": "...", "userId": "..."}
