@@ -57,7 +57,7 @@ export default function Signup({
     } catch (error) {
       setError("Network error: " + error);
     } finally {
-      isLoading(false);
+      setIsLoading(false);
     }
   }
 
