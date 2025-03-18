@@ -61,7 +61,7 @@ export default function SignIn({
           password: "",
         });
         onSignInSuccess?.(data.access_token);
-        onClose();
+        handleClose();
       } else {
         setError(data.error || "Login failed");
       }
@@ -73,7 +73,7 @@ export default function SignIn({
   };
   return (
     <>
-      <Backdrop onClick={onClose} />
+      <Backdrop onClick={handleClose} />
       <div
         className="fixed inset-0 flex items-center justify-center z-50"
         onClick={(e) => e.stopPropagation()}
@@ -82,7 +82,7 @@ export default function SignIn({
           <div className="flex justify-between items-center mb-6">
             <h2 className="text-2xl font-bold text-gray-900">Sign In</h2>
             <button
-              onClick={onClose}
+              onClick={handleClose}
               className="text-gray-400 hover:text-gray-500"
             >
               <svg

@@ -31,9 +31,13 @@ export default function Signup({
     }));
   }
 
-  const handleClose = () => {
+  const resetForm = () => {
     setFormData({ username: "", password: "", email: "" });
     setError("");
+  };
+
+  const handleClose = () => {
+    resetForm();
     onClose();
   };
 
@@ -42,7 +46,7 @@ export default function Signup({
     setError("");
     setIsLoading(true);
     try {
-      const response = await fetch(" http://127.0.0.1:5000/api/register", {
+      const response = await fetch("http://127.0.0.1:5000/api/register", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -52,7 +56,7 @@ export default function Signup({
       const data = await response.json();
       if (response.ok) {
         onSignUpSuccess?.(data);
-        onClose();
+        handleClose();
       } else {
         setError(data.error || "Registration failed");
       }
@@ -65,7 +69,7 @@ export default function Signup({
 
   return (
     <>
-      <Backdrop onClick={onClose} />
+      <Backdrop onClick={handleClose} />
       <div
         className="fixed inset-0 flex items-center justify-center z-50"
         onClick={(e) => e.stopPropagation()}
@@ -74,7 +78,7 @@ export default function Signup({
           <div className="flex justify-between items-center mb-6">
             <h2 className="text-2xl font-bold text-gray-900">Create Account</h2>
             <button
-              onClick={onClose}
+              onClick={handleClose}
               className="text-gray-400 hover:text-gray-500"
             >
               <svg
