@@ -31,6 +31,12 @@ export default function SignIn({
     }));
   };
 
+  const handleClose = () => {
+    setFormData({ username: "", password: "" });
+    setError("");
+    onClose();
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
@@ -41,7 +47,6 @@ export default function SignIn({
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "Access-Control-Allow-Origin": "*",
         },
         body: JSON.stringify(formData),
       });
@@ -50,8 +55,13 @@ export default function SignIn({
 
       if (response.ok) {
         localStorage.setItem("token", data.access_token);
+        // Reset the form data
+        setFormData({
+          username: "",
+          password: "",
+        });
         onSignInSuccess?.(data.access_token);
-        onClose();
+        handleClose();
       } else {
         setError(data.error || "Login failed");
       }
@@ -61,10 +71,9 @@ export default function SignIn({
       setIsLoading(false);
     }
   };
-
   return (
     <>
-      <Backdrop onClick={onClose} />
+      <Backdrop onClick={handleClose} />
       <div
         className="fixed inset-0 flex items-center justify-center z-50"
         onClick={(e) => e.stopPropagation()}
@@ -73,7 +82,7 @@ export default function SignIn({
           <div className="flex justify-between items-center mb-6">
             <h2 className="text-2xl font-bold text-gray-900">Sign In</h2>
             <button
-              onClick={onClose}
+              onClick={handleClose}
               className="text-gray-400 hover:text-gray-500"
             >
               <svg
