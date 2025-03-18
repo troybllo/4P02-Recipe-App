@@ -15,6 +15,7 @@ import savedIcon from "../images/savedIcon.png";
 import profileIcon from "../images/profileIcon.png";
 import createPostIcon from "../images/createPostIcon.png";
 
+
 export default function Navbar() {
   const [isSignInOpen, setIsSignInOpen] = useState(false);
   const [isSignUpOpen, setIsSignUpOpen] = useState(false);
@@ -141,39 +142,63 @@ export default function Navbar() {
       {isMenuOpen && (
         <div className="lg:hidden mt-16 fixed top-0 left-0 right-0 bg-[#eaf5e4] border-b border-[#1d380e] shadow-lg z-40">
           <div className="p-4 space-y-2">
-            <Link
+            <NavLink
               to="/"
-              className="block px-3 py-2 bg-[#ccdec2] border border-[#575757] rounded-full text-gray-900"
+              className={({ isActive }) =>
+                `block px-3 py-2 flex justify-center items-center rounded-full ${
+                  isActive
+                    ? "bg-[#ffffff] text-gray-900 border border-[#8ab473] shadow-lg hover:shadow-xl active:shadow-none transition-shadow duration-200"
+                    : "bg-[#ffffff] text-gray-900 hover:border-[#85a474] hover:shadow-md active:shadow-none transition-shadow duration-200"
+                }`
+              }
             >
               Home
-            </Link>
-            <Link
+            </NavLink>
+            <NavLink
               to="/discovery"
-              className="block px-3 py-2 bg-[#ccdec2] border border-[#575757] rounded-full text-gray-900"
+              className={({ isActive }) =>
+                `block px-3 py-2 flex justify-center items-center rounded-full ${
+                  isActive
+                    ? "bg-[#ffffff] text-gray-900 border border-[#8ab473] shadow-lg hover:shadow-xl active:shadow-none transition-shadow duration-200"
+                    : "bg-[#ffffff] text-gray-900 hover:border-[#85a474] hover:shadow-md active:shadow-none transition-shadow duration-200"
+                }`
+              }
             >
               Discovery
-            </Link>
-            <Link
+            </NavLink>
+            <NavLink
               to="/about"
-              className="block px-3 py-2 bg-[#ccdec2] border border-[#575757] rounded-full text-gray-900"
+              className={({ isActive }) =>
+                `block px-3 py-2 flex justify-center items-center rounded-full ${
+                  isActive
+                    ? "bg-[#ffffff] text-gray-900 border border-[#8ab473] shadow-lg hover:shadow-xl active:shadow-none transition-shadow duration-200"
+                    : "bg-[#ffffff] text-gray-900 hover:border-[#85a474] hover:shadow-md active:shadow-none transition-shadow duration-200"
+                }`
+              }
             >
               About
-            </Link>
-            <Link
+            </NavLink>
+            <NavLink
               to="/profile"
-              className="block px-3 py-2 bg-[#ccdec2] border border-[#575757] rounded-full text-gray-900"
+              className={({ isActive }) =>
+                `block px-3 py-2 flex justify-center items-center rounded-full ${
+                  isActive
+                    ? "bg-[#ffffff] text-gray-900 border border-[#8ab473] shadow-lg hover:shadow-xl active:shadow-none transition-shadow duration-200"
+                    : "bg-[#ffffff] text-gray-900 hover:border-[#85a474] hover:shadow-md active:shadow-none transition-shadow duration-200"
+                }`
+              }
             >
               Profile
-            </Link>
+            </NavLink>
             <button
               onClick={() => setIsCreatePostOpen(true)}
-              className="block w-full px-3 py-2 bg-[#bbf7a0] border border-[#1d9c3f] rounded-full text-[#1d9c3f] font-bold"
+              className="block w-full px-3 py-2 flex justify-center items-center bg-[#d5f9c5] border border-[#869a7b] rounded-full text-[#0b3115] hover:border-[#187832] hover:text-[#35573e] hover:bg-[#b1e6b7]"
             >
               Create Post
             </button>
             <button
               onClick={() => setIsSignInOpen(true)}
-              className="block w-full px-3 py-2 bg-[#ffcf94] border border-[#ba5719] rounded-full text-[#ba5719] font-bold"
+              className="block w-full px-3 py-2 flex justify-center items-center bg-[#f9dcb8] border border-[#ba5719] rounded-full text-[#ba5719] hover:border-[#8c4420] hover:text-[#8c4420] hover:bg-[#ffc784]"
             >
               Sign In
             </button>
