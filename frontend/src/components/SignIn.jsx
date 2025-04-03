@@ -52,9 +52,11 @@ export default function SignIn({
       });
 
       const data = await response.json();
+      console.log(data);
 
       if (response.ok) {
-        localStorage.setItem("token", data.access_token);
+        localStorage.setItem("token", data.firebase_custom_token);
+        localStorage.setItem("userId", data.userId); 
         // Reset the form data
         setFormData({
           username: "",
@@ -107,6 +109,7 @@ export default function SignIn({
                 {error}
               </div>
             )}
+            
 
             <div>
               <label
