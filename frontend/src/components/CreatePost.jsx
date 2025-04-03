@@ -1,8 +1,7 @@
-// src/components/CreatePost.jsx
 import React, { useState } from "react";
 import styles from "../styles/CreatePost.module.css";
 
-const CreatePost = ({ isOpen, onClose, onSubmit }) => {
+const CreatePost = ({ isOpen, onClose }) => {
   const [formData, setFormData] = useState({
     title: "",
     description: "",
@@ -11,8 +10,15 @@ const CreatePost = ({ isOpen, onClose, onSubmit }) => {
     servings: "",
     ingredients: "",
     instructions: "",
-    image: null,
+    images: [],
   });
+  
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
+
+  // Get user ID from local storage (assuming it was stored during login)
+  const userId = localStorage.getItem("userId");
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -23,30 +29,112 @@ const CreatePost = ({ isOpen, onClose, onSubmit }) => {
   };
 
   const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
+    const files = Array.from(e.target.files);
+    if (files.length > 0) {
       setFormData((prev) => ({
         ...prev,
-        image: file,
+        images: files,
       }));
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    onSubmit(formData);
-    onClose();
+    setLoading(true);
+    setError("");
+    setSuccess("");
+
+    try {
+      // Validate required fields
+      if (!formData.title || !userId) {
+        throw new Error("Title and user authentication are required");
+      }
+
+      // Create FormData for multipart/form-data submission
+      const submitData = new FormData();
+
+      // Add userId
+      submitData.append("userId", userId);
+
+      // Add recipe data
+      submitData.append("title", formData.title);
+      submitData.append("description", formData.description);
+      submitData.append("cookingTime", formData.cookingTime);
+      submitData.append("difficulty", formData.difficulty);
+      submitData.append("servings", formData.servings);
+      
+      // Process ingredients as array (split by newlines)
+      const ingredientsArray = formData.ingredients
+        .split("\n")
+        .filter(item => item.trim() !== "");
+      submitData.append("ingredients", JSON.stringify(ingredientsArray));
+      
+      // Process instructions as array (split by newlines)
+      const instructionsArray = formData.instructions
+        .split("\n")
+        .filter(item => item.trim() !== "");
+      submitData.append("instructions", JSON.stringify(instructionsArray));
+
+      // Add images
+      if (formData.images.length > 0) {
+        formData.images.forEach((image) => {
+          submitData.append("images", image);
+        });
+      }
+
+      // Send the request using fetch
+      const response = await fetch("http://127.0.0.1:5000/api/recipes", {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+        method: "POST",
+        body: submitData,
+        // Note: Do not set Content-Type with fetch when using FormData
+        // It will automatically set the correct multipart boundary
+      });
+      
+      if (!response.ok) {
+        throw new Error(`Server responded with ${response.status}: ${response.statusText}`);
+      }
+      
+      const responseData = await response.json();
+      setSuccess(`Recipe created with ID: ${responseData.postId}`);
+      // Reset form after successful submission
+      setFormData({
+        title: "",
+        description: "",
+        cookingTime: "",
+        difficulty: "Easy",
+        servings: "",
+        ingredients: "",
+        instructions: "",
+        images: [],
+      });
+      
+      // Close modal on success if using as a modal
+      if (onClose) onClose();
+      
+    } catch (err) {
+      setError(err.message || "Error creating recipe");
+      console.error("Error creating recipe:", err);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  if (!isOpen) return null;
+  // If this is a modal component, return null when closed
+  if (isOpen === false) return null;
 
   return (
-    <div className={styles.overlay}>
-      <div className={styles.modal}>
-        <button className={styles.closeButton} onClick={onClose}>
-          ×
-        </button>
-        <h2 className={styles.title}>Create New Recipe Post</h2>
+    <div className={isOpen ? styles.overlay : ""}>
+      <div className={isOpen ? styles.modal : styles.container}>
+        {isOpen && (
+          <button className={styles.closeButton} onClick={onClose}>
+            ×
+          </button>
+        )}
+        <h2 className={styles.title}>Create New Recipe</h2>
+
+        {error && <div className="error-message">{error}</div>}
+        {success && <div className="success-message">{success}</div>}
 
         <form onSubmit={handleSubmit} className={styles.form}>
           <div className={styles.inputGroup}>
@@ -140,27 +228,38 @@ const CreatePost = ({ isOpen, onClose, onSubmit }) => {
           </div>
 
           <div className={styles.inputGroup}>
-            <label htmlFor="image">Recipe Image</label>
+            <label htmlFor="images">Recipe Images</label>
             <input
               type="file"
-              id="image"
-              name="image"
+              id="images"
+              name="images"
               onChange={handleImageChange}
               accept="image/*"
-              required
+              multiple
             />
+            {formData.images.length > 0 && (
+              <div className="image-preview">
+                <p>{formData.images.length} image(s) selected</p>
+              </div>
+            )}
           </div>
 
           <div className={styles.buttonGroup}>
-            <button
-              type="button"
-              onClick={onClose}
-              className={styles.cancelButton}
+            {onClose && (
+              <button
+                type="button"
+                onClick={onClose}
+                className={styles.cancelButton}
+              >
+                Cancel
+              </button>
+            )}
+            <button 
+              type="submit" 
+              className={styles.submitButton}
+              disabled={loading}
             >
-              Cancel
-            </button>
-            <button type="submit" className={styles.submitButton}>
-              Create Post
+              {loading ? "Creating..." : "Create Recipe"}
             </button>
           </div>
         </form>
