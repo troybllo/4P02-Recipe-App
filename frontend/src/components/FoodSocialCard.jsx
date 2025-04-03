@@ -1,10 +1,11 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom"; // Import Link for navigation
-import styles from "../styles/FoodSocialCard.module.css"; // Import styles
+import React, { useState, useRef } from "react";
+import { Link } from "react-router-dom";
+import { motion, AnimatePresence } from "framer-motion";
+import styles from "../styles/FoodSocialCard.module.css";
 import EditPost from "../components/EditPost";
 
 const FoodSocialCard = ({
-  postId, 
+  postId,
   title,
   author,
   authorId,
@@ -24,6 +25,8 @@ const FoodSocialCard = ({
   const [liked, setLiked] = useState(isLiked);
   const [likeCount, setLikeCount] = useState(likes);
   const [isLoading, setIsLoading] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
+  const cardRef = useRef(null);
 
   const formattedDate = new Date(datePosted).toLocaleDateString("en-US", {
     year: "numeric",
@@ -35,11 +38,19 @@ const FoodSocialCard = ({
 
   const handleEditPost = () => {
     setIsEditPostOpen(false);
-  }
+  };
 
   const handleLike = async () => {
     if (isLoading) return;
     setIsLoading(true);
+
+    // Add a heart animation
+    const heart = document.createElement("div");
+    heart.className = styles.floatingHeart;
+    heart.innerHTML = "❤️";
+    cardRef.current.appendChild(heart);
+    setTimeout(() => heart.remove(), 1000);
+
     try {
       setLiked(!liked);
       setLikeCount((prevCount) => (liked ? prevCount - 1 : prevCount + 1));
@@ -60,6 +71,13 @@ const FoodSocialCard = ({
     } catch (error) {
       console.log("Error sharing:", error);
       navigator.clipboard.writeText(window.location.href);
+
+      // Show copy confirmation
+      const copyMsg = document.createElement("div");
+      copyMsg.className = styles.copyMsg;
+      copyMsg.innerText = "Link copied!";
+      cardRef.current.appendChild(copyMsg);
+      setTimeout(() => copyMsg.remove(), 2000);
     }
   };
 
@@ -73,6 +91,12 @@ const FoodSocialCard = ({
 
   const handleRecipeDownload = () => {
     // Downloads a PDF of the recipe with all the details
+    // Show download confirmation
+    const downloadMsg = document.createElement("div");
+    downloadMsg.className = styles.downloadMsg;
+    downloadMsg.innerText = "Downloading recipe...";
+    cardRef.current.appendChild(downloadMsg);
+    setTimeout(() => downloadMsg.remove(), 2000);
   };
 
   // Made-up variables for logged in state and current user ID
@@ -80,104 +104,297 @@ const FoodSocialCard = ({
   const currentUserId = "user_789";
   const isOwner = isLoggedIn && currentUserId === authorId;
 
+  // Animation variants
+  const cardVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.4 },
+    },
+    hover: {
+      y: -5,
+      boxShadow: "0px 10px 20px rgba(0, 0, 0, 0.1)",
+      transition: { duration: 0.3 },
+    },
+    tap: { scale: 0.98 },
+  };
+
+  const expandVariants = {
+    collapsed: { height: 0, opacity: 0 },
+    expanded: {
+      height: "auto",
+      opacity: 1,
+      transition: {
+        height: { duration: 0.3 },
+        opacity: { duration: 0.3, delay: 0.1 },
+      },
+    },
+  };
+
+  const imageVariants = {
+    hover: {
+      scale: 1.05,
+      transition: { duration: 0.3 },
+    },
+  };
+
+  const buttonVariants = {
+    hover: { scale: 1.1 },
+    tap: { scale: 0.9 },
+  };
+
   return (
     <>
-      <div className={styles.card}>
-        <div className={styles.header}>
-          <div className={styles.avatar} style={{ flexShrink: 0 }}>
-            {author[0]}
-          </div>
-          <div className={styles.headerContent} style={{ maxWidth: "200px" }}>
-            <h3
-              className={`${styles.title} ${isTitleExpanded ? styles.expanded : ""}`}
-              onClick={handleTitleClick}
-              style={{
-                whiteSpace: "nowrap",
-                overflow: "hidden",
-                textOverflow: "ellipsis",
-                maxWidth: "100%",
-              }}
+      <motion.div
+        className="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 relative"
+        ref={cardRef}
+        variants={cardVariants}
+        initial="hidden"
+        animate="visible"
+        whileHover="hover"
+        onHoverStart={() => setIsHovered(true)}
+        onHoverEnd={() => setIsHovered(false)}
+      >
+        {/* Card Header */}
+        <div className="flex items-center justify-between px-4 py-3 border-b border-gray-100">
+          <div className="flex items-center">
+            <motion.div
+              className="w-9 h-9 rounded-full bg-gradient-to-br from-green-500 to-green-700 text-white flex items-center justify-center font-semibold text-sm flex-shrink-0"
+              whileHover={{ scale: 1.1 }}
             >
-              {isTitleExpanded ? title : `${title.slice(0, 30)}...`}
-            </h3>
-            <p
-              className={styles.authorInfo}
-              style={{
-                whiteSpace: "nowrap",
-                overflow: "hidden",
-                textOverflow: "ellipsis",
-                maxWidth: "100%",
-              }}
-            >
-              by {author} {formattedDate}
-            </p>
+              {author[0]}
+            </motion.div>
+            <div className="ml-3 flex-1 min-w-0">
+              <h3
+                className={`font-semibold text-gray-800 cursor-pointer ${isTitleExpanded ? "" : "truncate"}`}
+                onClick={handleTitleClick}
+                style={{
+                  maxWidth: "100%",
+                }}
+              >
+                {isTitleExpanded
+                  ? title
+                  : `${title.slice(0, 30)}${title.length > 30 ? "..." : ""}`}
+              </h3>
+              <p className="text-xs text-gray-500">
+                by {author} • {formattedDate}
+              </p>
+            </div>
           </div>
+
           {isOwner && (
-            <button className={styles.iconButton} aria-label="Edit Post" onClick={() => setIsEditPostOpen(true)}>
+            <motion.button
+              className="p-2 text-gray-500 hover:text-gray-700"
+              aria-label="Edit Post"
+              onClick={() => setIsEditPostOpen(true)}
+              variants={buttonVariants}
+              whileHover="hover"
+              whileTap="tap"
+            >
               •••
-            </button>
+            </motion.button>
           )}
         </div>
 
-        <div className={styles.imageContainer}>
-          {/* Only the image is wrapped with a Link */}
+        {/* Card Image */}
+        <div className="relative overflow-hidden">
           <Link to={`/recipe/${postId}`}>
-            <img src={imageUrl} alt={title} className={styles.image} loading="lazy" />
+            <motion.div className="relative group">
+              <motion.img
+                src={imageUrl}
+                alt={title}
+                className="w-full h-56 md:h-64 object-cover"
+                loading="lazy"
+                variants={imageVariants}
+                whileHover="hover"
+              />
+              {isHovered && (
+                <motion.div
+                  className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex items-end justify-center"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  <p className="text-white text-center pb-4 px-3 font-medium">
+                    View full recipe
+                  </p>
+                </motion.div>
+              )}
+            </motion.div>
           </Link>
         </div>
 
-        <div className={styles.content}>
-          <div className={styles.metadata}>
-            <span title="Cooking Time">⏱️ {cookingTime}</span>
-            <span title="Difficulty">📊 {difficulty}</span>
-            <span title="Servings">👥 {servings}</span>
-          </div>
+        {/* Card Content */}
+        <div className="p-4">
+          {/* Recipe Metadata */}
+          <motion.div
+            className="flex flex-wrap gap-2 mb-3"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3, delay: 0.1 }}
+          >
+            <motion.span
+              className="px-2 py-1 bg-gray-100 text-gray-700 rounded-md text-xs font-medium flex items-center"
+              whileHover={{ scale: 1.05, y: -2 }}
+            >
+              ⏱️ {cookingTime}
+            </motion.span>
+            <motion.span
+              className="px-2 py-1 bg-gray-100 text-gray-700 rounded-md text-xs font-medium flex items-center"
+              whileHover={{ scale: 1.05, y: -2 }}
+            >
+              📊 {difficulty}
+            </motion.span>
+            <motion.span
+              className="px-2 py-1 bg-gray-100 text-gray-700 rounded-md text-xs font-medium flex items-center"
+              whileHover={{ scale: 1.05, y: -2 }}
+            >
+              👥 {servings}
+            </motion.span>
+          </motion.div>
 
-          <p className={styles.description}>{description}</p>
+          {/* Description */}
+          <motion.p
+            className="text-gray-600 text-sm mb-4 line-clamp-3"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.4, delay: 0.2 }}
+          >
+            {description}
+          </motion.p>
 
-          <div className={styles.actions}>
-            <div className={styles.actionButtons}>
-              <button
-                className={`${styles.iconButton} ${liked ? styles.liked : ""}`}
+          {/* Action Buttons */}
+          <div className="flex items-center justify-between">
+            <div className="flex space-x-4">
+              <motion.button
+                className={`p-2 rounded-full ${liked ? "text-red-500" : "text-gray-500 hover:text-red-500"} flex items-center`}
                 onClick={handleLike}
                 disabled={isLoading}
                 aria-label={liked ? "Unlike" : "Like"}
+                variants={buttonVariants}
+                whileHover="hover"
+                whileTap="tap"
               >
                 {liked ? "❤️" : "🤍"}
-                <span className={styles.likeCount}>{likeCount}</span>
-              </button>
-              <button className={styles.iconButton} onClick={handleShare} aria-label="Share">
+                <motion.span
+                  className="ml-1 text-sm font-medium"
+                  key={likeCount} // Force animation when count changes
+                  initial={{ scale: 1.5, y: -3 }}
+                  animate={{ scale: 1, y: 0 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  {likeCount}
+                </motion.span>
+              </motion.button>
+
+              <motion.button
+                className="p-2 rounded-full text-gray-500 hover:text-gray-700"
+                onClick={handleShare}
+                aria-label="Share"
+                variants={buttonVariants}
+                whileHover="hover"
+                whileTap="tap"
+              >
                 📤
-              </button>
-              <button className={styles.downloadButton} onClick={handleRecipeDownload} aria-label="Download">
+              </motion.button>
+
+              <motion.button
+                className="p-2 rounded-full text-gray-500 hover:text-gray-700"
+                onClick={handleRecipeDownload}
+                aria-label="Download"
+                variants={buttonVariants}
+                whileHover="hover"
+                whileTap="tap"
+              >
                 ⏬
-              </button>
+              </motion.button>
             </div>
 
-            <button className={styles.expandButton} onClick={handleRecipeClick} aria-expanded={isRecipeExpanded}>
-              {isRecipeExpanded ? "Shrink" : "Expand"}
-            </button>
+            <motion.button
+              className="px-3 py-1.5 bg-[#eaf5e4] text-[#1d9c3f] rounded-md text-sm font-medium hover:bg-[#d5f9c5] transition-all duration-300"
+              onClick={handleRecipeClick}
+              aria-expanded={isRecipeExpanded}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              {isRecipeExpanded ? "Hide Recipe" : "View Recipe"}
+            </motion.button>
           </div>
 
-          {isRecipeExpanded && (
-            <div className={styles.expandedContent}>
-              <h4 className={styles.sectionTitle}>Ingredients:</h4>
-              <ul className={styles.ingredientsList}>
-                {ingredients?.map((ingredient, index) => (
-                  <li key={`ingredient-${postId}-${index}`}>{ingredient}</li>
-                ))}
-              </ul>
+          {/* Expanded Recipe Content */}
+          <AnimatePresence>
+            {isRecipeExpanded && (
+              <motion.div
+                className="mt-4 pt-4 border-t border-gray-100"
+                variants={expandVariants}
+                initial="collapsed"
+                animate="expanded"
+                exit="collapsed"
+              >
+                {/* Ingredients */}
+                <div className="mb-4">
+                  <h4 className="text-base font-semibold text-gray-800 mb-2">
+                    Ingredients:
+                  </h4>
+                  <ul className="space-y-1">
+                    {ingredients?.map((ingredient, index) => (
+                      <motion.li
+                        key={`ingredient-${postId}-${index}`}
+                        initial={{ opacity: 0, x: -10 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ duration: 0.3, delay: index * 0.05 }}
+                        className="text-sm text-gray-600 pl-2 border-l-2 border-green-300"
+                      >
+                        {ingredient}
+                      </motion.li>
+                    ))}
+                  </ul>
+                </div>
 
-              <h4 className={styles.sectionTitle}>Instructions:</h4>
-              <ol className={styles.instructionsList}>
-                {instructions?.map((instruction, index) => (
-                  <li key={`instruction-${postId}-${index}`}>{instruction}</li>
-                ))}
-              </ol>
-            </div>
-          )}
+                {/* Instructions */}
+                <div>
+                  <h4 className="text-base font-semibold text-gray-800 mb-2">
+                    Instructions:
+                  </h4>
+                  <ol className="space-y-2">
+                    {instructions?.map((instruction, index) => (
+                      <motion.li
+                        key={`instruction-${postId}-${index}`}
+                        initial={{ opacity: 0, x: -10 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ duration: 0.3, delay: index * 0.05 }}
+                        className="text-sm text-gray-600 pl-6 relative"
+                      >
+                        <span className="absolute left-0 top-0 flex items-center justify-center w-5 h-5 rounded-full bg-green-100 text-green-800 text-xs font-medium">
+                          {index + 1}
+                        </span>
+                        {instruction}
+                      </motion.li>
+                    ))}
+                  </ol>
+                </div>
+
+                {/* Full Recipe Link */}
+                <motion.div
+                  className="mt-4 text-center"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.3 }}
+                >
+                  <Link
+                    to={`/recipe/${postId}`}
+                    className="text-[#1d9c3f] hover:text-[#187832] font-medium text-sm"
+                  >
+                    View full recipe page →
+                  </Link>
+                </motion.div>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
-      </div>
+      </motion.div>
+
       <EditPost
         isOpen={isEditPostOpen}
         onClose={() => setIsEditPostOpen(false)}
