@@ -193,7 +193,7 @@ export default function Home() {
             </div>
           </motion.div>
           
-          <motion.div
+          {/* <motion.div
             id="recipe-section"
             className="py-10 bg-[#f8f9fa]"
             variants={itemVariants}
@@ -313,7 +313,7 @@ export default function Home() {
                 </motion.button>
               </motion.div>
             </div>
-          </motion.div>
+          </motion.div> */}
           <motion.div className="py-8 bg-white" variants={itemVariants}>
             <div className="max-w-7xl mx-auto px-4">
               <AnimatePresence>

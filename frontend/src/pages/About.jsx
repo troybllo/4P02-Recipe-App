@@ -11,7 +11,7 @@ export default function About() {
         About Page
       </div>
 
-      <Navbar />
+      
 
       {/* Page Container */}
       <div className="bg-white shadow-lg rounded-lg p-6 max-w-5xl mx-auto mt-6 border border-gray-300">

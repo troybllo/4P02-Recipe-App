@@ -7,6 +7,7 @@ import Navbar from "./components/Navbar";
 import Sidebar from "./components/Sidebar";
 import Profile from "./pages/Profile";
 import RecipeDetail from "./pages/RecipeDetail";
+import SignIn from "./pages/SignIn";
 
 
 function App() {
@@ -19,6 +20,7 @@ function App() {
           <Route path="/discovery" element={<Discovery />} />
           <Route path="/about" element={<About />} />
           <Route path="/profile" element={<Profile />} />
+          <Route path="/signin" element={<SignIn />} />
 
           <Route path="/" element={<Home />} />
           {/* Other routes */}

@@ -225,7 +225,11 @@ export default function Navbar() {
                 whileTap="tap"
                 variants={buttonVariants}
               >
+              <Link
+                to="/signin"
+                className="">
                 <span>Sign In</span>
+              </Link>
               </motion.button>
             )}
           </div>
