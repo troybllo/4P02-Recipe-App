@@ -1,8 +1,8 @@
 // src/components/Navbar.jsx
-import React, { useState } from "react";
-// Make sure to import X and Menu here:
-import { Menu, X, ChevronLeft, ChevronRight } from "lucide-react"; 
+import React, { useState, useEffect } from "react";
+import { Menu, X, ChevronLeft, ChevronRight } from "lucide-react";
 import { Link } from "react-router-dom";
+import { motion, AnimatePresence } from "framer-motion";
 import SignIn from "./SignIn";
 import SignUp from "./Signup";
 import CreatePost from "./CreatePost";
@@ -19,19 +19,46 @@ export default function Navbar() {
   const [isSignInOpen, setIsSignInOpen] = useState(false);
   const [isSignUpOpen, setIsSignUpOpen] = useState(false);
   const [isCreatePostOpen, setIsCreatePostOpen] = useState(false);
-
-  // If you want a hamburger on mobile only, keep track of that state:
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [profilePicUrl, setProfilePicUrl] = useState(profileIcon);
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  // Check if user is logged in when component mounts
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      setIsLoggedIn(true);
+    }
+
+    // Add scroll listener
+    const handleScroll = () => {
+      if (window.scrollY > 10) {
+        setIsScrolled(true);
+      } else {
+        setIsScrolled(false);
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   const handleSignInSuccess = (token) => {
     console.log("Signed in with token:", token);
     setIsSignInOpen(false);
+    setIsLoggedIn(true);
   };
 
   const handleSignUpSuccess = (data) => {
     console.log("Signed up successfully:", data);
     setIsSignUpOpen(false);
     setIsSignInOpen(true);
+  };
+
+  const handleSignOut = () => {
+    localStorage.removeItem("token");
+    setIsLoggedIn(false);
   };
 
   const handleCreatePost = (postData) => {
@@ -49,118 +76,272 @@ export default function Navbar() {
     setIsSignInOpen(true);
   };
 
+  const navVariants = {
+    hidden: { opacity: 0, y: -20 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.3 },
+    },
+  };
+
+  const buttonVariants = {
+    hover: {
+      scale: 1.05,
+      boxShadow: "0px 5px 15px rgba(0, 0, 0, 0.1)",
+      transition: { duration: 0.2 },
+    },
+    tap: { scale: 0.95 },
+  };
+
   return (
     <>
-      {/* Fixed top bar */}
-      <div className="fixed top-0 left-0 right-0 h-16 bg-[#eaf5e4] border-b border-[#869a7b] shadow-lg z-50">
-        <div className="max-w-7xl mx-auto px-4 h-full flex items-center justify-between">
-          {/* Left side: Logo */}
-          <div className="flex items-center">
-            <Link to="/about" className="flex">
-              <img src={feastlyLogo} alt="Feastly" className="w-10 h-10 mr-2" />
-              <span className="text-2xl font-bold">Feastly</span>
+      <motion.div
+        className={`fixed top-0 left-0 right-0 h-16 z-50 transition-all duration-300 ${
+          isScrolled ? "bg-white/90 backdrop-blur-md shadow-md" : "bg-white"
+        }`}
+        initial="hidden"
+        animate="visible"
+        variants={navVariants}
+      >
+        <div className="max-w-7xl mx-auto px-6 h-full flex items-center justify-between">
+          <motion.div
+            className="flex items-center"
+            whileHover={{ scale: 1.02 }}
+          >
+            <Link to="/about" className="flex items-center">
+              <motion.img
+                src={feastlyLogo}
+                alt="Feastly"
+                className="w-10 h-10 mr-2"
+                whileHover={{ rotate: 5 }}
+                transition={{ duration: 0.2 }}
+              />
+              <span className="text-2xl font-bold bg-gradient-to-r from-[#1d380e] to-[#5c9054] bg-clip-text text-transparent">
+                Feastly
+              </span>
             </Link>
+          </motion.div>
+          <div className="hidden lg:flex items-center space-x-1">
+            <motion.div
+              whileHover="hover"
+              whileTap="tap"
+              variants={buttonVariants}
+            >
+              <Link
+                to="/"
+                className="px-4 py-2 flex items-center text-gray-700 rounded-md hover:bg-gray-100 transition-all duration-300"
+              >
+                <img src={homeIcon} alt="Home" className="w-5 h-5 mr-2" />
+                <span>Home</span>
+              </Link>
+            </motion.div>
+
+            <motion.div
+              whileHover="hover"
+              whileTap="tap"
+              variants={buttonVariants}
+            >
+              <Link
+                to="/discovery"
+                className="px-4 py-2 flex items-center text-gray-700 rounded-md hover:bg-gray-100 transition-all duration-300"
+              >
+                <img
+                  src={discoveryIcon}
+                  alt="Discovery"
+                  className="w-5 h-5 mr-2"
+                />
+                <span>Discovery</span>
+              </Link>
+            </motion.div>
+
+            <motion.div
+              whileHover="hover"
+              whileTap="tap"
+              variants={buttonVariants}
+            >
+              <Link
+                to="/profile"
+                className="px-4 py-2 flex items-center text-gray-700 rounded-md hover:bg-gray-100 transition-all duration-300"
+              >
+                <img src={aboutIcon} alt="Profile" className="w-5 h-5 mr-2" />
+                <span>Profile</span>
+              </Link>
+            </motion.div>
+          </div>
+          <div className="hidden lg:flex items-center space-x-3">
+            <motion.button
+              onClick={() => setIsCreatePostOpen(true)}
+              className="px-4 py-2 flex bg-[#1d9c3f] justify-center items-center rounded-md text-white font-medium hover:bg-[#187832] transition-all duration-300 shadow-sm"
+              whileHover="hover"
+              whileTap="tap"
+              variants={buttonVariants}
+            >
+              <img
+                src={createPostIcon}
+                alt="Create"
+                className="w-5 h-5 mr-2 object-contain brightness-0 invert"
+              />
+              <span>Create Post</span>
+            </motion.button>
+
+            {isLoggedIn ? (
+              <div className="flex items-center">
+                <motion.div
+                  whileHover={{ scale: 1.1 }}
+                  transition={{ duration: 0.2 }}
+                  className="relative"
+                >
+                  <Link to="/profile">
+                    <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-[#1d9c3f] hover:border-[#187832] transition-all duration-300">
+                      <img
+                        src={profilePicUrl}
+                        alt="Profile"
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                    <span className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-white rounded-full"></span>
+                  </Link>
+                </motion.div>
+                <motion.button
+                  onClick={handleSignOut}
+                  className="ml-2 px-3 py-1.5 bg-gray-100 rounded-md text-gray-700 text-sm font-medium hover:bg-gray-200 transition-all duration-300"
+                  whileHover="hover"
+                  whileTap="tap"
+                  variants={buttonVariants}
+                >
+                  Sign Out
+                </motion.button>
+              </div>
+            ) : (
+              <motion.button
+                onClick={() => setIsSignInOpen(true)}
+                className="px-4 py-2 flex bg-[#f9dcb8] border border-[#ba5719] rounded-md text-[#ba5719] font-medium hover:bg-[#ba5719] hover:text-white transition-all duration-300"
+                whileHover="hover"
+                whileTap="tap"
+                variants={buttonVariants}
+              >
+                <img
+                  src={profileIcon}
+                  alt="Profile"
+                  className="w-5 h-5 mr-2 object-contain"
+                />
+                <span>Sign In</span>
+              </motion.button>
+            )}
           </div>
 
-          {/* Middle: Search box (hide on small screens, for example) */}
-          <div className="hidden lg:flex items-center px-2 py-1 ml-4">
-            <input
-              type="text"
-              placeholder="Search..."
-              className="max-w-full px-4 py-2 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-400"
-            />
-          </div>
-                <div className="hidden lg:flex items-center space-x-4 ml-auto">
-                <Link
-                  to="/"
-                  className="px-3 py-2 flex items-center bg-[#fbfff9] border border-[#869a7b] rounded-full text-gray-900 hover:border-[#1d380e] hover:bg-[#e6f4e0] "
-                >
-                  <img src={homeIcon} alt="Home" className="w-auto h-auto mr-2" />
-                  <span>Home</span>
-                </Link>
-                <Link
-                  to="/discovery"
-                  className="px-3 py-2 flex items-center bg-[#fbfff9] border border-[#869a7b] rounded-full text-gray-900 hover:border-[#1d380e] hover:bg-[#e6f4e0] "
-                >
-                  <img src={discoveryIcon} alt="Discovery" className="w-auto h-auto mr-2" />
-                  <span>Discovery</span>
-                </Link>
-                <Link
-                  to="/profile"
-                  className="px-3 py-2 flex items-center bg-[#fbfff9] border border-[#869a7b] rounded-full text-gray-900 hover:border-[#1d380e] hover:bg-[#e6f4e0] "
-                >
-                  <img src={aboutIcon} alt="Profile" className="w-auto h-auto mr-2" />
-                  <span>Profile</span>
-                </Link>
-                <button
-                  onClick={() => setIsCreatePostOpen(true)}
-                  className="px-3 py-2 flex bg-[#d5f9c5] justify-center items-center border border-[#1d9c3f] rounded-full text-[#1d9c3f] font-bold hover:border-[#187832] hover:text-[#187832] hover:bg-[#81e89d]"
-                >
-                  <img src={createPostIcon} alt="Profile" className="w-6 h-6 mr-2 object-contain" />
-                  <span>Create Post</span>
-                </button>
-                <button
-                  onClick={() => setIsSignInOpen(true)}
-                  className="px-3 py-2 flex bg-[#f9dcb8] border border-[#ba5719] rounded-full text-[#ba5719] font-bold hover:border-1 hover:border-[#8c4420] hover:text-[#8c4420] hover:bg-[#ffc784]"
-                >
-                  <img src={profileIcon} alt="Profile" className="w-auto h-auto mr-2 object-contain" />
-                  <span>Sign In</span>
-                </button>
-                </div>
-
-                {/* Hamburger button for mobile screens */}
-          <button
-            className="lg:hidden p-2 rounded-full bg-[#ccdec2] border border-[#575757]"
+          <motion.button
+            className="lg:hidden p-2 rounded-md bg-gray-100 hover:bg-gray-200 transition-all duration-300"
             onClick={() => setIsMenuOpen(!isMenuOpen)}
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.9 }}
           >
             {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
-          </button>
+          </motion.button>
         </div>
-      </div>
+      </motion.div>
 
-      {/* Mobile menu (visible only when isMenuOpen && small screen) */}
-      {isMenuOpen && (
-        <div className="lg:hidden mt-16 fixed top-0 left-0 right-0 bg-[#eaf5e4] border-b border-[#1d380e] shadow-lg z-40">
-          <div className="p-4 space-y-2">
-            <Link
-              to="/"
-              className="block px-3 py-2 bg-[#ccdec2] border border-[#575757] rounded-full text-gray-900"
-            >
-              Home
-            </Link>
-            <Link
-              to="/discovery"
-              className="block px-3 py-2 bg-[#ccdec2] border border-[#575757] rounded-full text-gray-900"
-            >
-              Discovery
-            </Link>
-            <Link
-              to="/about"
-              className="block px-3 py-2 bg-[#ccdec2] border border-[#575757] rounded-full text-gray-900"
-            >
-              About
-            </Link>
-            <Link
-              to="/profile"
-              className="block px-3 py-2 bg-[#ccdec2] border border-[#575757] rounded-full text-gray-900"
-            >
-              Profile
-            </Link>
-            <button
-              onClick={() => setIsCreatePostOpen(true)}
-              className="block w-full px-3 py-2 bg-[#bbf7a0] border border-[#1d9c3f] rounded-full text-[#1d9c3f] font-bold"
-            >
-              Create Post
-            </button>
-            <button
-              onClick={() => setIsSignInOpen(true)}
-              className="block w-full px-3 py-2 bg-[#ffcf94] border border-[#ba5719] rounded-full text-[#ba5719] font-bold"
-            >
-              Sign In
-            </button>
-          </div>
-        </div>
-      )}
+      <AnimatePresence>
+        {isMenuOpen && (
+          <motion.div
+            className="lg:hidden mt-16 fixed top-0 left-0 right-0 bg-white/95 backdrop-blur-md shadow-lg z-40"
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.3 }}
+          >
+            <div className="p-4 space-y-2">
+              <motion.div
+                whileHover={{ scale: 1.02, x: 5 }}
+                transition={{ duration: 0.2 }}
+              >
+                <Link
+                  to="/"
+                  className="block px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-md text-gray-900 transition-all duration-300"
+                >
+                  Home
+                </Link>
+              </motion.div>
+
+              <motion.div
+                whileHover={{ scale: 1.02, x: 5 }}
+                transition={{ duration: 0.2 }}
+              >
+                <Link
+                  to="/discovery"
+                  className="block px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-md text-gray-900 transition-all duration-300"
+                >
+                  Discovery
+                </Link>
+              </motion.div>
+
+              <motion.div
+                whileHover={{ scale: 1.02, x: 5 }}
+                transition={{ duration: 0.2 }}
+              >
+                <Link
+                  to="/about"
+                  className="block px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-md text-gray-900 transition-all duration-300"
+                >
+                  About
+                </Link>
+              </motion.div>
+
+              <motion.div
+                whileHover={{ scale: 1.02, x: 5 }}
+                transition={{ duration: 0.2 }}
+              >
+                <Link
+                  to="/profile"
+                  className="block px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-md text-gray-900 transition-all duration-300"
+                >
+                  Profile
+                </Link>
+              </motion.div>
+
+              <motion.button
+                onClick={() => setIsCreatePostOpen(true)}
+                className="block w-full px-4 py-2.5 bg-[#1d9c3f] rounded-md text-white font-medium hover:bg-[#187832] transition-all duration-300 shadow-sm"
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+              >
+                Create Post
+              </motion.button>
+
+              {isLoggedIn ? (
+                <div className="flex items-center justify-between mt-4 pt-4 border-t border-gray-200">
+                  <div className="flex items-center">
+                    <img
+                      src={profilePicUrl}
+                      alt="Profile"
+                      className="w-10 h-10 rounded-full border-2 border-[#1d9c3f] object-cover"
+                    />
+                    <span className="ml-2 font-medium">My Profile</span>
+                  </div>
+                  <motion.button
+                    onClick={handleSignOut}
+                    className="px-4 py-2 bg-gray-100 rounded-md text-gray-700 font-medium hover:bg-gray-200 transition-all duration-300"
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    Sign Out
+                  </motion.button>
+                </div>
+              ) : (
+                <motion.button
+                  onClick={() => setIsSignInOpen(true)}
+                  className="block w-full px-4 py-2.5 bg-[#f9dcb8] border border-[#ba5719] rounded-md text-[#ba5719] font-medium hover:bg-[#ba5719] hover:text-white transition-all duration-300 mt-4"
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                >
+                  Sign In
+                </motion.button>
+              )}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Modals (SignIn, SignUp, CreatePost) */}
       <SignIn

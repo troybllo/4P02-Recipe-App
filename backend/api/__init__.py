@@ -1,61 +1,64 @@
+import os
 from flask import Flask
 from flask_cors import CORS
-from flask_jwt_extended import JWTManager
-from firebase_admin import credentials, initialize_app, get_app, App
 import firebase_admin
-import os
+from firebase_admin import credentials, get_app, initialize_app
+import cloudinary
+from .routes.registration import register_blueprint
+from .routes.login import login_blueprint
+from .routes.recipes import recipes_blueprint
 
 
-def create_app() -> Flask:
-    """Create and configure an instance of the Flask application."""
+def create_app():
+    """
+    Create and configure an instance of the Flask application.
+    We'll call 'setup_firebase()' here once, so we have a default
+    Firebase app ready (test or production, depending on environment).
+    Then we configure Cloudinary using CLOUDINARY_URL.
+    """
     app = Flask(__name__)
+    CORS(app)
 
-    # Configurations for JWT
-    app.config["JWT_SECRET_KEY"] = os.getenv("JWT_SECRET_KEY", "super-secret-key")
-    jwt = JWTManager(app)  # Initialize JWT Manager
+    # Initialize Firebase Admin (default app)
+    setup_firebase()
 
-    # Initialize CORS
-    CORS(
-        app,
-        resources={
-            r"/*": {  # Allow all routes
-                "origins": ["http://localhost:3000"],  # Allow only this origin
-                # Allow these methods
-                "methods": ["GET", "POST", "PUT", "DELETE"],
-                "allow_headers": [
-                    "Content-Type",
-                    "Authorization",
-                ],  # Allow these headers
-            }
-        },
-    )
+    # Configure Cloudinary using CLOUDINARY_URL, e.g.
+    #   export CLOUDINARY_URL=cloudinary://<api_key>:<api_secret>@<cloud_name>
+    cloudinary.config(cloudinary_url=os.getenv("CLOUDINARY_URL"))
 
-    # Initialize Firebase Admin
-    firebase_app = setup_firebase()
-
-    # Import and register blueprints for registration and login
-    from .routes.registration import register_blueprint
-    from .routes.login import login_blueprint
-
+    # Register blueprints
     app.register_blueprint(register_blueprint, url_prefix="/api")
     app.register_blueprint(login_blueprint, url_prefix="/api")
+    app.register_blueprint(recipes_blueprint, url_prefix="/api")
 
     return app
 
 
-def setup_firebase() -> App:
+def setup_firebase():
     """
-    Setup and initialize the Firebase Admin SDK. If the default app is already
-    initialized, return it. Otherwise, initialize a new one using credentials.
+    If FLASK_ENV == 'testing', use Firebase_Test.
+    Otherwise, use GOOGLE_APPLICATION_CREDENTIALS for dev or prod.
     """
     try:
-        # If Firebase has already been initialized, just return the default app.
-        return get_app()
+        # If default app already exists, do nothing
+        get_app()
+        return
     except ValueError:
-        # "ValueError" will be raised if no default app exists yet.
+        pass  # Means no default app has been initialized yet
+
+    env_mode = os.getenv("FLASK_ENV", "development").lower()
+    if env_mode == "testing":
+        cred_path = os.getenv("Firebase_Test")
+        if not cred_path:
+            raise ValueError(
+                "TEST_FIREBASE_CREDENTIALS not set, but FLASK_ENV=testing."
+            )
+    else:
         cred_path = os.getenv("GOOGLE_APPLICATION_CREDENTIALS")
         if not cred_path:
-            raise ValueError("Missing environment variable for Firebase credentials")
+            raise ValueError(
+                "GOOGLE_APPLICATION_CREDENTIALS not set (non-testing mode)."
+            )
 
-        cred = credentials.Certificate(cred_path)
-        return initialize_app(cred)
+    cred = credentials.Certificate(cred_path)
+    initialize_app(cred)
