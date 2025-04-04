@@ -164,7 +164,11 @@ export default function Navbar() {
                 to="/profile"
                 className="px-4 py-2 flex items-center text-gray-700 rounded-md hover:bg-gray-100 transition-all duration-300"
               >
-                <img src={aboutIcon} alt="Profile" className="w-5 h-5 mr-2" />
+                    <img
+                        src={profileIcon}
+                        alt="Profile"
+                        className="w-5 h-5 mr-2 object-contain"
+                      />
                 <span>Profile</span>
               </Link>
             </motion.div>
@@ -221,11 +225,6 @@ export default function Navbar() {
                 whileTap="tap"
                 variants={buttonVariants}
               >
-                <img
-                  src={profileIcon}
-                  alt="Profile"
-                  className="w-5 h-5 mr-2 object-contain"
-                />
                 <span>Sign In</span>
               </motion.button>
             )}

@@ -192,14 +192,7 @@ export default function Home() {
               </motion.div>
             </div>
           </motion.div>
-          <motion.div className="py-10 bg-white" variants={itemVariants}>
-            <div className="max-w-6xl mx-auto px-6">
-              <h2 className="text-2xl font-semibold text-[#1d380e] mb-6">
-                Today's Stories
-              </h2>
-              <StoryCarousel />
-            </div>
-          </motion.div>
+          
           <motion.div
             id="recipe-section"
             className="py-10 bg-[#f8f9fa]"
