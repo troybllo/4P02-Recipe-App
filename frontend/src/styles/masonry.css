@@ -1,40 +1,226 @@
-:root {
-  --masonry-gap: 1rem;
-}
-
-@media (min-width: 1280px) {
-  :root {
-    --masonry-gap: 1rem;
-  }
-}
-
-@media (min-width: 1600px) {
-  :root {
-    --masonry-gap: 1rem;
-  }
-}
+/* src/styles/masonry.css */
 
 .my-masonry-grid {
   display: flex;
-  /* Negative margin on both sides for symmetrical spacing */
-  margin-left: calc(-0.5 * var(--masonry-gap));
-  margin-right: calc(-0.5 * var(--masonry-gap));
+  margin-left: -16px; /* gutter size offset */
   width: auto;
-  padding: 0 3rem;
 }
 
 .my-masonry-grid_column {
-  /* Matching left/right padding to keep columns spaced */
-  padding-left: var(--masonry-gap);
-  padding-right: var(--masonry-gap);
+  padding-left: 16px; /* gutter size */
   background-clip: padding-box;
 }
 
+/* Animation for masonry items on load */
 .my-masonry-grid_column > div {
-  /* Vertical spacing between items in the same column */
-  margin-bottom: var(--masonry-gap);
+  margin-bottom: 16px;
+  transform: translateY(20px);
+  opacity: 0;
+  animation: fadeInUp 0.6s ease forwards;
 }
 
-/* Styles for the main content container */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
 
+/* Apply animation delay to each item */
+.my-masonry-grid_column > div:nth-child(1) {
+  animation-delay: 0.1s;
+}
+.my-masonry-grid_column > div:nth-child(2) {
+  animation-delay: 0.2s;
+}
+.my-masonry-grid_column > div:nth-child(3) {
+  animation-delay: 0.3s;
+}
+.my-masonry-grid_column > div:nth-child(4) {
+  animation-delay: 0.4s;
+}
+.my-masonry-grid_column > div:nth-child(5) {
+  animation-delay: 0.5s;
+}
+.my-masonry-grid_column > div:nth-child(6) {
+  animation-delay: 0.6s;
+}
+.my-masonry-grid_column > div:nth-child(7) {
+  animation-delay: 0.7s;
+}
+.my-masonry-grid_column > div:nth-child(8) {
+  animation-delay: 0.8s;
+}
+.my-masonry-grid_column > div:nth-child(9) {
+  animation-delay: 0.9s;
+}
+.my-masonry-grid_column > div:nth-child(10) {
+  animation-delay: 1s;
+}
 
+/* Hide scrollbar for Chrome, Safari and Opera */
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+.scrollbar-hide {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
+/* Responsive adjustments */
+@media (max-width: 940px) {
+  .my-masonry-grid {
+    margin-left: -12px;
+  }
+  .my-masonry-grid_column {
+    padding-left: 12px;
+  }
+  .my-masonry-grid_column > div {
+    margin-bottom: 12px;
+  }
+}
+
+/* Add hover effect to masonry items */
+.my-masonry-grid_column > div:hover {
+  z-index: 1;
+}
+
+/* Fade-in animation for when new filter is applied */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.fade-in {
+  animation: fadeIn 0.5s ease-in;
+}
+
+/* Shimmer loading effect for cards before content loads */
+.shimmer-card {
+  background: #f6f7f8;
+  background-image: linear-gradient(
+    to right,
+    #f6f7f8 0%,
+    #edeef1 20%,
+    #f6f7f8 40%,
+    #f6f7f8 100%
+  );
+  background-repeat: no-repeat;
+  background-size: 800px 100%;
+  display: inline-block;
+  position: relative;
+  animation-duration: 1.5s;
+  animation-fill-mode: forwards;
+  animation-iteration-count: infinite;
+  animation-name: shimmer;
+  animation-timing-function: linear;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -468px 0;
+  }
+  100% {
+    background-position: 468px 0;
+  }
+}
+
+/* Container for the masonry grid with padding */
+.masonry-container {
+  padding: 20px;
+  max-width: 1800px;
+  margin: 0 auto;
+}
+
+/* Add smooth transitions when filtering items */
+.my-masonry-grid_column > div {
+  transition:
+    opacity 0.3s ease,
+    transform 0.3s ease;
+}
+
+/* Animation for floating heart when liking a post */
+.floatingHeart {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 30px;
+  animation: float-heart 1s ease-out forwards;
+  pointer-events: none;
+  z-index: 10;
+}
+
+@keyframes float-heart {
+  0% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(0.5);
+  }
+  50% {
+    opacity: 1;
+    transform: translate(-50%, -80%) scale(1.2);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -120%) scale(0.8);
+  }
+}
+
+/* Animation for copy link message */
+.copyMsg {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: rgba(29, 156, 63, 0.9);
+  color: white;
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-size: 14px;
+  animation: fade-up 2s ease-out forwards;
+  z-index: 10;
+}
+
+/* Animation for download message */
+.downloadMsg {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: rgba(29, 156, 63, 0.9);
+  color: white;
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-size: 14px;
+  animation: fade-up 2s ease-out forwards;
+  z-index: 10;
+}
+
+@keyframes fade-up {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, 10px);
+  }
+  20% {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+  80% {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -10px);
+  }
+}

@@ -1,12 +1,11 @@
 // src/components/StoryCarousel.jsx
 import React, { useState, useEffect, useRef } from "react";
-import { motion, AnimatePresence } from "framer-motion"; // Import framer-motion
+import { motion, AnimatePresence } from "framer-motion";
 import StoryPostModal from "./StoryPostModal";
 import { stories } from "../data/stories"; // Import stories data
 
 /**
  * Utility function to chunk an array into sub-arrays of a given size.
- * E.g. chunkArray([1,2,3,4,5,6,7], 3) => [[1,2,3],[4,5,6],[7]]
  */
 function chunkArray(array, size) {
   const chunks = [];
@@ -17,10 +16,10 @@ function chunkArray(array, size) {
 }
 
 export default function StoryCarousel() {
-  const [currentIndex, setCurrentIndex] = useState(0); // For chunk pagination
+  const [currentIndex, setCurrentIndex] = useState(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedIndex, setSelectedIndex] = useState(null); // For story modal
-  const [chunkSize, setChunkSize] = useState(5); // default for small screens
+  const [selectedIndex, setSelectedIndex] = useState(null);
+  const [chunkSize, setChunkSize] = useState(5);
   const [isDragging, setIsDragging] = useState(false);
   const [startX, setStartX] = useState(0);
   const [scrollLeft, setScrollLeft] = useState(0);
@@ -39,9 +38,7 @@ export default function StoryCarousel() {
       }
     };
 
-    // Initial call
     updateChunkSize();
-
     window.addEventListener("resize", updateChunkSize);
     return () => window.removeEventListener("resize", updateChunkSize);
   }, []);
@@ -98,22 +95,21 @@ export default function StoryCarousel() {
 
   // Animation variants
   const containerVariants = {
-    hidden: { opacity: 0, y: -10 },
+    hidden: { opacity: 0 },
     visible: {
       opacity: 1,
-      y: 0,
       transition: { duration: 0.5 },
     },
   };
 
   const storyVariants = {
-    hidden: { opacity: 0, y: 20 },
+    hidden: { opacity: 0, y: 10 },
     visible: (i) => ({
       opacity: 1,
       y: 0,
       transition: {
-        duration: 0.5,
-        delay: i * 0.1,
+        duration: 0.4,
+        delay: i * 0.08,
       },
     }),
     hover: {
@@ -125,7 +121,7 @@ export default function StoryCarousel() {
   };
 
   const buttonVariants = {
-    initial: { opacity: 0.6, scale: 0.9 },
+    initial: { opacity: 0.7 },
     hover: {
       opacity: 1,
       scale: 1.1,
@@ -149,17 +145,17 @@ export default function StoryCarousel() {
       />
 
       <motion.div
-        className="relative w-full max-w-5xl mx-auto"
+        className="relative w-full"
         variants={containerVariants}
         initial="hidden"
         animate="visible"
       >
-        {/* Prev chunk arrow (show only if not on first page) */}
+        {/* Navigation Arrows */}
         <AnimatePresence>
           {currentIndex > 0 && (
             <motion.button
               onClick={handlePrev}
-              className="absolute left-1 top-1/2 transform -translate-y-1/2 p-3 bg-white/80 backdrop-blur-sm hover:bg-white text-[#1d9c3f] rounded-full shadow-lg z-10"
+              className="absolute left-0 top-1/2 transform -translate-y-1/2 p-2 bg-white rounded-full shadow-md text-gray-700 z-10"
               variants={buttonVariants}
               initial="initial"
               animate="visible"
@@ -186,9 +182,9 @@ export default function StoryCarousel() {
           )}
         </AnimatePresence>
 
-        {/* Stories in the current chunk */}
+        {/* Stories Carousel */}
         <div
-          className="flex space-x-6 px-8 py-4 overflow-x-auto scrollbar-hide"
+          className="flex space-x-4 px-4 py-2 overflow-x-auto scrollbar-hide"
           ref={carouselRef}
           onMouseDown={handleMouseDown}
           onMouseUp={handleMouseUp}
@@ -201,21 +197,21 @@ export default function StoryCarousel() {
               key={`story-${currentIndex}-${idx}`}
               className="flex flex-col items-center cursor-pointer flex-shrink-0"
               onClick={() => handleStoryClick(idx)}
-              custom={idx} // Pass the index to stagger animations
+              custom={idx}
               variants={storyVariants}
               initial="hidden"
               animate="visible"
               whileHover="hover"
               whileTap="tap"
             >
-              {/* Gradient ring with pulse animation */}
+              {/* Story Avatar with Gradient Ring */}
               <div className="relative">
                 <motion.div
                   className="absolute inset-0 rounded-full"
                   animate={{
                     boxShadow: [
-                      "0 0 0 0px rgba(236, 72, 153, 0.7)",
-                      "0 0 0 3px rgba(236, 72, 153, 0)",
+                      "0 0 0 0px rgba(29, 156, 63, 0.7)",
+                      "0 0 0 3px rgba(29, 156, 63, 0)",
                     ],
                   }}
                   transition={{
@@ -225,8 +221,7 @@ export default function StoryCarousel() {
                   }}
                 />
 
-                <div className="w-20 h-20 bg-gradient-to-tr from-yellow-400 via-pink-500 to-purple-500 p-[2px] rounded-full">
-                  {/* If the story has multiple images, just show the first as the thumbnail */}
+                <div className="w-16 h-16 bg-gradient-to-br from-[#8bc34a] to-[#1d9c3f] p-[2px] rounded-full">
                   <img
                     src={story.images?.[0] || story.img}
                     alt={story.username}
@@ -235,12 +230,12 @@ export default function StoryCarousel() {
                 </div>
               </div>
 
-              {/* Username with subtle animation */}
+              {/* Username */}
               <motion.p
-                className="text-sm mt-2 text-gray-700 w-20 text-center truncate font-medium"
+                className="text-xs mt-2 text-gray-700 w-16 text-center truncate font-medium"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                transition={{ delay: 0.3 }}
+                transition={{ delay: 0.2 }}
               >
                 {story.username}
               </motion.p>
@@ -248,12 +243,12 @@ export default function StoryCarousel() {
           ))}
         </div>
 
-        {/* Next chunk arrow (show only if not on last page) */}
+        {/* Next Arrow */}
         <AnimatePresence>
           {currentIndex < storyChunks.length - 1 && (
             <motion.button
               onClick={handleNext}
-              className="absolute right-1 top-1/2 transform -translate-y-1/2 p-3 bg-white/80 backdrop-blur-sm hover:bg-white text-[#1d9c3f] rounded-full shadow-lg z-10"
+              className="absolute right-0 top-1/2 transform -translate-y-1/2 p-2 bg-white rounded-full shadow-md text-gray-700 z-10"
               variants={buttonVariants}
               initial="initial"
               animate="visible"

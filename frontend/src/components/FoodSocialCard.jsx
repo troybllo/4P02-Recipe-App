@@ -167,15 +167,13 @@ const FoodSocialCard = ({
             </motion.div>
             <div className="ml-3 flex-1 min-w-0">
               <h3
-                className={`font-semibold text-gray-800 cursor-pointer ${isTitleExpanded ? "" : "truncate"}`}
-                onClick={handleTitleClick}
+                className="font-semibold text-gray-800"
                 style={{
                   maxWidth: "100%",
+                  wordBreak: "break-word",
                 }}
               >
-                {isTitleExpanded
-                  ? title
-                  : `${title.slice(0, 30)}${title.length > 30 ? "..." : ""}`}
+                {title}
               </h3>
               <p className="text-xs text-gray-500">
                 by {author} • {formattedDate}
