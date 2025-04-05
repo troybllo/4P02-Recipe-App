@@ -5,12 +5,13 @@ import { AuthProvider } from "./components/AuthContext"; // Import the AuthProvi
 import { ProtectedRoute } from "./components/ProtectedRoute"; // Import the ProtectedRoute
 import Home from "./pages/Home";
 import Discovery from "./pages/Discovery";
-import About from "./pages/About";
+import Landing from "./pages/Landing";
 import Navbar from "./components/Navbar";
 import Sidebar from "./components/Sidebar";
 import Profile from "./pages/Profile";
 import RecipeDetail from "./pages/RecipeDetail";
 import SignInPage from "./pages/SignInPage";
+import SignUpPage from "./pages/SignUpPage";
 
 function App() {
   return (
@@ -22,8 +23,9 @@ function App() {
             {/* Public routes */}
             <Route path="/" element={<Home />} />
             <Route path="/discovery" element={<Discovery />} />
-            <Route path="/about" element={<About />} />
-            <Route path="/signin" element={<SignInPage />} />
+            <Route path="/landing" element={<Landing />} />
+            <Route path="/Signin" element={<SignInPage />} />
+            <Route path="/Signup" element={<SignUpPage />} />
             <Route path="/recipe/:id" element={<RecipeDetail />} />
             
             {/* Protected routes */}

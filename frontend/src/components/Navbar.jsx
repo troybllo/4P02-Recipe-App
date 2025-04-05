@@ -41,7 +41,7 @@ export default function Navbar() {
 
   const handleSignOut = () => {
     logout(); // Use the logout function from auth context
-    navigate("/"); // Redirect to home page after logout
+    navigate("/landing"); // Redirect to home page after logout
   };
 
   const handleCreatePost = (postData) => {
@@ -82,7 +82,7 @@ export default function Navbar() {
             className="flex items-center"
             whileHover={{ scale: 1.02 }}
           >
-            <Link to="/about" className="flex items-center">
+            <Link to="/landing" className="flex items-center">
               <motion.img
                 src={feastlyLogo}
                 alt="Feastly"
@@ -259,7 +259,7 @@ export default function Navbar() {
                 transition={{ duration: 0.2 }}
               >
                 <Link
-                  to="/about"
+                  to="/landing"
                   className="block px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-md text-gray-900 transition-all duration-300"
                 >
                   About

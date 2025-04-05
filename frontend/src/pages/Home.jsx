@@ -142,7 +142,7 @@ export default function Home() {
           variants={containerVariants}
           className="pt-16" // Add padding for navbar
         >
-          <motion.div
+          {/* <motion.div
             className="w-full bg-gradient-to-b from-[#0e2018] to-[#1b3c2a] text-white py-16"
             variants={itemVariants}
           >
@@ -191,7 +191,7 @@ export default function Home() {
                 </motion.button>
               </motion.div>
             </div>
-          </motion.div>
+          </motion.div> */}
           
           {/* <motion.div
             id="recipe-section"
