@@ -225,6 +225,45 @@ export default function Landing() {
             </div>
           </motion.div>
         </div>
+        {!isLoggedIn && (
+          <motion.div
+          className="py-16 bg-gradient-to-r from-[#1d380e] to-[#336633] text-white"
+        >
+          <div className="max-w-5xl mx-auto px-6 text-center">
+            <motion.h2
+              className="text-3xl md:text-4xl font-bold mb-4"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
+            >
+              Join our culinary community
+            </motion.h2>
+            <motion.p
+              className="text-lg text-gray-200 mb-8 max-w-2xl mx-auto"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.1 }}
+            >
+              Share your recipes, discover new ones, connect with fellow food
+              enthusiasts
+            </motion.p>
+            <motion.button
+              className="px-8 py-3 bg-white text-[#1d380e] rounded-full font-bold text-lg hover:bg-gray-100 transition-colors shadow-lg"
+              whileHover={{
+                scale: 1.05,
+                boxShadow: "0px 8px 20px rgba(0, 0, 0, 0.2)",
+              }}
+              whileTap={{ scale: 0.98 }}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+            >
+              Create Account
+            </motion.button>
+          </div>
+        </motion.div>
+
+        )}
       </motion.div>
     </div>
   );

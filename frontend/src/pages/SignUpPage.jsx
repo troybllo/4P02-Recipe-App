@@ -20,7 +20,7 @@ export default function SignUpPage() {
   const from = location.state?.from || "/profile";
 
   useEffect(() => {
-    // If user is already logged in, redirect to home page
+    // If user is already signed up, redirect to the home page
     if (localStorage.getItem("token")) {
       navigate("/");
     }
@@ -53,11 +53,15 @@ export default function SignUpPage() {
         body: JSON.stringify(formData),
       });
 
-      const data = await response.json();
+      const data = await response.json;
 
       if (response.ok) {
         localStorage.setItem("token", data.firebase_custom_token);
         localStorage.setItem("userId", data.userId);
+        setError("Sign up Success!");
+
+        // Update auth context
+        checkAuth && checkAuth();
         
         // Navigate to the original requested page or profile
         navigate(from, { replace: true });
