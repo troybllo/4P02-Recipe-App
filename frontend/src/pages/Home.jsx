@@ -6,6 +6,7 @@ import styles from "../styles/masonry.css";
 import FoodSocialCard from "../components/FoodSocialCard";
 import StoryCarousel from "../components/StoryCarousel";
 import { recipes } from "../data/recipes";
+import { useParams } from "react-router-dom";
 
 // Helper function to infer category from various fields
 function getCategory(recipe) {
@@ -38,8 +39,8 @@ function getCategory(recipe) {
 
 // Masonry breakpoints
 const breakpointColumnsObj = {
-  default: 5,
-  1700: 4,
+  default: 3,
+  1700: 3,
   1490: 3,
   1250: 2,
   940: 1,
@@ -50,13 +51,41 @@ export default function Home() {
   const [searchQuery, setSearchQuery] = useState("");
   const [isSearchFocused, setIsSearchFocused] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const { postId } = useParams();
+  const [recipe, setRecipe] = useState(null);
+  const [error, setError] = useState("");
 
   useEffect(() => {
+
+    const userId = localStorage.getItem("userId");
+    if(!userId) {
+      setError("User not logged in");
+      return;
+    }
+
+    const fetchRecipe = async () => {
+      try{
+        const response = await fetch(`http://127.0.0.1:5000/api/recipes/${postId}?userId=${userId}`);
+        const data = await response.json();
+        if (response.ok) {
+          setRecipe(data);
+        } else {
+          setError("Failed to fetch recipe data");
+        }
+      }
+      catch (error) {
+        console.error("Error fetching recipe:", error);
+        setError("Failed to fetch recipe data");
+      }
+    }
+
+    fetchRecipe();
+
     const timer = setTimeout(() => {
       setIsLoading(false);
     }, 1200);
     return () => clearTimeout(timer);
-  }, []);
+  }, [postId]);
 
   const filteredRecipes = recipes.filter((recipe) => {
     const ingredients = Array.isArray(recipe.ingredients)
@@ -324,7 +353,7 @@ export default function Home() {
                 >
                   {filteredRecipes.map((recipe, index) => (
                     <motion.div
-                      key={recipe.postId}
+                      key={postId}
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, scale: 0.9 }}

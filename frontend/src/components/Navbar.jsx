@@ -20,12 +20,17 @@ export default function Navbar() {
   const [profilePicUrl, setProfilePicUrl] = useState(profileIcon);
   const [isScrolled, setIsScrolled] = useState(false);
   const navigate = useNavigate();
+
+  const [profilepic, setprofilepic] = useState("");
+  const [loggedusername, setusername] = useState("");
   
   // Use auth context for login state
   const { currentUser, logout } = useAuth();
   const isLoggedIn = !!currentUser;
 
   useEffect(() => {
+
+    
     // Add scroll listener
     const handleScroll = () => {
       if (window.scrollY > 10) {

@@ -52,6 +52,7 @@ export default function SignInPage() {
       if (response.ok) {
         localStorage.setItem("token", data.firebase_custom_token);
         localStorage.setItem("userId", data.userId);
+        localStorage.setItem("users", JSON.stringify(data.user));
         
         // Reset the form data
         setFormData({
@@ -61,7 +62,7 @@ export default function SignInPage() {
         
         // Update auth context
         checkAuth && checkAuth();
-        
+
         // Navigate to the original requested page or profile
         navigate(from, { replace: true });
       } else {

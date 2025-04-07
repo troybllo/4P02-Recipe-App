@@ -8,7 +8,7 @@ import feastFill from "../assets/feast-fill.png";
 import bgFill from "../assets/bgFill.png";
 import { useAuth } from "../components/AuthContext";
 import CreatePost from "../components/CreatePost";
-import { useState, useEffect } from "react";
+import { createContext, useState, useEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 
 
@@ -19,6 +19,8 @@ export default function Landing() {
   const currentUserName = "";
   const heroText = `Welcome back ${currentUserName}`;
   const descriptionText = "Glad to see you again! Hungry for some food? Looking for some inspiration? You're in the right place (name). Feel free to explore around as much as you'd like!";
+
+
 
   return (
     <div className="min-h-screen flex flex-col w-full mt-16">
@@ -42,7 +44,7 @@ export default function Landing() {
               transition={{ duration: 0.5, delay: 0.2 }}
             >
               {isLoggedIn
-                ? `${heroText}`
+                ? `Hello ${currentUserName}`
                 : "Welcome to Feastly!"}
             </motion.h1>
             <motion.p
