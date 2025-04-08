@@ -110,7 +110,7 @@ const CreatePost = ({ isOpen, onClose }) => {
       });
       
       // Close modal on success if using as a modal
-      if (onClose) onClose();
+      //if (onClose) onClose();
       
     } catch (err) {
       setError(err.message || "Error creating recipe");

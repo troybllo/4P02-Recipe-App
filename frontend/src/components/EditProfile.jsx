@@ -1,12 +1,10 @@
 import React, { useState } from "react";
 import styles from "../styles/CreatePost.module.css";
-import {username} from "../pages/Profile.jsx";
-import {bio} from "../pages/Profile.jsx"
 
-const EditProfile = ({ isOpen, onClose, onSubmit }) => {
+const EditProfile = ({ isOpen, onClose, onSubmit, initialUsername, initialBio }) => {
   const [formData, setFormData] = useState({
-    title: username,
-    bio: bio,
+    title: initialUsername || "",
+    bio: initialBio || "",
     cookingTime: "",
     difficulty: "Easy",
     servings: "",

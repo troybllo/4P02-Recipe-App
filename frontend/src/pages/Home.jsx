@@ -6,6 +6,7 @@ import styles from "../styles/masonry.css";
 import FoodSocialCard from "../components/FoodSocialCard";
 import StoryCarousel from "../components/StoryCarousel";
 import { recipes } from "../data/recipes";
+import { useParams } from "react-router-dom";
 
 // Helper function to infer category from various fields
 function getCategory(recipe) {
@@ -38,8 +39,8 @@ function getCategory(recipe) {
 
 // Masonry breakpoints
 const breakpointColumnsObj = {
-  default: 5,
-  1700: 4,
+  default: 3,
+  1700: 3,
   1490: 3,
   1250: 2,
   940: 1,
@@ -50,13 +51,41 @@ export default function Home() {
   const [searchQuery, setSearchQuery] = useState("");
   const [isSearchFocused, setIsSearchFocused] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const { postId } = useParams();
+  const [recipe, setRecipe] = useState(null);
+  const [error, setError] = useState("");
 
   useEffect(() => {
+
+    const userId = localStorage.getItem("userId");
+    if(!userId) {
+      setError("User not logged in");
+      return;
+    }
+
+    const fetchRecipe = async () => {
+      try{
+        const response = await fetch(`http://127.0.0.1:5000/api/recipes/${postId}?userId=${userId}`);
+        const data = await response.json();
+        if (response.ok) {
+          setRecipe(data);
+        } else {
+          setError("Failed to fetch recipe data");
+        }
+      }
+      catch (error) {
+        console.error("Error fetching recipe:", error);
+        setError("Failed to fetch recipe data");
+      }
+    }
+
+    fetchRecipe();
+
     const timer = setTimeout(() => {
       setIsLoading(false);
     }, 1200);
     return () => clearTimeout(timer);
-  }, []);
+  }, [postId]);
 
   const filteredRecipes = recipes.filter((recipe) => {
     const ingredients = Array.isArray(recipe.ingredients)
@@ -142,7 +171,7 @@ export default function Home() {
           variants={containerVariants}
           className="pt-16" // Add padding for navbar
         >
-          <motion.div
+          {/* <motion.div
             className="w-full bg-gradient-to-b from-[#0e2018] to-[#1b3c2a] text-white py-16"
             variants={itemVariants}
           >
@@ -191,16 +220,9 @@ export default function Home() {
                 </motion.button>
               </motion.div>
             </div>
-          </motion.div>
-          <motion.div className="py-10 bg-white" variants={itemVariants}>
-            <div className="max-w-6xl mx-auto px-6">
-              <h2 className="text-2xl font-semibold text-[#1d380e] mb-6">
-                Today's Stories
-              </h2>
-              <StoryCarousel />
-            </div>
-          </motion.div>
-          <motion.div
+          </motion.div> */}
+          
+          {/* <motion.div
             id="recipe-section"
             className="py-10 bg-[#f8f9fa]"
             variants={itemVariants}
@@ -320,7 +342,7 @@ export default function Home() {
                 </motion.button>
               </motion.div>
             </div>
-          </motion.div>
+          </motion.div> */}
           <motion.div className="py-8 bg-white" variants={itemVariants}>
             <div className="max-w-7xl mx-auto px-4">
               <AnimatePresence>
@@ -331,7 +353,7 @@ export default function Home() {
                 >
                   {filteredRecipes.map((recipe, index) => (
                     <motion.div
-                      key={recipe.postId}
+                      key={postId}
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, scale: 0.9 }}
@@ -385,43 +407,6 @@ export default function Home() {
                   </motion.button>
                 </motion.div>
               )}
-            </div>
-          </motion.div>
-          <motion.div
-            className="py-16 bg-gradient-to-r from-[#1d380e] to-[#336633] text-white"
-            variants={itemVariants}
-          >
-            <div className="max-w-5xl mx-auto px-6 text-center">
-              <motion.h2
-                className="text-3xl md:text-4xl font-bold mb-4"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5 }}
-              >
-                Join our culinary community
-              </motion.h2>
-              <motion.p
-                className="text-lg text-gray-200 mb-8 max-w-2xl mx-auto"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: 0.1 }}
-              >
-                Share your recipes, discover new ones, connect with fellow food
-                enthusiasts
-              </motion.p>
-              <motion.button
-                className="px-8 py-3 bg-white text-[#1d380e] rounded-full font-bold text-lg hover:bg-gray-100 transition-colors shadow-lg"
-                whileHover={{
-                  scale: 1.05,
-                  boxShadow: "0px 8px 20px rgba(0, 0, 0, 0.2)",
-                }}
-                whileTap={{ scale: 0.98 }}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: 0.2 }}
-              >
-                Create Account
-              </motion.button>
             </div>
           </motion.div>
         </motion.div>

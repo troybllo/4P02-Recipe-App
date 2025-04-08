@@ -3,6 +3,8 @@ import FoodSocialCard from "../components/FoodSocialCard";
 import { recipes } from "../utils/sampleData";
 
 import discoveryLogo from "../images/discovery_diamond.png";
+import { motion } from "framer-motion";
+
 
 const Discovery = () => {
   const [activeFilters, setActiveFilters] = useState({
@@ -103,20 +105,32 @@ const Discovery = () => {
 
   return (
     <div className="w-full mt-[7rem]">
-      <div className="relative flex flex-col items-center justify-center mb-8">
-        <img
-          src={discoveryLogo}
-          alt="Discovery Diamond"
-          className="w-28 h-28 absolute"
-          style={{ zIndex: 0 }}
-        />
-        <h1 className="text-3xl font-bold mt-2 relative" style={{ zIndex: 1 }}>
-          Your Discovery
-        </h1>
-        <p className="text-gray-600 relative" style={{ zIndex: 1 }}>
-          Discover new recipes here!
-        </p>
-      </div>
+  <div className="relative flex flex-col items-center justify-center mb-8">
+    {/*  Glowing pulse behind the text */}
+    <span className="absolute w-28 h-28 animate-ping rounded-full bg-gradient-to-r from-orange-400 via-yellow-200 to-green-500 opacity-10 blur-xl" />
+
+    {/*  Gradient header text */}
+    <motion.h1
+  className="relative z-10 text-6xl md:text-7xl font-extrabold text-center bg-gradient-to-r from-[#FF7E29] via-[#fceabb] to-[#1d9c3f] bg-clip-text text-transparent drop-shadow-xl"
+  initial={{ opacity: 0, y: 20 }}
+  animate={{ opacity: 1, y: 0 }}
+  transition={{ duration: 0.6 }}
+>
+  Your Discovery
+</motion.h1>
+
+
+
+<motion.p
+  className="text-lg text-gray-600 text-center mt-1"
+  initial={{ opacity: 0, y: 10 }}
+  animate={{ opacity: 1, y: 0 }}
+  transition={{ duration: 0.6, delay: 0.1 }}
+  style={{ zIndex: 1 }}
+>
+  Discover new recipes here!
+</motion.p>
+</div>
 
       <div className="flex justify-center w-full mb-2">
         <div className="relative w-full max-w-[30%] mx-5 my-1 p-2 px-12 bg-white border border-gray-500 rounded-full text-lg text-gray-900">
