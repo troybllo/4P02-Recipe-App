@@ -12,6 +12,7 @@ import Profile from "./pages/Profile";
 import RecipeDetail from "./pages/RecipeDetail";
 import SignInPage from "./pages/SignInPage";
 import SignUpPage from "./pages/SignUpPage";
+import LandingPage from "./pages/Landing"
 
 function App() {
   return (
@@ -21,7 +22,8 @@ function App() {
         <div className="main-content">
           <Routes>
             {/* Public routes */}
-            <Route path="/" element={<Home />} />
+            <Route path="/" element={<LandingPage />} />
+            <Route path="/home" element={<Home />} />
             <Route path="/discovery" element={<Discovery />} />
             <Route path="/landing" element={<Landing />} />
             <Route path="/Signin" element={<SignInPage />} />
