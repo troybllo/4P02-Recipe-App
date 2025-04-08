@@ -52,6 +52,7 @@ export default function SignInPage() {
       if (response.ok) {
         localStorage.setItem("token", data.firebase_custom_token);
         localStorage.setItem("userId", data.userId);
+        localStorage.setItem("users", JSON.stringify(data.user));
         
         // Reset the form data
         setFormData({
@@ -61,7 +62,7 @@ export default function SignInPage() {
         
         // Update auth context
         checkAuth && checkAuth();
-        
+
         // Navigate to the original requested page or profile
         navigate(from, { replace: true });
       } else {
@@ -80,7 +81,8 @@ export default function SignInPage() {
         <div className="h-2 bg-gradient-to-r from-green-600 via-green-500 to-orange-400"></div>
         <div className="px-6 py-8 sm:px-10">
           <div className="text-center mb-10">
-            <h1 className="text-3xl font-extrabold text-gray-900 mb-1">Welcome back!</h1>
+          <h1 className="text-2xl font-bold text-center bg-gradient-to-r from-orange-400 via-yellow-200 to-green-600 bg-clip-text text-transparent">
+  Welcome back!</h1>
             <p className="text-gray-600">Sign in to continue to Feastly</p>
           </div>
 
