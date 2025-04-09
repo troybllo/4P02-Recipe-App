@@ -24,9 +24,16 @@ const breakpointColumnsObj = {
 const Profile = () => {
     // Use the auth context
     const { currentUser, logout } = useAuth();
+    const { checkAuth } = useAuth();
     
     const username = "Swa";
     const bio = "I love healthy foods for my bouldering training. I also love to cook and bake. I'm a software engineer by day and a chef by night.";
+
+    // Get user ID from local storage (assuming it was stored during login)
+    const userId = localStorage.getItem("userId");
+
+    console.log(userId);
+    console.log(userId.username);
 
     const ownerRecipes = recipes.filter((recipe) => {
         return recipe.authorId === 'user_789';

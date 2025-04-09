@@ -52,7 +52,9 @@ export default function SignInPage() {
       if (response.ok) {
         localStorage.setItem("token", data.firebase_custom_token);
         localStorage.setItem("userId", data.userId);
-        localStorage.setItem("users", JSON.stringify(data.user));
+        localStorage.setItem("user", JSON.stringify(data.user));
+
+        console.log("User: ", data);
         
         // Reset the form data
         setFormData({

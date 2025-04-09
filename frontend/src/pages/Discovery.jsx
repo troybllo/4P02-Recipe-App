@@ -1,12 +1,51 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import FoodSocialCard from "../components/FoodSocialCard";
 import { recipes } from "../utils/sampleData";
-
 import discoveryLogo from "../images/discovery_diamond.png";
 import { motion } from "framer-motion";
+import { getFirestore, collection, query, where, getDocs } from "firebase/firestore";
+import app from "../firebase.js";
 
+//const [recipes, setRecipes] = useState([]);
+// const userId = localStorage.getItem("userId");
+
+// const db = getFirestore(app);
+// const userRecipesRef = collection(db, "users", userId, "created_recipes");
+//     const snapshot = await getDocs(userRecipesRef);
+//     const recipes = snapshot.docs.map(doc => ({
+//       postId: doc.id,
+//       ...doc.data(),
+// }));
 
 const Discovery = () => {
+  
+  // const [error, setError] = useState("");
+
+  // useEffect(() => {
+    
+  //   // const fetchUserRecipes = async () => {
+
+  //   //   try {
+  //   //     const recipesRef = collection(db, "created_recipes");
+  //   //     //const userQuery = query(recipesRef, where("userId", "==", userId));
+  //   //     const snapshot = await getDocs(recipesRef);
+
+  //   //     const recipeList = snapshot.docs.map(doc => ({
+  //   //       postId: doc.id,
+  //   //       ...doc.data(),
+  //   //     }));
+
+  //   //     console.log("recipe list: ", recipeList);
+
+  //   //   } catch (err) {
+  //   //     console.error("Error fetching recipes:", err);
+  //   //     setError("Failed to load recipes.");
+  //   //   }
+  //   // };
+
+  //   // fetchUserRecipes();
+  // }, []);
+
   const [activeFilters, setActiveFilters] = useState({
     cuisine: [],
     diet: [],
@@ -189,6 +228,15 @@ const Discovery = () => {
         ))}
       </div>
 
+      {/* <div className="grid grid-cols-3 gap-4 mb-8">
+        {recipes.map(recipes => (
+          <div key={recipes.post_id} className="border rounded shadow p-4">
+            <h2 className="text-xl font-bold mb-2">Recipe ID: {recipes.post_id}</h2>
+            <p className="text-gray-700">{recipes.title}</p>
+          </div>
+        ))}
+      </div>
+
       <div className="flex flex-col gap-50 px-10">
         {["Featured Picks", "Latest Recipes", "Staffs Picks", "Trending"].map(
           (section) => (
@@ -196,13 +244,13 @@ const Discovery = () => {
               <h1 className="font-extralight text-4xl mb-4 mt-4">{section}</h1>
               <div className="grid grid-cols-4 gap-4">
                 {filteredRecipes.slice(0, 4).map((recipe) => (
-                  <FoodSocialCard key={recipe.id} {...recipe} />
+                  <FoodSocialCard key={recipes.post_id} {...recipe} />
                 ))}
               </div>
             </div>
           ),
         )}
-      </div>
+      </div> */}
     </div>
   );
 };
