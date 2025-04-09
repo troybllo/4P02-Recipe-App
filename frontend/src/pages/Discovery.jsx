@@ -1,50 +1,26 @@
 import React, { useState, useEffect } from "react";
 import FoodSocialCard from "../components/FoodSocialCard";
-import { recipes } from "../utils/sampleData";
+//import { recipes } from "../utils/sampleData";
 import discoveryLogo from "../images/discovery_diamond.png";
 import { motion } from "framer-motion";
 import { getFirestore, collection, query, where, getDocs } from "firebase/firestore";
-import app from "../firebase.js";
+import axios from "axios";
 
-//const [recipes, setRecipes] = useState([]);
-// const userId = localStorage.getItem("userId");
-
-// const db = getFirestore(app);
-// const userRecipesRef = collection(db, "users", userId, "created_recipes");
-//     const snapshot = await getDocs(userRecipesRef);
-//     const recipes = snapshot.docs.map(doc => ({
-//       postId: doc.id,
-//       ...doc.data(),
-// }));
+const API = process.env.VITE_API || "http://localhost:5000";
 
 const Discovery = () => {
   
-  // const [error, setError] = useState("");
+  const [recipes, setRecipes] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  // useEffect(() => {
-    
-  //   // const fetchUserRecipes = async () => {
-
-  //   //   try {
-  //   //     const recipesRef = collection(db, "created_recipes");
-  //   //     //const userQuery = query(recipesRef, where("userId", "==", userId));
-  //   //     const snapshot = await getDocs(recipesRef);
-
-  //   //     const recipeList = snapshot.docs.map(doc => ({
-  //   //       postId: doc.id,
-  //   //       ...doc.data(),
-  //   //     }));
-
-  //   //     console.log("recipe list: ", recipeList);
-
-  //   //   } catch (err) {
-  //   //     console.error("Error fetching recipes:", err);
-  //   //     setError("Failed to load recipes.");
-  //   //   }
-  //   // };
-
-  //   // fetchUserRecipes();
-  // }, []);
+  useEffect(() => {
+    axios
+      .get(`${API}/api/recipes`)
+      .then(res => {
+        setRecipes(res.data.recipes);
+      })
+      .finally(() => setLoading(false))
+  }, []);
 
   const [activeFilters, setActiveFilters] = useState({
     cuisine: [],

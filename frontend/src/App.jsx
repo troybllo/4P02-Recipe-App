@@ -12,7 +12,6 @@ import Profile from "./pages/Profile";
 import RecipeDetail from "./pages/RecipeDetail";
 import SignInPage from "./pages/SignInPage";
 import SignUpPage from "./pages/SignUpPage";
-import { getFirestore, collection, query, where, getDocs } from "firebase/firestore"; // Import Firestore functions
 
 function App() {
   return (
