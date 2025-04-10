@@ -7,6 +7,7 @@ import cloudinary
 from .routes.registration import register_blueprint
 from .routes.login import login_blueprint
 from .routes.recipes import recipes_blueprint
+from .routes.profile import profile_blueprint
 
 def create_app():
     """
@@ -31,6 +32,7 @@ def create_app():
     app.register_blueprint(register_blueprint, url_prefix='/api')
     app.register_blueprint(login_blueprint, url_prefix='/api')
     app.register_blueprint(recipes_blueprint, url_prefix='/api')
+    app.register_blueprint(profile_blueprint, url_prefix='/api')
 
 
     return app
