@@ -3,23 +3,26 @@ import FoodSocialCard from "../components/FoodSocialCard";
 //import { recipes } from "../utils/sampleData";
 import discoveryLogo from "../images/discovery_diamond.png";
 import { motion } from "framer-motion";
-import { getFirestore, collection, query, where, getDocs } from "firebase/firestore";
 import axios from "axios";
 
-const API = process.env.VITE_API || "http://localhost:5000";
 
 const Discovery = () => {
-  
+
+  const API = process.env.REACT_APP_API_URL;
+
   const [recipes, setRecipes] = useState([]);
   const [loading, setLoading] = useState(true);
+  const userId = localStorage.getItem("userId");
 
   useEffect(() => {
     axios
-      .get(`${API}/api/recipes`)
+      .get(`${API}/api/recipes/`)
       .then(res => {
         setRecipes(res.data.recipes);
       })
       .finally(() => setLoading(false))
+      console.log("recipes: ", recipes);
+      console.log("current user: ", userId);
   }, []);
 
   const [activeFilters, setActiveFilters] = useState({
@@ -204,7 +207,7 @@ const Discovery = () => {
         ))}
       </div>
 
-      {/* <div className="grid grid-cols-3 gap-4 mb-8">
+      <div className="grid grid-cols-3 gap-4 mb-8">
         {recipes.map(recipes => (
           <div key={recipes.post_id} className="border rounded shadow p-4">
             <h2 className="text-xl font-bold mb-2">Recipe ID: {recipes.post_id}</h2>
@@ -226,7 +229,16 @@ const Discovery = () => {
             </div>
           ),
         )}
-      </div> */}
+      </div>
+
+      <div className="grid gap-4">
+        {recipes.map(r=>(
+          <div key={r.postId} className="card">
+            <h3>{r.title}</h3>
+            <p>{r.description}</p>
+          </div>
+        ))}
+      </div>
     </div>
   );
 };
