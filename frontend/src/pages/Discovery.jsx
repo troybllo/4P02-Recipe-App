@@ -4,7 +4,7 @@ import FoodSocialCard from "../components/FoodSocialCard";
 import discoveryLogo from "../images/discovery_diamond.png";
 import { motion } from "framer-motion";
 import axios from "axios";
-
+import Masonry from "react-masonry-css";
 
 const Discovery = () => {
 
@@ -24,6 +24,17 @@ const Discovery = () => {
       console.log("recipes: ", recipes);
       console.log("current user: ", userId);
   }, []);
+
+  const breakpointColumnsObj = {
+    default: 3,
+    1440: 3,
+    1920: 3,
+    1680: 3,
+    1280: 3,
+    1080: 2,
+    824: 2,
+    640: 1,
+};
 
   const [activeFilters, setActiveFilters] = useState({
     cuisine: [],
@@ -232,11 +243,24 @@ const Discovery = () => {
       </div> */}
 
       <div className="grid gap-4">
-        {recipes.map(r=>(
-          <div key={r.post_id} className="card">
-            <h3>{r.title}</h3>
-            <p>{r.description}</p>
-          </div>
+        {
+        recipes.map((recipe) => (
+        <FoodSocialCard
+          postId={recipe.postId}
+          title={recipe.title}
+          description={recipe.description}
+          imageUrl={recipe.imageList?.[0]?.url || "/placeholder.jpg"}
+          author={recipe.author || "Unknown"}
+          authorId={recipe.authorId || ""}
+          datePosted={recipe.datePosted}
+          cookingTime={recipe.cookingTime}
+          difficulty={recipe.difficulty}
+          servings={recipe.servings}
+          ingredients={Array.isArray(recipe.ingredients) ? recipe.ingredients : []}
+          instructions={Array.isArray(recipe.instructions) ? recipe.instructions : []}
+          likes={recipe.likes}
+          isLiked={recipe.isLiked}
+        />
         ))}
       </div>
     </div>
