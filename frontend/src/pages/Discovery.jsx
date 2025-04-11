@@ -16,7 +16,7 @@ const Discovery = () => {
 
   useEffect(() => {
     axios
-      .get(`${API}/api/recipes/`)
+      .get(`${API}/api/recipes`)
       .then(res => {
         setRecipes(res.data.recipes);
       })
@@ -150,7 +150,7 @@ const Discovery = () => {
 </motion.p>
 </div>
 
-      <div className="flex justify-center w-full mb-2">
+      {/* <div className="flex justify-center w-full mb-2">
         <div className="relative w-full max-w-[30%] mx-5 my-1 p-2 px-12 bg-white border border-gray-500 rounded-full text-lg text-gray-900">
           <input
             type="text"
@@ -179,9 +179,9 @@ const Discovery = () => {
             </span>
           )),
         )}
-      </div>
+      </div> */}
 
-      <div className="flex flex-wrap justify-center gap-4 mb-12">
+      {/* <div className="flex flex-wrap justify-center gap-4 mb-12">
         {Object.entries(filterOptions).map(([category, options]) => (
           <div key={category} className="relative group">
             <button className="px-4 py-2 bg-gray-100 rounded-full hover:bg-gray-200 transition-colors capitalize">
@@ -205,9 +205,9 @@ const Discovery = () => {
             </div>
           </div>
         ))}
-      </div>
+      </div> */}
 
-      <div className="grid grid-cols-3 gap-4 mb-8">
+      {/* <div className="grid grid-cols-3 gap-4 mb-8">
         {recipes.map(recipes => (
           <div key={recipes.post_id} className="border rounded shadow p-4">
             <h2 className="text-xl font-bold mb-2">Recipe ID: {recipes.post_id}</h2>
@@ -229,11 +229,11 @@ const Discovery = () => {
             </div>
           ),
         )}
-      </div>
+      </div> */}
 
       <div className="grid gap-4">
         {recipes.map(r=>(
-          <div key={r.postId} className="card">
+          <div key={r.post_id} className="card">
             <h3>{r.title}</h3>
             <p>{r.description}</p>
           </div>

@@ -32,9 +32,6 @@ const Profile = () => {
     // Get user ID from local storage (assuming it was stored during login)
     const userId = localStorage.getItem("userId");
 
-    console.log(userId);
-    console.log(userId.username);
-
     const ownerRecipes = recipes.filter((recipe) => {
         return recipe.authorId === 'user_789';
     });

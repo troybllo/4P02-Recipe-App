@@ -54,3 +54,5 @@ def upload_images_to_cloudinary(file_list):
 
 def delete_image_from_cloudinary(public_id):
     cloudinary.uploader.destroy(public_id)
+
+ 

@@ -1,9 +1,10 @@
 from flask import request, jsonify
 from datetime import datetime
+from firebase_admin import firestore
 from ..services.recipe_database import (
     create_recipe_in_firebase, get_recipe_from_firebase,
     update_recipe_in_firebase, delete_recipe_from_firebase,
-    upload_images_to_cloudinary, delete_image_from_cloudinary
+    upload_images_to_cloudinary, delete_image_from_cloudinary,
 )
 
 def create_recipe():
@@ -108,3 +109,17 @@ def delete_recipe(post_id):
     if not deleted:
         return jsonify({"error": "Recipe not found"}), 404
     return jsonify({"message": "Recipe deleted"}), 200
+
+def list_all_recipes():
+    db = firestore.client()
+    recipes = []
+    users_ref = db.collection('users')
+    for user in users_ref.stream():
+        user_id = user.id
+        subcol = db.collection('users').document(user_id).collection('created_recipes')
+        for recipe_doc in subcol.stream():
+            data = recipe_doc.to_dict()
+            data["postId"] = recipe_doc.id
+            recipes.append(data)
+    
+    return recipes
