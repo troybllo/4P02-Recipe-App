@@ -1,5 +1,8 @@
+// src/components/CreatePost.js
 import React, { useState } from "react";
 import styles from "../styles/CreatePost.module.css";
+import { db } from "../firebase";
+import { collection, addDoc } from "firebase/firestore";
 
 const CreatePost = ({ isOpen, onClose }) => {
   const [formData, setFormData] = useState({
@@ -10,15 +13,14 @@ const CreatePost = ({ isOpen, onClose }) => {
     servings: "",
     ingredients: "",
     instructions: "",
-    images: [],
   });
-  
+
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
 
-  // Get user ID from local storage (assuming it was stored during login)
   const userId = localStorage.getItem("userId");
+  const username = localStorage.getItem("username") || "Anonymous";
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -28,16 +30,6 @@ const CreatePost = ({ isOpen, onClose }) => {
     }));
   };
 
-  const handleImageChange = (e) => {
-    const files = Array.from(e.target.files);
-    if (files.length > 0) {
-      setFormData((prev) => ({
-        ...prev,
-        images: files,
-      }));
-    }
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -45,59 +37,36 @@ const CreatePost = ({ isOpen, onClose }) => {
     setSuccess("");
 
     try {
-      // Validate required fields
       if (!formData.title || !userId) {
         throw new Error("Title and user authentication are required");
       }
 
-      // Create FormData for multipart/form-data submission
-      const submitData = new FormData();
-
-      // Add userId
-      submitData.append("userId", userId);
-
-      // Add recipe data
-      submitData.append("title", formData.title);
-      submitData.append("description", formData.description);
-      submitData.append("cookingTime", formData.cookingTime);
-      submitData.append("difficulty", formData.difficulty);
-      submitData.append("servings", formData.servings);
-      
-      // Process ingredients as array (split by newlines)
       const ingredientsArray = formData.ingredients
         .split("\n")
-        .filter(item => item.trim() !== "");
-      submitData.append("ingredients", JSON.stringify(ingredientsArray));
-      
-      // Process instructions as array (split by newlines)
+        .filter((item) => item.trim() !== "");
       const instructionsArray = formData.instructions
         .split("\n")
-        .filter(item => item.trim() !== "");
-      submitData.append("instructions", JSON.stringify(instructionsArray));
+        .filter((item) => item.trim() !== "");
 
-      // Add images
-      if (formData.images.length > 0) {
-        formData.images.forEach((image) => {
-          submitData.append("images", image);
-        });
-      }
+      const recipeData = {
+        title: formData.title,
+        description: formData.description,
+        cookingTime: formData.cookingTime,
+        difficulty: formData.difficulty,
+        servings: Number(formData.servings),
+        ingredients: ingredientsArray,
+        instructions: instructionsArray,
+        imageUrls: [], // Placeholder
+        authorId: userId,
+        author: username,
+        likes: 0,
+        isLiked: false,
+        dateposted: new Date().toISOString(),
+      };
 
-      // Send the request using fetch
-      const response = await fetch("http://127.0.0.1:5000/api/recipes", {
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-        method: "POST",
-        body: submitData,
-        // Note: Do not set Content-Type with fetch when using FormData
-        // It will automatically set the correct multipart boundary
-      });
-      
-      if (!response.ok) {
-        throw new Error(`Server responded with ${response.status}: ${response.statusText}`);
-      }
-      
-      const responseData = await response.json();
-      setSuccess(`Recipe created with ID: ${responseData.postId}`);
-      // Reset form after successful submission
+      const docRef = await addDoc(collection(db, "Recipes"), recipeData);
+      setSuccess(`Recipe created with ID: ${docRef.id}`);
+
       setFormData({
         title: "",
         description: "",
@@ -106,12 +75,9 @@ const CreatePost = ({ isOpen, onClose }) => {
         servings: "",
         ingredients: "",
         instructions: "",
-        images: [],
       });
-      
-      // Close modal on success if using as a modal
+
       if (onClose) onClose();
-      
     } catch (err) {
       setError(err.message || "Error creating recipe");
       console.error("Error creating recipe:", err);
@@ -120,17 +86,12 @@ const CreatePost = ({ isOpen, onClose }) => {
     }
   };
 
-  // If this is a modal component, return null when closed
-  if (isOpen === false) return null;
+  if (!isOpen) return null;
 
   return (
-    <div className={isOpen ? styles.overlay : ""}>
-      <div className={isOpen ? styles.modal : styles.container}>
-        {isOpen && (
-          <button className={styles.closeButton} onClick={onClose}>
-            ×
-          </button>
-        )}
+    <div className={styles.overlay}>
+      <div className={styles.modal}>
+        <button className={styles.closeButton} onClick={onClose}>×</button>
         <h2 className={styles.title}>Create New Recipe</h2>
 
         {error && <div className="error-message">{error}</div>}
@@ -208,57 +169,28 @@ const CreatePost = ({ isOpen, onClose }) => {
               name="ingredients"
               value={formData.ingredients}
               onChange={handleChange}
-              placeholder="1 cup rice&#10;2 cloves garlic&#10;..."
+              placeholder="1 cup rice\n2 cloves garlic\n..."
               required
             />
           </div>
 
           <div className={styles.inputGroup}>
-            <label htmlFor="instructions">
-              Instructions (one step per line)
-            </label>
+            <label htmlFor="instructions">Instructions (one step per line)</label>
             <textarea
               id="instructions"
               name="instructions"
               value={formData.instructions}
               onChange={handleChange}
-              placeholder="1. Preheat oven&#10;2. Mix ingredients&#10;..."
+              placeholder="1. Preheat oven\n2. Mix ingredients\n..."
               required
             />
           </div>
 
-          <div className={styles.inputGroup}>
-            <label htmlFor="images">Recipe Images</label>
-            <input
-              type="file"
-              id="images"
-              name="images"
-              onChange={handleImageChange}
-              accept="image/*"
-              multiple
-            />
-            {formData.images.length > 0 && (
-              <div className="image-preview">
-                <p>{formData.images.length} image(s) selected</p>
-              </div>
-            )}
-          </div>
-
           <div className={styles.buttonGroup}>
-            {onClose && (
-              <button
-                type="button"
-                onClick={onClose}
-                className={styles.cancelButton}
-              >
-                Cancel
-              </button>
-            )}
-            <button 
-              type="submit" 
-              className={styles.submitButton}
-              disabled={loading}
-            >
+            <button type="button" onClick={onClose} className={styles.cancelButton}>
+              Cancel
+            </button>
+            <button type="submit" className={styles.submitButton} disabled={loading}>
               {loading ? "Creating..." : "Create Recipe"}
             </button>
           </div>

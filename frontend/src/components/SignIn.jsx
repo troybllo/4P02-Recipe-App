@@ -1,3 +1,4 @@
+// SignIn.jsx
 import { useState } from "react";
 import "../styles/SignIn.css";
 
@@ -8,16 +9,8 @@ const Backdrop = ({ onClick }) => (
   />
 );
 
-export default function SignIn({
-  onSignInSuccess,
-  isOpen,
-  onClose,
-  onSwitchToSignUp,
-}) {
-  const [formData, setFormData] = useState({
-    username: "",
-    password: "",
-  });
+export default function SignIn({ onSignInSuccess, isOpen, onClose, onSwitchToSignUp }) {
+  const [formData, setFormData] = useState({ username: "", password: "" });
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
@@ -25,10 +18,7 @@ export default function SignIn({
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleClose = () => {
@@ -45,23 +35,18 @@ export default function SignIn({
     try {
       const response = await fetch("http://127.0.0.1:5000/api/login", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
       });
 
       const data = await response.json();
-      console.log(data);
 
       if (response.ok) {
         localStorage.setItem("token", data.firebase_custom_token);
-        localStorage.setItem("userId", data.userId); 
-        // Reset the form data
-        setFormData({
-          username: "",
-          password: "",
-        });
+        localStorage.setItem("userId", data.userId);
+        localStorage.setItem("username", formData.username); // ✅ Save username
+
+        setFormData({ username: "", password: "" });
         onSignInSuccess?.(data.access_token);
         handleClose();
       } else {
@@ -73,51 +58,26 @@ export default function SignIn({
       setIsLoading(false);
     }
   };
+
   return (
     <>
       <Backdrop onClick={handleClose} />
-      <div
-        className="fixed inset-0 flex items-center justify-center z-50"
-        onClick={(e) => e.stopPropagation()}
-      >
+      <div className="fixed inset-0 flex items-center justify-center z-50" onClick={(e) => e.stopPropagation()}>
         <div className="bg-white rounded-lg shadow-xl w-full max-w-md p-8 transform transition-all">
           <div className="flex justify-between items-center mb-6">
             <h2 className="text-2xl font-bold text-gray-900">Sign In</h2>
-            <button
-              onClick={handleClose}
-              className="text-gray-400 hover:text-gray-500"
-            >
-              <svg
-                className="h-6 w-6"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M6 18L18 6M6 6l12 12"
-                />
+            <button onClick={handleClose} className="text-gray-400 hover:text-gray-500">
+              <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
               </svg>
             </button>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-6">
-            {error && (
-              <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-md text-sm">
-                {error}
-              </div>
-            )}
-            
+            {error && <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-md text-sm">{error}</div>}
 
             <div>
-              <label
-                htmlFor="username"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Username
-              </label>
+              <label htmlFor="username" className="block text-sm font-medium text-gray-700">Username</label>
               <input
                 id="username"
                 name="username"
@@ -130,12 +90,7 @@ export default function SignIn({
             </div>
 
             <div>
-              <label
-                htmlFor="password"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Password
-              </label>
+              <label htmlFor="password" className="block text-sm font-medium text-gray-700">Password</label>
               <input
                 id="password"
                 name="password"
@@ -150,7 +105,7 @@ export default function SignIn({
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-[white] bg-[#869a7b] hover:bg-[#1d380e] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#869a7b]"
+              className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-[#869a7b] hover:bg-[#1d380e] focus:outline-none"
             >
               {isLoading ? "Signing in..." : "Sign in"}
             </button>
@@ -158,10 +113,7 @@ export default function SignIn({
 
           <div className="mt-6 text-center text-sm">
             <span className="text-gray-600">Don't have an account?</span>
-            <button
-              onClick={onSwitchToSignUp}
-              className="ml-2 text-[#869a7b] hover:text-[#1d380e] font-medium"
-            >
+            <button onClick={onSwitchToSignUp} className="ml-2 text-[#869a7b] hover:text-[#1d380e] font-medium">
               Sign up
             </button>
           </div>

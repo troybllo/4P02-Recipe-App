@@ -6,7 +6,6 @@ import styles from "../styles/masonry.css";
 import FoodSocialCard from "../components/FoodSocialCard";
 import StoryCarousel from "../components/StoryCarousel";
 import { recipes } from "../data/recipes";
-
 // Helper function to infer category from various fields
 function getCategory(recipe) {
   const ingredients = Array.isArray(recipe.ingredients)

@@ -3,6 +3,9 @@ import { Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import styles from "../styles/FoodSocialCard.module.css";
 import EditPost from "../components/EditPost";
+import { collection, getDocs } from "firebase/firestore";
+import { db } from "../firebase";
+
 
 const FoodSocialCard = ({
   postId,
