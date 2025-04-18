@@ -3,7 +3,8 @@ from datetime import datetime
 from ..services.recipe_database import (
     create_recipe_in_firebase, get_recipe_from_firebase,
     update_recipe_in_firebase, delete_recipe_from_firebase,
-    upload_images_to_cloudinary, delete_image_from_cloudinary
+    upload_images_to_cloudinary, delete_image_from_cloudinary,
+    get_most_liked_recipes,
 )
 
 def create_recipe():
@@ -108,3 +109,7 @@ def delete_recipe(post_id):
     if not deleted:
         return jsonify({"error": "Recipe not found"}), 404
     return jsonify({"message": "Recipe deleted"}), 200
+
+def list_most_liked_recipes():
+    recipes = get_most_liked_recipes()
+    return jsonify({"recipes": recipes}), 200

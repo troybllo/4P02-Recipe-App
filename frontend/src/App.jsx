@@ -35,6 +35,11 @@ function App() {
               <Route path="/profile" element={<Profile />} />
               {/* Add any other protected routes here */}
             </Route>
+
+            {/* Protected routes */}
+            <Route element={<ProtectedRoute />}>
+              <Route path="/:username" element={<Profile />} />
+            </Route>
           </Routes>
         </div>
       </div>

@@ -54,3 +54,19 @@ def upload_images_to_cloudinary(file_list):
 
 def delete_image_from_cloudinary(public_id):
     cloudinary.uploader.destroy(public_id)
+
+def get_most_liked_recipes():
+    db = firestore.client()
+    recipes = []
+    users_ref = db.collection('users')
+
+    for user in users_ref.stream():
+        user_id = user.id
+        subcol = db.collection('users').document(user_id).collection('created_recipes')
+        for recipe_doc in subcol.stream():
+            data = recipe_doc.to_dict()
+            data["postId"] = recipe_doc.id
+            recipes.append(data)
+
+    sorted_recipes = sorted(recipes, key=lambda x: x.get("likes", 0), reverse=True)
+    return sorted_recipes[:10] 

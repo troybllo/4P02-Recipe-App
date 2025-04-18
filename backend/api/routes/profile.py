@@ -5,7 +5,8 @@ from ..controllers.profile import (
     follow_user_controller,
     unfollow_user_controller,
     save_post_controller,
-    unsave_post_controller
+    unsave_post_controller,
+    fetch_user_by_username
 )
 
 profile_blueprint = Blueprint('profile_features', __name__)
@@ -57,3 +58,7 @@ def unsave_post_route():
     - { "userId": "...", "postId": "..." }
     """
     return unsave_post_controller()
+
+@profile_blueprint.route('/<username>', methods=['GET'])
+def get_user_by_username_route(username):
+    return fetch_user_by_username(username)

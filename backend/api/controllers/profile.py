@@ -149,3 +149,9 @@ def unsave_post_controller():
     if not updated_doc:
         return jsonify({"error": "User not found"}), 404
     return jsonify({"message": "Post unsaved", "profile": updated_doc}), 200
+
+def fetch_user_by_username(username):
+    user_data = get_user_by_username(username)
+    if not user_data:
+        return jsonify({"error": "User not found"}), 404
+    return jsonify(user_data), 200
