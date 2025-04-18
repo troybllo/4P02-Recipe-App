@@ -2,14 +2,11 @@ import React, { useState } from "react";
 import styles from "../styles/CreatePost.module.css";
 
 const EditProfile = ({ isOpen, onClose, onSubmit, initialUsername, initialBio }) => {
+  const userId = localStorage.getItem("userId");
+
   const [formData, setFormData] = useState({
-    title: initialUsername || "",
+    username: initialUsername || "",
     bio: initialBio || "",
-    cookingTime: "",
-    difficulty: "Easy",
-    servings: "",
-    ingredients: "",
-    instructions: "",
     image: null,
   });
 
@@ -31,10 +28,43 @@ const EditProfile = ({ isOpen, onClose, onSubmit, initialUsername, initialBio })
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    onSubmit(formData);
-    onClose();
+
+    try {
+      const data = new FormData();
+      if (formData.username.trim() !== "") {
+        data.append("username", formData.username);
+      }
+      if (formData.bio.trim() !== "") {
+        data.append("bio", formData.bio);
+      }
+      if (formData.image) {
+        data.append("image", formData.image);
+      }
+
+      const res = await fetch(`http://127.0.0.1:5000/api/users/${userId}/update_profile`, {
+        method: "PUT",
+        body: data,
+      });
+
+      const result = await res.json();
+      if (!res.ok) throw new Error(result.error || "Profile update failed");
+
+      console.log("✅ Profile updated:", result);
+      if (onSubmit) onSubmit(result);
+      onClose();
+    } catch (err) {
+      console.error("❌ Failed to update profile:", err);
+    }
+
+    console.log("🧪 Submitting formData:", {
+      username: formData.username,
+      bio: formData.bio,
+      image: formData.image,
+    });
+
+    console.log("📤 Sending PUT request to:", `http://127.0.0.1:5000/api/users/${userId}/update_profile`);
   };
 
   if (!isOpen) return null;
@@ -42,33 +72,29 @@ const EditProfile = ({ isOpen, onClose, onSubmit, initialUsername, initialBio })
   return (
     <div className={styles.overlay}>
       <div className={styles.modal}>
-        <button className={styles.closeButton} onClick={onClose}>
-          ×
-        </button>
+        <button className={styles.closeButton} onClick={onClose}>×</button>
         <h2 className={styles.title}>Edit Profile</h2>
 
-        <form onSubmit={handleSubmit} className={styles.form}>
+        <form onSubmit={handleSubmit} className={styles.form} encType="multipart/form-data">
           <div className={styles.inputGroup}>
-            <label htmlFor="title">Edit Username</label>
+            <label htmlFor="username">Edit Username (optional)</label>
             <input
               type="text"
-              id="title"
-              name="title"
+              id="username"
+              name="username"
               placeholder="Enter new username..."
-              value={formData.title}
+              value={formData.username}
               onChange={handleChange}
-              required
             />
           </div>
 
           <div className={styles.inputGroup}>
-            <label htmlFor="description">Edit Bio</label>
+            <label htmlFor="bio">Edit Bio (optional)</label>
             <textarea
               id="bio"
               name="bio"
               value={formData.bio}
               onChange={handleChange}
-              required
             />
           </div>
 
@@ -80,16 +106,11 @@ const EditProfile = ({ isOpen, onClose, onSubmit, initialUsername, initialBio })
               name="image"
               onChange={handleImageChange}
               accept="image/*"
-              required
             />
           </div>
 
           <div className={styles.buttonGroup}>
-            <button
-              type="button"
-              onClick={onClose}
-              className={styles.cancelButton}
-            >
+            <button type="button" onClick={onClose} className={styles.cancelButton}>
               Cancel
             </button>
             <button type="submit" className={styles.submitButton}>

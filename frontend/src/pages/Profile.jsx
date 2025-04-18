@@ -19,6 +19,7 @@ const Profile = () => {
   const { logout } = useAuth();
 
   const [recipes, setRecipes] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [isEditProfileOpen, setIsEditProfileOpen] = useState(false);
   const [showPosts, setShowPosts] = useState(true);
 
@@ -32,32 +33,37 @@ const Profile = () => {
 
   useEffect(() => {
     const fetchUserRecipes = async () => {
-      console.log("Fetching recipes for userId:", userId); // ✅ Debug
-  
+      console.log("Fetching recipes for userId:", userId);
+
       try {
         const response = await fetch(`http://127.0.0.1:5000/api/recipes?userId=${userId}`);
-        console.log("API response:", response); // ✅ Debug
-  
+        console.log("API response:", response);
+
         if (!response.ok) {
           throw new Error(`Failed to fetch user recipes: ${response.status}`);
         }
-  
+
         const data = await response.json();
-        console.log("Fetched recipes data:", data); // ✅ Debug
-  
-        setRecipes(data.recipes || []);
+        console.log("Fetched recipes data:", data);
+
+        const sortedRecipes = (data.recipes || []).sort(
+          (a, b) => new Date(b.datePosted) - new Date(a.datePosted)
+        );
+        setRecipes(sortedRecipes);
       } catch (err) {
-        console.error("Error fetching user recipes:", err); // ✅ Debug
+        console.error("Error fetching user recipes:", err);
+      } finally {
+        setLoading(false);
       }
     };
-  
+
     if (userId) {
       fetchUserRecipes();
     } else {
-      console.warn("No userId found in localStorage"); // ✅ Debug
+      console.warn("No userId found in localStorage");
+      setLoading(false);
     }
   }, [userId]);
-  
 
   const handleLogout = () => {
     logout();
@@ -121,51 +127,55 @@ const Profile = () => {
         {/* Recipe Grid */}
         <div className="flex justify-center">
           <div className="home-container max-w-[1200px]">
-            <Masonry
-              breakpointCols={breakpointColumnsObj}
-              className="my-masonry-grid justify-center"
-              columnClassName="my-masonry-grid_column"
-            >
-              {showPosts ? (
-                recipes.length > 0 ? (
-                  recipes.map((recipe) => (
-                    <FoodSocialCard
-                      key={recipe.postId}
-                      postId={recipe.postId}
-                      title={recipe.title}
-                      description={recipe.description}
-                      cookingTime={recipe.cookingTime}
-                      difficulty={recipe.difficulty}
-                      servings={recipe.servings}
-                      ingredients={recipe.ingredients}
-                      instructions={recipe.instructions}
-                      imageUrl={recipe.imageList?.[0]?.url || ""}
-                      datePosted={recipe.datePosted}
-                      author={user?.username || "You"}
-                      authorId={userId}
-                      likes={recipe.likes || 0}
-                      isLiked={recipe.isLiked || false}
-                    />
-                  ))
+            {loading ? (
+              <p className="text-gray-400 text-center">Loading...</p>
+            ) : (
+              <Masonry
+                breakpointCols={breakpointColumnsObj}
+                className="my-masonry-grid justify-center"
+                columnClassName="my-masonry-grid_column"
+              >
+                {showPosts ? (
+                  recipes.length > 0 ? (
+                    recipes.map((recipe) => (
+                      <FoodSocialCard
+                        key={recipe.postId}
+                        postId={recipe.postId}
+                        title={recipe.title}
+                        description={recipe.description}
+                        cookingTime={recipe.cookingTime}
+                        difficulty={recipe.difficulty}
+                        servings={recipe.servings}
+                        ingredients={recipe.ingredients}
+                        instructions={recipe.instructions}
+                        imageUrl={recipe.imageList?.[0]?.url || "https://via.placeholder.com/400x300?text=No+Image"}
+                        datePosted={recipe.datePosted}
+                        author={user?.username || "You"}
+                        authorId={userId}
+                        likes={recipe.likes || 0}
+                        isLiked={recipe.isLiked || false}
+                      />
+                    ))
+                  ) : (
+                    <p className="text-gray-500">No posts yet.</p>
+                  )
                 ) : (
-                  <p className="text-gray-500">No posts yet.</p>
-                )
-              ) : (
-                <div className="flex flex-col items-center justify-center">
-                  <p className="text-lg font-semibold">No saved posts yet</p>
-                  <p className="text-gray-500 mt-2">
-                    You haven't saved any recipes yet. Start exploring and save
-                    your favorite recipes to see them here.
-                  </p>
-                  <button
-                    className="mt-5 px-4 py-2 bg-[#ccdec2] text-[#1d380e] rounded-full hover:border-1 border-[#1d380e]"
-                    onClick={() => window.location.href = "/discovery"}
-                  >
-                    Discover Recipes
-                  </button>
-                </div>
-              )}
-            </Masonry>
+                  <div className="flex flex-col items-center justify-center">
+                    <p className="text-lg font-semibold">No saved posts yet</p>
+                    <p className="text-gray-500 mt-2">
+                      You haven't saved any recipes yet. Start exploring and save
+                      your favorite recipes to see them here.
+                    </p>
+                    <button
+                      className="mt-5 px-4 py-2 bg-[#ccdec2] text-[#1d380e] rounded-full hover:border-1 border-[#1d380e]"
+                      onClick={() => window.location.href = "/discovery"}
+                    >
+                      Discover Recipes
+                    </button>
+                  </div>
+                )}
+              </Masonry>
+            )}
           </div>
         </div>
       </div>
@@ -173,8 +183,12 @@ const Profile = () => {
       <EditProfile
         isOpen={isEditProfileOpen}
         onClose={() => setIsEditProfileOpen(false)}
-        onSubmit={() => setIsEditProfileOpen(false)}
+        onSubmit={(updatedUser) => {
+          localStorage.setItem("user", JSON.stringify(updatedUser));
+          window.location.reload(); // OR better: manually update state instead of reloading
+        }}
       />
+
     </>
   );
 };
