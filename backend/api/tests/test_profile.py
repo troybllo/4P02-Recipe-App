@@ -128,3 +128,21 @@ def test_follow_missing_fields(client):
     res = client.post("/api/profile/follow", json={"currentUserId": "abc"})
     assert res.status_code == 400
     assert res.get_json()["error"] == "Missing user IDs"
+
+# Test fetching userid from username
+
+def test_get_user_by_username(client, user_pair):
+    user1_id, _, (user1_username, _), _ = user_pair
+    
+    res = client.get(f"/api/profile/{user1_username }")
+    assert res.status_code == 200
+
+    data = res.get_json()
+    assert data["username"] == user1_username
+    assert "userId" in data
+    assert data["userId"] == user1_id
+
+def test_get_user_by_username_not_found(client):
+    res = client.get("/api/user/profile/doesNotExist")
+    assert res.status_code == 404
+    assert res.get_json()["error"] == "User not found"
