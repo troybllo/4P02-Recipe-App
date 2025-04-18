@@ -1,4 +1,4 @@
-from flask import Blueprint, jsonify
+from flask import Blueprint, request, jsonify
 from ..controllers.recipes import (
     create_recipe,
     get_recipe,
@@ -6,6 +6,7 @@ from ..controllers.recipes import (
     delete_recipe,
     list_all_recipes
 )
+from ..controllers.list_filtered_recipes_controller import list_recipes_by_user
 
 recipes_blueprint = Blueprint('recipes', __name__)
 
@@ -27,6 +28,12 @@ def delete_recipe_route(post_id):
 
 @recipes_blueprint.route('/recipes', methods=['GET'])
 def list_recipes_route():
-    # optional: read query params for filters if needed
-    recipes = list_all_recipes()
-    return jsonify({"recipes": recipes}), 200
+    user_id = request.args.get('userId')
+
+    if user_id:
+        recipes = list_recipes_by_user(user_id)
+        return jsonify({"recipes": recipes}), 200
+    else:
+        # fallback to full list if userId isn't passed
+        recipes = list_all_recipes()
+        return jsonify({"recipes": recipes}), 200
