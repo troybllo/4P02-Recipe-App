@@ -10,11 +10,15 @@ from ..controllers.recipes import (
 
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 recipes_blueprint = Blueprint("recipes", __name__)
 
 
 =======
 
+=======
+
+>>>>>>> Stashed changes
 =======
 
 >>>>>>> Stashed changes
@@ -23,6 +27,9 @@ recipes_blueprint = Blueprint("recipes", __name__)
 
 # === POST: Create a new recipe ===
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
@@ -30,6 +37,7 @@ recipes_blueprint = Blueprint("recipes", __name__)
 def create_recipe_route():
     return create_recipe()
 
+<<<<<<< Updated upstream
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
 
@@ -43,6 +51,14 @@ def get_recipe_route(post_id):
 <<<<<<< Updated upstream
 
 =======
+# === PUT: Update a recipe by postId ===
+>>>>>>> Stashed changes
+=======
+# === GET: Retrieve a recipe globally using postId ===
+@recipes_blueprint.route("/recipes/<post_id>", methods=["GET"])
+def get_recipe_route(post_id):
+    return get_recipe_global(post_id)
+
 # === PUT: Update a recipe by postId ===
 >>>>>>> Stashed changes
 =======
@@ -59,7 +75,11 @@ def update_recipe_route(post_id):
 
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 
+=======
+# === DELETE: Delete a recipe by postId ===
+>>>>>>> Stashed changes
 =======
 # === DELETE: Delete a recipe by postId ===
 >>>>>>> Stashed changes
@@ -70,6 +90,7 @@ def update_recipe_route(post_id):
 def delete_recipe_route(post_id):
     return delete_recipe(post_id)
 
+<<<<<<< Updated upstream
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
 
@@ -88,6 +109,11 @@ def get_all_recipes_route():
 # === GET: List all recipes or filter by userId ===
 @recipes_blueprint.route("/recipes", methods=["GET"])
 def list_recipes_route():
+=======
+# === GET: List all recipes or filter by userId ===
+@recipes_blueprint.route("/recipes", methods=["GET"])
+def list_recipes_route():
+>>>>>>> Stashed changes
 =======
 # === GET: List all recipes or filter by userId ===
 @recipes_blueprint.route("/recipes", methods=["GET"])
