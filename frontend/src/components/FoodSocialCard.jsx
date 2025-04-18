@@ -6,8 +6,9 @@ import EditPost from "../components/EditPost";
 
 const FoodSocialCard = ({
   postId,
+  id,
   title,
-  author,
+  author = "Recipe Creator",
   authorId,
   datePosted,
   description,
@@ -15,11 +16,18 @@ const FoodSocialCard = ({
   difficulty,
   servings,
   imageUrl,
+  imageList,
   ingredients,
   instructions,
   likes,
   isLiked,
+  userId,
 }) => {
+  const recipeId = id || postId;
+
+  const displayImageUrl =
+    imageUrl || (imageList && imageList.length > 0 ? imageList[0].url : null);
+
   const [isTitleExpanded, setIsTitleExpanded] = useState(false);
   const [isRecipeExpanded, setIsRecipeExpanded] = useState(false);
   const [liked, setLiked] = useState(isLiked);
@@ -28,11 +36,13 @@ const FoodSocialCard = ({
   const [isHovered, setIsHovered] = useState(false);
   const cardRef = useRef(null);
 
-  const formattedDate = new Date(datePosted).toLocaleDateString("en-US", {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  });
+  const formattedDate = datePosted
+    ? new Date(datePosted).toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      })
+    : "Unknown date";
 
   const [isEditPostOpen, setIsEditPostOpen] = useState(false);
 
@@ -44,7 +54,6 @@ const FoodSocialCard = ({
     if (isLoading) return;
     setIsLoading(true);
 
-    // Add a heart animation
     const heart = document.createElement("div");
     heart.className = styles.floatingHeart;
     heart.innerHTML = "❤️";
@@ -72,7 +81,6 @@ const FoodSocialCard = ({
       console.log("Error sharing:", error);
       navigator.clipboard.writeText(window.location.href);
 
-      // Show copy confirmation
       const copyMsg = document.createElement("div");
       copyMsg.className = styles.copyMsg;
       copyMsg.innerText = "Link copied!";
@@ -90,8 +98,6 @@ const FoodSocialCard = ({
   };
 
   const handleRecipeDownload = () => {
-    // Downloads a PDF of the recipe with all the details
-    // Show download confirmation
     const downloadMsg = document.createElement("div");
     downloadMsg.className = styles.downloadMsg;
     downloadMsg.innerText = "Downloading recipe...";
@@ -99,12 +105,9 @@ const FoodSocialCard = ({
     setTimeout(() => downloadMsg.remove(), 2000);
   };
 
-  // Made-up variables for logged in state and current user ID
-  const isLoggedIn = true;
-  const currentUserId = "user_789";
-  const isOwner = isLoggedIn && currentUserId === authorId;
+  const currentUserId = localStorage.getItem("userId");
+  const isOwner = currentUserId === (authorId || userId);
 
-  // Animation variants
   const cardVariants = {
     hidden: { opacity: 0, y: 20 },
     visible: {
@@ -144,6 +147,30 @@ const FoodSocialCard = ({
     tap: { scale: 0.9 },
   };
 
+  let parsedIngredients = ingredients;
+  let parsedInstructions = instructions;
+
+  if (typeof ingredients === "string") {
+    try {
+      parsedIngredients = JSON.parse(ingredients);
+    } catch (e) {
+      parsedIngredients = [ingredients];
+    }
+  }
+
+  if (typeof instructions === "string") {
+    try {
+      parsedInstructions = JSON.parse(instructions);
+    } catch (e) {
+      parsedInstructions = [instructions];
+    }
+  }
+
+  parsedIngredients = Array.isArray(parsedIngredients) ? parsedIngredients : [];
+  parsedInstructions = Array.isArray(parsedInstructions)
+    ? parsedInstructions
+    : [];
+
   return (
     <>
       <motion.div
@@ -156,29 +183,26 @@ const FoodSocialCard = ({
         onHoverStart={() => setIsHovered(true)}
         onHoverEnd={() => setIsHovered(false)}
       >
-        {/* Card Header */}
         <div className="flex items-center justify-between px-4 py-3 border-b border-gray-100">
           <div className="flex items-center">
             <motion.div
               className="w-9 h-9 rounded-full bg-gradient-to-br from-green-500 to-green-700 text-white flex items-center justify-center font-semibold text-sm flex-shrink-0"
               whileHover={{ scale: 1.1 }}
             >
-              {author[0]}
+              {author && author[0] ? author[0] : "?"}
             </motion.div>
             <div className="ml-3 flex-1 min-w-0">
               <h3
-                className={`font-semibold text-gray-800 cursor-pointer ${isTitleExpanded ? "" : "truncate"}`}
-                onClick={handleTitleClick}
+                className="font-semibold text-gray-800"
                 style={{
                   maxWidth: "100%",
+                  wordBreak: "break-word",
                 }}
               >
-                {isTitleExpanded
-                  ? title
-                  : `${title.slice(0, 30)}${title.length > 30 ? "..." : ""}`}
+                {title || "Untitled Recipe"}
               </h3>
               <p className="text-xs text-gray-500">
-                by {author} • {formattedDate}
+                by {author || "Unknown"} • {formattedDate}
               </p>
             </div>
           </div>
@@ -199,16 +223,22 @@ const FoodSocialCard = ({
 
         {/* Card Image */}
         <div className="relative overflow-hidden">
-          <Link to={`/recipe/${postId}`}>
+          <Link to={`/recipes/${userId}/${recipeId}`}>
             <motion.div className="relative group">
-              <motion.img
-                src={imageUrl}
-                alt={title}
-                className="w-full h-56 md:h-64 object-cover"
-                loading="lazy"
-                variants={imageVariants}
-                whileHover="hover"
-              />
+              {displayImageUrl ? (
+                <motion.img
+                  src={displayImageUrl}
+                  alt={title}
+                  className="w-full h-56 md:h-64 object-cover"
+                  loading="lazy"
+                  variants={imageVariants}
+                  whileHover="hover"
+                />
+              ) : (
+                <div className="w-full h-56 md:h-64 bg-gray-200 flex items-center justify-center text-gray-400">
+                  No image available
+                </div>
+              )}
               {isHovered && (
                 <motion.div
                   className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex items-end justify-center"
@@ -238,33 +268,31 @@ const FoodSocialCard = ({
               className="px-2 py-1 bg-gray-100 text-gray-700 rounded-md text-xs font-medium flex items-center"
               whileHover={{ scale: 1.05, y: -2 }}
             >
-              ⏱️ {cookingTime}
+              ⏱️ {cookingTime || "N/A"}
             </motion.span>
             <motion.span
               className="px-2 py-1 bg-gray-100 text-gray-700 rounded-md text-xs font-medium flex items-center"
               whileHover={{ scale: 1.05, y: -2 }}
             >
-              📊 {difficulty}
+              📊 {difficulty || "Easy"}
             </motion.span>
             <motion.span
               className="px-2 py-1 bg-gray-100 text-gray-700 rounded-md text-xs font-medium flex items-center"
               whileHover={{ scale: 1.05, y: -2 }}
             >
-              👥 {servings}
+              👥 {servings || "N/A"}
             </motion.span>
           </motion.div>
 
-          {/* Description */}
           <motion.p
             className="text-gray-600 text-sm mb-4 line-clamp-3"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.4, delay: 0.2 }}
           >
-            {description}
+            {description || "No description available."}
           </motion.p>
 
-          {/* Action Buttons */}
           <div className="flex items-center justify-between">
             <div className="flex space-x-4">
               <motion.button
@@ -322,7 +350,6 @@ const FoodSocialCard = ({
             </motion.button>
           </div>
 
-          {/* Expanded Recipe Content */}
           <AnimatePresence>
             {isRecipeExpanded && (
               <motion.div
@@ -338,9 +365,9 @@ const FoodSocialCard = ({
                     Ingredients:
                   </h4>
                   <ul className="space-y-1">
-                    {ingredients?.map((ingredient, index) => (
+                    {parsedIngredients.map((ingredient, index) => (
                       <motion.li
-                        key={`ingredient-${postId}-${index}`}
+                        key={`ingredient-${recipeId}-${index}`}
                         initial={{ opacity: 0, x: -10 }}
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ duration: 0.3, delay: index * 0.05 }}
@@ -358,9 +385,9 @@ const FoodSocialCard = ({
                     Instructions:
                   </h4>
                   <ol className="space-y-2">
-                    {instructions?.map((instruction, index) => (
+                    {parsedInstructions.map((instruction, index) => (
                       <motion.li
-                        key={`instruction-${postId}-${index}`}
+                        key={`instruction-${recipeId}-${index}`}
                         initial={{ opacity: 0, x: -10 }}
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ duration: 0.3, delay: index * 0.05 }}
@@ -383,7 +410,7 @@ const FoodSocialCard = ({
                   transition={{ delay: 0.3 }}
                 >
                   <Link
-                    to={`/recipe/${postId}`}
+                    to={`/recipes/${userId}/${recipeId}`}
                     className="text-[#1d9c3f] hover:text-[#187832] font-medium text-sm"
                   >
                     View full recipe page →
@@ -399,15 +426,17 @@ const FoodSocialCard = ({
         isOpen={isEditPostOpen}
         onClose={() => setIsEditPostOpen(false)}
         onSubmit={handleEditPost}
-        postId={postId}
+        postId={recipeId}
+        userId={userId}
         title={title}
         description={description}
         cookingTime={cookingTime}
         difficulty={difficulty}
         servings={servings}
-        ingredients={ingredients}
-        instructions={instructions}
-        imageUrl={imageUrl}
+        ingredients={parsedIngredients}
+        instructions={parsedInstructions}
+        imageUrl={displayImageUrl}
+        imageList={imageList}
       />
     </>
   );
