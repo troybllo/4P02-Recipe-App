@@ -1,12 +1,41 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import FoodSocialCard from "../components/FoodSocialCard";
-import { recipes } from "../utils/sampleData";
-
+//import { recipes } from "../utils/sampleData";
 import discoveryLogo from "../images/discovery_diamond.png";
 import { motion } from "framer-motion";
-
+import axios from "axios";
+import Masonry from "react-masonry-css";
 
 const Discovery = () => {
+
+  const API = process.env.REACT_APP_API_URL;
+
+  const [recipes, setRecipes] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const userId = localStorage.getItem("userId");
+
+  useEffect(() => {
+    axios
+      .get(`${API}/api/recipes`)
+      .then(res => {
+        setRecipes(res.data.recipes);
+      })
+      .finally(() => setLoading(false))
+      console.log("recipes: ", recipes);
+      console.log("current user: ", userId);
+  }, []);
+
+  const breakpointColumnsObj = {
+    default: 3,
+    1440: 3,
+    1920: 3,
+    1680: 3,
+    1280: 3,
+    1080: 2,
+    824: 2,
+    640: 1,
+};
+
   const [activeFilters, setActiveFilters] = useState({
     cuisine: [],
     diet: [],
@@ -132,7 +161,7 @@ const Discovery = () => {
 </motion.p>
 </div>
 
-      <div className="flex justify-center w-full mb-2">
+      {/* <div className="flex justify-center w-full mb-2">
         <div className="relative w-full max-w-[30%] mx-5 my-1 p-2 px-12 bg-white border border-gray-500 rounded-full text-lg text-gray-900">
           <input
             type="text"
@@ -161,9 +190,9 @@ const Discovery = () => {
             </span>
           )),
         )}
-      </div>
+      </div> */}
 
-      <div className="flex flex-wrap justify-center gap-4 mb-12">
+      {/* <div className="flex flex-wrap justify-center gap-4 mb-12">
         {Object.entries(filterOptions).map(([category, options]) => (
           <div key={category} className="relative group">
             <button className="px-4 py-2 bg-gray-100 rounded-full hover:bg-gray-200 transition-colors capitalize">
@@ -187,6 +216,15 @@ const Discovery = () => {
             </div>
           </div>
         ))}
+      </div> */}
+
+      {/* <div className="grid grid-cols-3 gap-4 mb-8">
+        {recipes.map(recipes => (
+          <div key={recipes.post_id} className="border rounded shadow p-4">
+            <h2 className="text-xl font-bold mb-2">Recipe ID: {recipes.post_id}</h2>
+            <p className="text-gray-700">{recipes.title}</p>
+          </div>
+        ))}
       </div>
 
       <div className="flex flex-col gap-50 px-10">
@@ -196,12 +234,34 @@ const Discovery = () => {
               <h1 className="font-extralight text-4xl mb-4 mt-4">{section}</h1>
               <div className="grid grid-cols-4 gap-4">
                 {filteredRecipes.slice(0, 4).map((recipe) => (
-                  <FoodSocialCard key={recipe.id} {...recipe} />
+                  <FoodSocialCard key={recipes.post_id} {...recipe} />
                 ))}
               </div>
             </div>
           ),
         )}
+      </div> */}
+
+      <div className="grid gap-4">
+        {
+        recipes.map((recipe) => (
+        <FoodSocialCard
+          postId={recipe.postId}
+          title={recipe.title}
+          description={recipe.description}
+          imageUrl={recipe.imageList?.[0]?.url || "/placeholder.jpg"}
+          author={recipe.author || "Unknown"}
+          authorId={recipe.authorId || ""}
+          datePosted={recipe.datePosted}
+          cookingTime={recipe.cookingTime}
+          difficulty={recipe.difficulty}
+          servings={recipe.servings}
+          ingredients={Array.isArray(recipe.ingredients) ? recipe.ingredients : []}
+          instructions={Array.isArray(recipe.instructions) ? recipe.instructions : []}
+          likes={recipe.likes}
+          isLiked={recipe.isLiked}
+        />
+        ))}
       </div>
     </div>
   );
