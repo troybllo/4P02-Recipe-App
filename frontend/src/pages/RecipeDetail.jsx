@@ -4,7 +4,7 @@ import MyTipTapEditor from "../components/MyTipTapEditor";
 import { recipes as staticRecipes } from "../data/recipes";
 
 export default function RecipeDetail() {
-  const { id } = useParams();
+  const { postId } = useParams(); // from /recipes/:userId/:postId
   const [recipe, setRecipe] = useState(null);
   const [loading, setLoading] = useState(true);
   const [editMode, setEditMode] = useState(false);
@@ -13,8 +13,7 @@ export default function RecipeDetail() {
   useEffect(() => {
     const fetchRecipe = async () => {
       try {
-        console.log("🔍 Fetching recipe from Firebase...");
-        const response = await fetch(`http://127.0.0.1:5000/api/recipes/${id}`);
+        const response = await fetch(`http://127.0.0.1:5000/api/recipes/${postId}`);
         if (!response.ok) throw new Error("Not in Firebase");
 
         const data = await response.json();
@@ -22,7 +21,7 @@ export default function RecipeDetail() {
         generateEditorHtml(data);
       } catch (err) {
         console.warn("⚠️ Fallback to static data:", err.message);
-        const fallback = staticRecipes.find((r) => String(r.postId) === id);
+        const fallback = staticRecipes.find((r) => String(r.postId) === postId);
         setRecipe(fallback || null);
         generateEditorHtml(fallback);
       } finally {
@@ -31,7 +30,7 @@ export default function RecipeDetail() {
     };
 
     fetchRecipe();
-  }, [id]);
+  }, [postId]);
 
   const parseField = (field) => {
     if (Array.isArray(field)) return field;

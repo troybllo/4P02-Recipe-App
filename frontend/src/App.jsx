@@ -28,7 +28,7 @@ function App() {
             <Route path="/landing" element={<Landing />} />
             <Route path="/Signin" element={<SignInPage />} />
             <Route path="/Signup" element={<SignUpPage />} />
-            <Route path="/recipe/:id" element={<RecipeDetail />} />
+            <Route path="/recipes/:userId/:postId" element={<RecipeDetail />} />
             
             {/* Protected routes */}
             <Route element={<ProtectedRoute />}>

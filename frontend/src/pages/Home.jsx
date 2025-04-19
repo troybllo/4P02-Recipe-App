@@ -6,6 +6,8 @@ import styles from "../styles/masonry.css";
 import FoodSocialCard from "../components/FoodSocialCard";
 import StoryCarousel from "../components/StoryCarousel";
 import { useParams } from "react-router-dom";
+import { recipes as staticRecipes } from "../data/recipes";
+
 
 // Helper function to infer category from various fields
 function getCategory(recipe) {
@@ -85,11 +87,9 @@ export default function Home() {
     // Fetch all recipes for the user
     const fetchRecipes = async () => {
       try {
-        const userId = localStorage.getItem("userId");
-        const token = localStorage.getItem("token");
-    
+        console.log("Fetching backend recipes...");
         const response = await fetch(
-          `http://127.0.0.1:5000/api/recipes?excludeUserId=${userId}`, // ✅ backend filter
+          `http://127.0.0.1:5000/api/recipes?excludeUserId=${userId}`,
           {
             method: "GET",
             headers: {
@@ -100,21 +100,25 @@ export default function Home() {
         );
     
         const data = await response.json();
+    
         if (response.ok) {
-          const recipesArray = ensureRecipesArray(data);
-          setRecipes(recipesArray);
+          const backendRecipes = ensureRecipesArray(data);
+          const combined = [...backendRecipes, ...staticRecipes];
+          setRecipes(combined);
         } else {
-          setError(data.error || "Failed to fetch recipes");
+          console.error("Error response:", data);
+          setRecipes(staticRecipes); // fallback
         }
       } catch (error) {
         console.error("Fetch error:", error);
-        setError("Network error. Please try again.");
+        setRecipes(staticRecipes); // fallback
       } finally {
         setTimeout(() => {
           setIsLoading(false);
         }, 500);
       }
     };
+    
     
     fetchRecipes();
   }, []);

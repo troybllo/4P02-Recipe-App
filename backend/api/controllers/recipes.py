@@ -119,12 +119,13 @@ def list_all_recipes():
             data["postId"] = doc.id
             data["userId"] = recipe_owner_id
 
-            # ✅ Fetch username from the user's document
+            # ✅ Fetch username from parent user doc
             user_doc = db.collection("users").document(recipe_owner_id).get()
             if user_doc.exists:
-                data["author"] = user_doc.to_dict().get("username", "Recipe Creator")
+                user_data = user_doc.to_dict()
+                data["author"] = user_data.get("username", "Unknown")
             else:
-                data["author"] = "Recipe Creator"
+                data["author"] = "Unknown"
 
             recipes.append(data)
 
@@ -133,3 +134,4 @@ def list_all_recipes():
     except Exception as e:
         print(f"[list_all_recipes ERROR]: {e}")
         return jsonify({"error": str(e)}), 500
+
