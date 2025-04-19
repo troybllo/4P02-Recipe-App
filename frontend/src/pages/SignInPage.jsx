@@ -20,7 +20,7 @@ export default function SignInPage() {
   useEffect(() => {
     if (localStorage.getItem("token")) {
       navigate("/");
-    }
+    } 
   }, [navigate]);
 
   const handleChange = (e) => {

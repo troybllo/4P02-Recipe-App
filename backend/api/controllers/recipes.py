@@ -7,6 +7,7 @@ from ..services.recipe_database import (
     create_recipe_in_firebase, get_recipe_from_firebase,
     update_recipe_in_firebase, delete_recipe_from_firebase,
     upload_images_to_cloudinary, delete_image_from_cloudinary,
+    get_most_liked_recipes,
 )
 
 def create_recipe():
@@ -80,11 +81,6 @@ def get_recipe_global(post_id):
 
             return jsonify(recipe_data), 200
 
-        return jsonify({"error": "Recipe not found"}), 404
-
-    except Exception as e:
-        print(f"[get_recipe_global ERROR]: {e}")
-        return jsonify({"error": str(e)}), 500
 
 def update_recipe(post_id):
     from firebase_admin import firestore
@@ -129,6 +125,45 @@ def update_recipe(post_id):
         print(f"[update_recipe ERROR]: {e}")
         return jsonify({"error": str(e)}), 500
 
+    image_files = request.files.getlist('images') if request.files else []
+
+    existing_doc = get_recipe_from_firebase(user_id, post_id)
+    if not existing_doc:
+        return jsonify({"error": "Recipe not found"}), 404
+
+    updated_data = {}
+    fields = ["title", "description", "cookingTime", "difficulty",
+              "servings", "ingredients", "instructions"]
+    for f in fields:
+        if f in data:
+            updated_data[f] = data[f]
+
+    # Remove images
+    remove_ids_str = data.get("removePublicIds")
+    remove_ids = []
+    if remove_ids_str:
+        remove_ids = [rid.strip() for rid in remove_ids_str.split(",") if rid.strip()]
+
+    current_images = existing_doc.get("imageList", [])
+    remaining_images = []
+    for img_obj in current_images:
+        if img_obj["publicId"] in remove_ids:
+            delete_image_from_cloudinary(img_obj["publicId"])
+        else:
+            remaining_images.append(img_obj)
+
+    # Add new images
+    new_images = []
+    if image_files:
+        new_images = upload_images_to_cloudinary(image_files)
+
+    updated_data["imageList"] = remaining_images + new_images
+
+    updated_recipe = update_recipe_in_firebase(user_id, post_id, updated_data)
+    if not updated_recipe:
+        return jsonify({"error": "Update failed"}), 404
+
+    return jsonify({"message": "Recipe updated", "recipe": updated_recipe}), 200
 
 def delete_recipe(post_id):
     # Use query parameter for DELETE to avoid unsupported media type issues
@@ -179,3 +214,6 @@ def list_all_recipes():
         print(f"[list_all_recipes ERROR]: {e}")
         return jsonify({"error": str(e)}), 500
 
+def list_most_liked_recipes():
+    recipes = get_most_liked_recipes()
+    return jsonify({"recipes": recipes}), 200

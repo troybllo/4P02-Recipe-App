@@ -13,15 +13,16 @@ import RecipeDetail from "./pages/RecipeDetail";
 import SignInPage from "./pages/SignInPage";
 import SignUpPage from "./pages/SignUpPage";
 import LandingPage from "./pages/Landing"
+import ProfileRedirect from "./components/ProfileRedirect";
 
 function App() {
   return (
-    <AuthProvider> {/* Wrap your app with AuthProvider */}
+    <AuthProvider>
       <div className="app-container">
         <Navbar />
         <div className="main-content">
-          <Routes>
-            {/* Public routes */}
+        <Routes>
+  {/* Public routes */}
             <Route path="/" element={<LandingPage />} />
             <Route path="/home" element={<Home />} />
             <Route path="/discovery" element={<Discovery />} />
@@ -30,10 +31,12 @@ function App() {
             <Route path="/Signup" element={<SignUpPage />} />
             <Route path="/recipes/:userId/:postId" element={<RecipeDetail />} />
             
-            {/* Protected routes */}
+            {/* Public profile route - for viewing other profiles */}
+            <Route path="/profile/:profileUsername" element={<Profile />} />
+            
+            {/* Protected empty profile route - will redirect to username-based profile */}
             <Route element={<ProtectedRoute />}>
               <Route path="/profile" element={<Profile />} />
-              {/* Add any other protected routes here */}
             </Route>
           </Routes>
         </div>
