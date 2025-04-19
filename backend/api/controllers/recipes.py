@@ -4,7 +4,7 @@ from ..services.recipe_database import (
     create_recipe_in_firebase, get_recipe_from_firebase,
     update_recipe_in_firebase, delete_recipe_from_firebase,
     upload_images_to_cloudinary, delete_image_from_cloudinary,
-    get_most_liked_recipes,
+    get_most_liked_recipes, get_most_recent_recipes,
 )
 
 def create_recipe():
@@ -113,3 +113,8 @@ def delete_recipe(post_id):
 def list_most_liked_recipes():
     recipes = get_most_liked_recipes()
     return jsonify({"recipes": recipes}), 200
+
+def get_recent_recipes():
+    limit = int(request.args.get("limit", 100))
+    recent = get_most_recent_recipes(limit=limit)
+    return jsonify({"recipes": recent}), 200

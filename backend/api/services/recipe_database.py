@@ -70,3 +70,23 @@ def get_most_liked_recipes():
 
     sorted_recipes = sorted(recipes, key=lambda x: x.get("likes", 0), reverse=True)
     return sorted_recipes
+
+def get_most_recent_recipes(limit=100):
+    db = firestore.client()
+    recipes = []
+    users_ref = db.collection('users')
+
+    for user in users_ref.stream():
+        user_id = user.id
+        subcol = db.collection('users').document(user_id).collection('created_recipes')
+        for recipe_doc in subcol.stream():
+            data = recipe_doc.to_dict()
+            data["postId"] = recipe_doc.id
+            recipes.append(data)
+
+    sorted_recipes = sorted(
+        recipes,
+        key = lambda x: x.get("datePosted", ""),
+        reverse = True
+    )
+    return sorted_recipes[:limit]

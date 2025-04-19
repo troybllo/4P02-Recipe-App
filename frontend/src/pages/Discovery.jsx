@@ -230,28 +230,6 @@ const Discovery = () => {
           ),
         )}
       </div>
-
-      {/* <div className="grid gap-4">
-        {
-        recipes.map((recipe) => (
-        <FoodSocialCard
-          postId={recipe.postId}
-          title={recipe.title}
-          description={recipe.description}
-          imageUrl={recipe.imageList?.[0]?.url || "/placeholder.jpg"}
-          author={recipe.author || "Unknown"}
-          authorId={recipe.authorId || ""}
-          datePosted={recipe.datePosted}
-          cookingTime={recipe.cookingTime}
-          difficulty={recipe.difficulty}
-          servings={recipe.servings}
-          ingredients={Array.isArray(recipe.ingredients) ? recipe.ingredients : []}
-          instructions={Array.isArray(recipe.instructions) ? recipe.instructions : []}
-          likes={recipe.likes}
-          isLiked={recipe.isLiked}
-        />
-        ))}
-      </div> */}
     </div>
   );
 };

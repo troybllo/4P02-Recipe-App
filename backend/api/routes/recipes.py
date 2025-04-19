@@ -5,6 +5,7 @@ from ..controllers.recipes import (
     update_recipe,
     delete_recipe,
     get_most_liked_recipes,
+    get_recent_recipes,
 )
 
 recipes_blueprint = Blueprint('recipes', __name__)
@@ -20,6 +21,10 @@ def get_recipe_route(post_id):
 @recipes_blueprint.route('/recipes/most-liked', methods=['GET'])
 def get_most_liked_recipes_route():
     return get_most_liked_recipes()
+
+@recipes_blueprint.route('/recipes/most-recent', methods=['GET'])
+def get_recent_recipes_route():
+    return get_recent_recipes()
 
 @recipes_blueprint.route('/recipes/<post_id>', methods=['PUT'])
 def update_recipe_route(post_id):
