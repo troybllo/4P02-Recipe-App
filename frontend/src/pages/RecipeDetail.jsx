@@ -64,10 +64,50 @@ export default function RecipeDetail() {
     `);
   };
 
-  const handleSave = () => {
-    console.log("💾 Edited HTML:", editorHtml);
-    setEditMode(false);
+  const handleSave = async () => {
+    if (!recipe || !recipe.userId) return;
+  
+    const currentUserId = localStorage.getItem("userId");
+    if (recipe.userId !== currentUserId) {
+      alert("You do not have permission to edit this recipe.");
+      return;
+    }
+  
+    try {
+      const response = await fetch(`http://127.0.0.1:5000/api/recipes/${recipe.postId}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          ...recipe,
+          userId: recipe.userId,
+          title: recipe.title,
+          description: recipe.description,
+          servings: recipe.servings,
+          cookingTime: recipe.cookingTime,
+          difficulty: recipe.difficulty,
+          ingredients: recipe.ingredients,
+          instructions: recipe.instructions,
+          imageUrl: recipe.imageUrl || "",
+          imageList: recipe.imageList || [],
+          editorHtml: editorHtml,
+        }),
+      });
+  
+      if (response.ok) {
+        alert("✅ Recipe updated!");
+        setEditMode(false);
+      } else {
+        const error = await response.json();
+        alert("❌ Update failed: " + error.message);
+      }
+    } catch (err) {
+      console.error("Failed to save recipe:", err);
+      alert("❌ Update error");
+    }
   };
+  
 
   if (loading) return <div className="p-6">Loading recipe...</div>;
   if (!recipe) return <div className="p-6 text-red-600">Recipe not found!</div>;
@@ -138,13 +178,23 @@ export default function RecipeDetail() {
       </div>
 
       <div className="mt-10">
-        <button
-          onClick={() => setEditMode(true)}
-          className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
-        >
-          Edit Recipe
-        </button>
+        {(() => {
+          const localId = localStorage.getItem("userId");
+          console.log("🔍 Local User ID:", localId);
+          console.log("📦 Recipe User ID:", recipe?.userId);
+          console.log("✅ Can Edit:", recipe?.userId === localId);
+
+          return recipe?.userId && recipe.userId === localId ? (
+            <button
+              onClick={() => setEditMode(true)}
+              className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+            >
+              Edit Recipe
+            </button>
+          ) : null;
+        })()}
       </div>
+
     </div>
   );
 }
