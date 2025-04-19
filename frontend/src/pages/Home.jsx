@@ -85,29 +85,26 @@ export default function Home() {
     // Fetch all recipes for the user
     const fetchRecipes = async () => {
       try {
-        console.log("Fetching recipes for userId:", userId);
+        const userId = localStorage.getItem("userId");
+        const token = localStorage.getItem("token");
+    
         const response = await fetch(
-          `http://127.0.0.1:5000/api/recipes?userId=${userId}`,
+          `http://127.0.0.1:5000/api/recipes?excludeUserId=${userId}`, // ✅ backend filter
           {
             method: "GET",
             headers: {
               "Content-Type": "application/json",
               Authorization: `Bearer ${token}`,
             },
-          },
+          }
         );
-
+    
         const data = await response.json();
-        console.log("API response:", data);
-
         if (response.ok) {
-          // Ensure we're setting an array of recipes
           const recipesArray = ensureRecipesArray(data);
           setRecipes(recipesArray);
-          console.log("Recipes set in state:", recipesArray.length);
         } else {
           setError(data.error || "Failed to fetch recipes");
-          console.error("Error response:", data);
         }
       } catch (error) {
         console.error("Fetch error:", error);
@@ -118,6 +115,7 @@ export default function Home() {
         }, 500);
       }
     };
+    
     fetchRecipes();
   }, []);
 
