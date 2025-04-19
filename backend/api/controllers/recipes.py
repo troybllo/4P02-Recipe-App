@@ -118,6 +118,14 @@ def list_all_recipes():
             data = doc.to_dict()
             data["postId"] = doc.id
             data["userId"] = recipe_owner_id
+
+            # ✅ Fetch username from the user's document
+            user_doc = db.collection("users").document(recipe_owner_id).get()
+            if user_doc.exists:
+                data["author"] = user_doc.to_dict().get("username", "Recipe Creator")
+            else:
+                data["author"] = "Recipe Creator"
+
             recipes.append(data)
 
         return jsonify({"recipes": recipes}), 200
