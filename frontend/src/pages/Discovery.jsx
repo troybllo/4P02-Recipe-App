@@ -47,9 +47,63 @@ const Discovery = () => {
       }
     };
 
+    const fetchQuickPicks = async () => {
+      try {
+        const response = await fetch(`${API}/api/recipes/quick-picks`);
+        const data = await response.json();
+        console.log("Quick picks API response:", data);
+
+        let fetched = [];
+        if (data && Array.isArray(data)) {
+          fetched = data;
+        } else if (data && data.recipes && Array.isArray(data.recipes)) {
+          fetched = data.recipes;
+        } else if (data && Object.values(data).some(Array.isArray)) {
+          const arrayProps = Object.entries(data).find(([_, val]) =>
+            Array.isArray(val),
+          );
+          if (arrayProps) fetched = arrayProps[1];
+        }
+
+        setCategories((prev) => ({ ...prev, quickPicks: fetched }));
+        console.log("Processed quick picks recipes:", fetched);
+      } catch (err) {
+        console.error("Error fetching quick picks recipes:", err);
+      } finally {
+        setLoading((prev) => ({ ...prev, quickPicks: false }));
+      }
+    };
+
+    const fetchEasiest = async () => {
+      try {
+        const response = await fetch(`${API}/api/recipes/easy-recipes`);
+        const data = await response.json();
+        console.log("Easiest API response:", data);
+
+        let fetched = [];
+        if (data && Array.isArray(data)) {
+          fetched = data;
+        } else if (data && data.recipes && Array.isArray(data.recipes)) {
+          fetched = data.recipes;
+        } else if (data && Object.values(data).some(Array.isArray)) {
+          const arrayProps = Object.entries(data).find(([_, val]) =>
+            Array.isArray(val),
+          );
+          if (arrayProps) fetched = arrayProps[1];
+        }
+
+        setCategories((prev) => ({ ...prev, easyRecipes: fetched }));
+        console.log("Processed easiest recipes:", fetched);
+      } catch (err) {
+        console.error("Error fetching easiest recipes:", err);
+      } finally {
+        setLoading((prev) => ({ ...prev, easyRecipes: false }));
+      }
+    };
+
     const fetchRecentlyAdded = async () => {
       try {
-        const response = await fetch(`${API}/api/recipes/most-recent?limit=5`);
+        const response = await fetch(`${API}/api/recipes/most-recent?limit=30`);
         const data = await response.json();
         console.log("Recently added API response:", data);
 
@@ -76,6 +130,8 @@ const Discovery = () => {
 
     fetchMostLiked();
     fetchRecentlyAdded();
+    fetchEasiest();
+    fetchQuickPicks();
 
     setTimeout(() => {
       setLoading((prev) => ({
@@ -207,7 +263,8 @@ const Discovery = () => {
       data: categories.recentlyAdded,
       loading: loading.recentlyAdded,
     },
-    "Quick Meals": { data: categories.quickMeals, loading: loading.quickMeals },
+    "Quick Meals": { data: categories.quickPicks, loading: loading.quickPicks },
+    "Easy Meals": { data: categories.easyRecipes, loading: loading.easyRecipes },
   };
 
   return (

@@ -9,6 +9,8 @@ from ..services.recipe_database import (
     delete_image_from_cloudinary,
     get_most_liked_recipes,
     get_most_recent_recipes,
+    get_easy_recipes,
+    get_quick_picks,
 )
 
 
@@ -137,3 +139,12 @@ def get_recent_recipes():
     limit = int(request.args.get("limit", 100))
     recent = get_most_recent_recipes(limit=limit)
     return jsonify({"recipes": recent}), 200
+
+
+def list_easy_recipes():
+    recipes = get_easy_recipes()
+    return jsonify({"recipes": recipes}), 200
+
+def list_quick_picks():
+    recipes = get_quick_picks()
+    return jsonify({"recipes": recipes}), 200

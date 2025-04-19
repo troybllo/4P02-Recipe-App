@@ -6,9 +6,8 @@ from ..controllers.recipes import (
     delete_recipe,
     get_most_liked_recipes,
     get_recent_recipes,
-)
-from ..services.recipe_database import (
-    filter_recipes_by_difficulties,
+    list_easy_recipes,
+    list_quick_picks,
 )
 
 recipes_blueprint = Blueprint("recipes", __name__)
@@ -33,14 +32,13 @@ def get_most_liked_recipes_route():
 def get_recent_recipes_route():
     return get_recent_recipes()
 
+@recipes_blueprint.route('/recipes/easy-recipes', methods=['GET'])
+def get_easy_recipes_route():
+    return list_easy_recipes()
 
-@recipes_blueprint.route("/recipes/filter", methods=["GET"])
-def filter_recipes_route():
-    levels = request.args.get("difficulties", "")
-    difficulties = [d.strip().lower() for d in levels.split(",") if d]
-    recipes = filter_recipes_by_difficulties(difficulties)
-    return jsonify({"recipes": recipes}), 200
-
+@recipes_blueprint.route('/recipes/quick-picks', methods=['GET'])
+def get_quick_picks_route():
+    return list_quick_picks()
 
 @recipes_blueprint.route("/recipes/<post_id>", methods=["PUT"])
 def update_recipe_route(post_id):
@@ -50,3 +48,4 @@ def update_recipe_route(post_id):
 @recipes_blueprint.route("/recipes/<post_id>", methods=["DELETE"])
 def delete_recipe_route(post_id):
     return delete_recipe(post_id)
+
