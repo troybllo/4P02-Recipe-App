@@ -4,17 +4,22 @@ import { motion } from "framer-motion";
 
 const Discovery = () => {
   const API = process.env.REACT_APP_API_URL;
+
   const [categories, setCategories] = useState({
     mostLiked: [],
     recentlyAdded: [],
     editorsPick: [],
     quickMeals: [],
+    quickPicks: [],
+    easyRecipes: [],
   });
   const [loading, setLoading] = useState({
     mostLiked: true,
     recentlyAdded: true,
     editorsPick: true,
     quickMeals: true,
+    quickPicks: true,
+    easyRecipes: true,
   });
   const userId = localStorage.getItem("userId");
 
@@ -262,8 +267,11 @@ const Discovery = () => {
       data: categories.recentlyAdded,
       loading: loading.recentlyAdded,
     },
-    "Quick Meals": { data: categories.quickPicks, loading: loading.quickPicks },
-    "Easy Meals": { data: categories.easyRecipes, loading: loading.easyRecipes },
+    "Quick Picks": { data: categories.quickPicks, loading: loading.quickPicks },
+    "Easy Meals": {
+      data: categories.easyRecipes,
+      loading: loading.easyRecipes,
+    },
   };
 
   const editorsTitles = [
@@ -311,10 +319,10 @@ const Discovery = () => {
       </div>
 
       <div className="flex flex-col items-center justify-center w-full mb-10 px-4">
-        <div className="relative w-full max-w-md mx-auto mb-6">
-          <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+        <div className="relative w-full max-w-2xl mx-auto mb-8">
+          <div className="absolute inset-y-0 left-0 pl-6 flex items-center pointer-events-none">
             <svg
-              className="w-5 h-5 text-gray-400"
+              className="w-6 h-6 text-gray-400"
               fill="currentColor"
               viewBox="0 0 20 20"
             >
@@ -328,18 +336,18 @@ const Discovery = () => {
           <input
             type="text"
             placeholder="Search for recipes..."
-            className="w-full py-4 pl-12 pr-4 bg-white border-none rounded-full shadow-lg text-lg text-gray-900 focus:ring-2 focus:ring-green-500 focus:outline-none transition-all"
+            className="w-full py-5 pl-16 pr-6 bg-white border-none rounded-full shadow-lg text-xl text-gray-900 focus:ring-2 focus:ring-green-500 focus:outline-none transition-all"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />
         </div>
 
-        <div className="flex flex-wrap justify-center gap-3 mb-6 w-full max-w-4xl">
+        <div className="flex flex-wrap justify-center gap-4 mb-8 w-full max-w-5xl">
           {Object.entries(activeFilters).map(([category, values]) =>
             values.map((value) => (
               <motion.span
                 key={`${category}-${value}`}
-                className="flex items-center px-4 py-2 text-sm bg-indigo-100 text-indigo-800 rounded-full shadow-sm"
+                className="flex items-center px-5 py-2 text-base bg-indigo-100 text-indigo-800 rounded-full shadow-sm"
                 initial={{ opacity: 0, scale: 0.8 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.3 }}
@@ -350,7 +358,7 @@ const Discovery = () => {
                   className="ml-2 text-indigo-600 hover:text-indigo-800 focus:outline-none"
                 >
                   <svg
-                    className="w-4 h-4"
+                    className="w-5 h-5"
                     fill="currentColor"
                     viewBox="0 0 20 20"
                   >
@@ -366,13 +374,13 @@ const Discovery = () => {
           )}
         </div>
 
-        <div className="flex flex-wrap justify-center gap-3 mb-12 w-full max-w-4xl">
+        <div className="flex flex-wrap justify-center gap-4 mb-16 w-full max-w-5xl">
           {Object.entries(filterOptions).map(([category, options]) => (
             <div key={category} className="relative group">
-              <button className="px-5 py-3 bg-white rounded-full shadow-md hover:shadow-lg transition-all text-gray-700 font-medium capitalize flex items-center gap-2">
+              <button className="px-6 py-3 bg-white rounded-full shadow-md hover:shadow-lg transition-all text-gray-700 font-medium capitalize flex items-center gap-2 text-base">
                 <span>{category.replace(/([A-Z])/g, " $1").trim()}</span>
                 <svg
-                  className="w-4 h-4 text-gray-500"
+                  className="w-5 h-5 text-gray-500"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -385,7 +393,7 @@ const Discovery = () => {
                   />
                 </svg>
               </button>
-              <div className="absolute hidden group-hover:block z-10 mt-2 bg-white rounded-xl shadow-xl p-4 min-w-[220px] border border-gray-100 right-0">
+              <div className="absolute hidden group-hover:block z-10 mt-2 bg-white rounded-xl shadow-xl p-5 min-w-[240px] border border-gray-100 right-0">
                 {options.map((option) => (
                   <label
                     key={option}
@@ -397,7 +405,9 @@ const Discovery = () => {
                       onChange={() => toggleFilter(category, option)}
                       className="form-checkbox h-5 w-5 text-green-600 rounded border-gray-300 focus:ring-green-500"
                     />
-                    <span className="text-gray-800 font-medium">{option}</span>
+                    <span className="text-gray-800 font-medium text-base">
+                      {option}
+                    </span>
                   </label>
                 ))}
               </div>
@@ -406,13 +416,13 @@ const Discovery = () => {
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-20">
+      <div className="w-full px-6 pb-20">
         {Object.entries(categoryMap).map(([sectionName, { data, loading }]) => (
-          <div key={sectionName} className="mb-20">
+          <div key={sectionName} className="mb-24">
             {sectionName === "Editors Pick" ? (
-              <div className="mb-10">
+              <div className="mb-16">
                 <motion.div
-                  className="relative py-4 overflow-hidden"
+                  className="relative py-8 overflow-hidden"
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ duration: 0.8 }}
@@ -420,30 +430,30 @@ const Discovery = () => {
                   <div className="absolute inset-0 bg-gradient-to-r from-emerald-600 to-green-400 opacity-90 rounded-3xl"></div>
                   <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10"></div>
 
-                  <div className="relative z-10 px-8 py-6">
-                    <h2 className="text-5xl font-bold text-white mb-2 tracking-tight flex items-center">
-                      <span className="text-6xl mr-2">✨</span> {sectionName}
+                  <div className="relative z-10 px-12 py-8">
+                    <h2 className="text-6xl font-bold text-white mb-3 tracking-tight flex items-center">
+                      <span className="text-6xl mr-3">✨</span> {sectionName}
                     </h2>
-                    <p className="text-emerald-100 text-lg max-w-2xl">
+                    <p className="text-emerald-100 text-xl max-w-2xl">
                       Our team's handpicked selection of extraordinary recipes
                       that are sure to impress.
                     </p>
                   </div>
                 </motion.div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-8 px-2 -mt-6">
+                <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-10 -mt-6 px-2">
                   {loading ? (
                     Array(5)
                       .fill(0)
                       .map((_, i) => (
                         <div
                           key={i}
-                          className="h-80 bg-white rounded-2xl overflow-hidden shadow-lg animate-pulse"
+                          className="h-96 bg-white rounded-2xl overflow-hidden shadow-lg animate-pulse"
                         >
-                          <div className="h-48 bg-gray-200"></div>
-                          <div className="p-4">
-                            <div className="h-4 bg-gray-200 rounded mb-2 w-3/4"></div>
-                            <div className="h-4 bg-gray-200 rounded w-1/2"></div>
+                          <div className="h-56 bg-gray-200"></div>
+                          <div className="p-6">
+                            <div className="h-5 bg-gray-200 rounded mb-3 w-3/4"></div>
+                            <div className="h-5 bg-gray-200 rounded w-1/2"></div>
                           </div>
                         </div>
                       ))
@@ -453,17 +463,17 @@ const Discovery = () => {
                       .map((recipe, index) => (
                         <motion.div
                           key={recipe.postId || `recipe-${index}`}
-                          className="flex flex-col relative group"
+                          className="flex flex-col relative group h-full"
                           initial={{ opacity: 0, y: 10 }}
                           animate={{ opacity: 1, y: 0 }}
                           transition={{ duration: 0.4, delay: index * 0.1 }}
                         >
                           <div className="absolute -top-12 left-0 right-0 flex justify-center">
-                            <span className="bg-gradient-to-r from-emerald-600 to-green-400 text-white py-2 px-4 rounded-full text-sm font-semibold shadow-lg z-10">
+                            <span className="bg-gradient-to-r from-emerald-600 to-green-400 text-white py-2 px-6 rounded-full text-base font-semibold shadow-lg z-10">
                               {editorsTitles[index % editorsTitles.length]}
                             </span>
                           </div>
-                          <div className="bg-white rounded-2xl overflow-hidden shadow-lg transition-all duration-300 hover:shadow-xl transform group-hover:-translate-y-1 mt-6 border border-gray-100">
+                          <div className="bg-white rounded-2xl overflow-hidden shadow-lg transition-all duration-300 hover:shadow-xl transform group-hover:-translate-y-1 mt-6 border border-gray-100 h-full">
                             <FoodSocialCard
                               key={recipe.postId || `recipe-${index}`}
                               postId={recipe.postId || `recipe-${index}`}
@@ -499,12 +509,12 @@ const Discovery = () => {
                         </motion.div>
                       ))
                   ) : (
-                    <div className="col-span-5 text-center py-12 bg-white rounded-2xl shadow-sm">
-                      <div className="text-5xl mb-4">🍽️</div>
-                      <p className="text-gray-600 text-lg font-medium">
+                    <div className="col-span-5 text-center py-16 bg-white rounded-2xl shadow-sm">
+                      <div className="text-6xl mb-4">🍽️</div>
+                      <p className="text-gray-600 text-xl font-medium">
                         No recipes found
                       </p>
-                      <p className="text-gray-400 text-sm mt-2">
+                      <p className="text-gray-400 text-base mt-2">
                         Stay tuned for our editors' recommendations coming soon!
                       </p>
                     </div>
@@ -512,43 +522,46 @@ const Discovery = () => {
                 </div>
               </div>
             ) : (
-              <div className="mb-16">
+              <div className="mb-20">
                 <motion.div
-                  className="flex items-center mb-8"
+                  className="flex items-center mb-10 px-4"
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ duration: 0.5 }}
                 >
                   {sectionName === "Most Liked 💖" && (
-                    <span className="text-4xl mr-4">❤️</span>
+                    <span className="text-5xl mr-5">❤️</span>
                   )}
                   {sectionName === "Recently Added" && (
-                    <span className="text-4xl mr-4">🆕</span>
+                    <span className="text-5xl mr-5">🆕</span>
                   )}
-                  {sectionName === "Quick Meals" && (
-                    <span className="text-4xl mr-4">⏱️</span>
+                  {sectionName === "Quick Picks" && (
+                    <span className="text-5xl mr-5">⏱️</span>
+                  )}
+                  {sectionName === "Easy Meals" && (
+                    <span className="text-5xl mr-5">😌</span>
                   )}
                   <h2
-                    className="text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r 
+                    className="text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r 
                     from-gray-700 to-gray-900 tracking-tight"
                   >
                     {sectionName}
                   </h2>
                 </motion.div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-8 px-2">
                   {loading ? (
                     Array(5)
                       .fill(0)
                       .map((_, i) => (
                         <div
                           key={i}
-                          className="h-72 bg-white rounded-xl overflow-hidden shadow-md animate-pulse"
+                          className="h-96 bg-white rounded-xl overflow-hidden shadow-md animate-pulse"
                         >
-                          <div className="h-40 bg-gray-200"></div>
-                          <div className="p-4">
-                            <div className="h-4 bg-gray-200 rounded mb-2 w-3/4"></div>
-                            <div className="h-4 bg-gray-200 rounded w-1/2"></div>
+                          <div className="h-56 bg-gray-200"></div>
+                          <div className="p-6">
+                            <div className="h-5 bg-gray-200 rounded mb-3 w-3/4"></div>
+                            <div className="h-5 bg-gray-200 rounded w-1/2"></div>
                           </div>
                         </div>
                       ))
@@ -558,7 +571,7 @@ const Discovery = () => {
                       .map((recipe, index) => (
                         <motion.div
                           key={recipe.postId || `recipe-${index}`}
-                          className="bg-white rounded-xl overflow-hidden shadow-md transition-all duration-300 hover:shadow-lg transform hover:-translate-y-1 border border-gray-100"
+                          className="bg-white rounded-xl overflow-hidden shadow-md transition-all duration-300 hover:shadow-lg transform hover:-translate-y-1 border border-gray-100 h-full"
                           initial={{ opacity: 0, y: 20 }}
                           animate={{ opacity: 1, y: 0 }}
                           transition={{ duration: 0.4, delay: index * 0.08 }}
@@ -597,23 +610,27 @@ const Discovery = () => {
                         </motion.div>
                       ))
                   ) : (
-                    <div className="col-span-5 text-center py-10 bg-white rounded-xl shadow-sm">
-                      <div className="text-4xl mb-3">
+                    <div className="col-span-5 text-center py-16 bg-white rounded-xl shadow-sm">
+                      <div className="text-5xl mb-4">
                         {sectionName === "Most Liked 💖"
                           ? "❤️"
                           : sectionName === "Recently Added"
                             ? "🆕"
-                            : "⏱️"}
+                            : sectionName === "Quick Picks"
+                              ? "⏱️"
+                              : "😌"}
                       </div>
-                      <p className="text-gray-600 font-medium">
+                      <p className="text-gray-600 text-xl font-medium">
                         No recipes found
                       </p>
-                      <p className="text-gray-400 text-sm mt-2">
+                      <p className="text-gray-400 text-base mt-3">
                         {sectionName === "Most Liked 💖"
                           ? "Be the first to like some amazing recipes!"
                           : sectionName === "Recently Added"
                             ? "New recipes will appear here soon"
-                            : "Quick meal ideas are on their way"}
+                            : sectionName === "Quick Picks"
+                              ? "Quick meal ideas are on their way"
+                              : "Easy recipe suggestions coming soon"}
                       </p>
                     </div>
                   )}
