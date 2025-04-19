@@ -1,5 +1,8 @@
 from flask import request, jsonify
 from datetime import datetime
+import cloudinary.uploader
+import json
+
 from ..services.recipe_database import (
     create_recipe_in_firebase, get_recipe_from_firebase,
     update_recipe_in_firebase, delete_recipe_from_firebase,
@@ -84,50 +87,48 @@ def get_recipe_global(post_id):
         return jsonify({"error": str(e)}), 500
 
 def update_recipe(post_id):
-    data = request.form.to_dict() or request.get_json() or {}
-    user_id = data.get("userId")
-    if not user_id:
-        return jsonify({"error": "Missing userId"}), 400
+    from firebase_admin import firestore
+    import cloudinary.uploader
+    db = firestore.client()
 
-    image_files = request.files.getlist('images') if request.files else []
+    try:
+        if request.content_type.startswith("multipart/form-data"):
+            data = request.form.to_dict()
+            user_id = data.get("userId")
 
-    existing_doc = get_recipe_from_firebase(user_id, post_id)
-    if not existing_doc:
-        return jsonify({"error": "Recipe not found"}), 404
+            ingredients = json.loads(data.get("ingredients", "[]"))
+            instructions = json.loads(data.get("instructions", "[]"))
 
-    updated_data = {}
-    fields = ["title", "description", "cookingTime", "difficulty",
-              "servings", "ingredients", "instructions"]
-    for f in fields:
-        if f in data:
-            updated_data[f] = data[f]
+            # Upload new image to Cloudinary if provided
+            image_file = request.files.get("image")
+            image_list = []
 
-    # Remove images
-    remove_ids_str = data.get("removePublicIds")
-    remove_ids = []
-    if remove_ids_str:
-        remove_ids = [rid.strip() for rid in remove_ids_str.split(",") if rid.strip()]
+            if image_file:
+                upload_result = cloudinary.uploader.upload(image_file)
+                image_list.append({ "url": upload_result["secure_url"] })
 
-    current_images = existing_doc.get("imageList", [])
-    remaining_images = []
-    for img_obj in current_images:
-        if img_obj["publicId"] in remove_ids:
-            delete_image_from_cloudinary(img_obj["publicId"])
+            # Update Firestore
+            doc_ref = db.collection("users").document(user_id).collection("created_recipes").document(post_id)
+            doc_ref.update({
+                "title": data.get("title"),
+                "description": data.get("description"),
+                "cookingTime": data.get("cookingTime"),
+                "difficulty": data.get("difficulty"),
+                "servings": int(data.get("servings", 0)),
+                "ingredients": ingredients,
+                "instructions": instructions,
+                "imageList": image_list if image_list else firestore.DELETE_FIELD,  # Replace if image uploaded
+            })
+
+            return jsonify({"message": "Recipe updated", "imageList": image_list}), 200
+
         else:
-            remaining_images.append(img_obj)
+            return jsonify({"error": "Unsupported Content-Type"}), 400
 
-    # Add new images
-    new_images = []
-    if image_files:
-        new_images = upload_images_to_cloudinary(image_files)
+    except Exception as e:
+        print(f"[update_recipe ERROR]: {e}")
+        return jsonify({"error": str(e)}), 500
 
-    updated_data["imageList"] = remaining_images + new_images
-
-    updated_recipe = update_recipe_in_firebase(user_id, post_id, updated_data)
-    if not updated_recipe:
-        return jsonify({"error": "Update failed"}), 404
-
-    return jsonify({"message": "Recipe updated", "recipe": updated_recipe}), 200
 
 def delete_recipe(post_id):
     # Use query parameter for DELETE to avoid unsupported media type issues
