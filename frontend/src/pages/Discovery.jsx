@@ -463,7 +463,7 @@ const Discovery = () => {
                       .map((recipe, index) => (
                         <motion.div
                           key={recipe.postId || `recipe-${index}`}
-                          className="flex flex-col relative group h-full"
+                          className="relative"
                           initial={{ opacity: 0, y: 10 }}
                           animate={{ opacity: 1, y: 0 }}
                           transition={{ duration: 0.4, delay: index * 0.1 }}
@@ -473,7 +473,7 @@ const Discovery = () => {
                               {editorsTitles[index % editorsTitles.length]}
                             </span>
                           </div>
-                          <div className="bg-white rounded-2xl overflow-hidden shadow-lg transition-all duration-300 hover:shadow-xl transform group-hover:-translate-y-1 mt-6 border border-gray-100 h-full">
+                          <div className="bg-white rounded-2xl overflow-visible shadow-lg transition-all duration-300 hover:shadow-xl transform hover:-translate-y-1 mt-6 border border-gray-100">
                             <FoodSocialCard
                               key={recipe.postId || `recipe-${index}`}
                               postId={recipe.postId || `recipe-${index}`}
