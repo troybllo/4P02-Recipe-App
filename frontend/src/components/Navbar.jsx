@@ -28,7 +28,7 @@ export default function Navbar() {
   // Use auth context for login state
   const { currentUser, logout } = useAuth();
   const isLoggedIn = !!currentUser;
-  console.log(currentUser);
+  //console.log(currentUser);
   
 
   useEffect(() => {

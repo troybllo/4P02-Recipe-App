@@ -109,8 +109,23 @@ def get_most_recent_recipes(limit=100):
     )
     return sorted_recipes[:limit]
 
+def get_easy_recipes():
+    db = firestore.client()
+    recipes = []
+    users_ref = db.collection('users')
 
-def filter_recipes_by_difficulties(difficulties):
+    for user in users_ref.stream():
+        user_id = user.id
+        subcol = db.collection('users').document(user_id).collection('created_recipes')
+        for recipe_doc in subcol.stream():
+            data = recipe_doc.to_dict()
+            if data.get("difficulty", "").lower() == "easy":
+                data["postId"] = recipe_doc.id
+                recipes.append(data)
+
+    return recipes
+
+def get_quick_picks():
     db = firestore.client()
     recipes = []
     users_ref = db.collection("users")
@@ -120,8 +135,24 @@ def filter_recipes_by_difficulties(difficulties):
         subcol = db.collection("users").document(user_id).collection("created_recipes")
         for recipe_doc in subcol.stream():
             data = recipe_doc.to_dict()
-            data["postId"] = recipe_doc.id
-            if data.get("difficulty", "").lower() in difficulties:
-                recipes.append(data)
-    return recipes
+            cooking_time = data.get("cookingTime", "")
+
+            if isinstance(cooking_time, str) and "mins" in cooking_time:
+                try:
+                    minutes = int(cooking_time.split()[0])
+                    if minutes <= 30:
+                        data["postId"] = recipe_doc.id
+                        data["parsedCookingTime"] = minutes  # Add temp field for sorting
+                        recipes.append(data)
+                except (ValueError, IndexError):
+                    pass
+
+    # Sort by parsed time (ascending)
+    sorted_recipes = sorted(recipes, key=lambda r: r["parsedCookingTime"])
+
+    # Optionally remove the temp field before returning
+    for r in sorted_recipes:
+        r.pop("parsedCookingTime", None)
+
+    return sorted_recipes
 
