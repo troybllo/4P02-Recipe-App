@@ -90,3 +90,18 @@ def get_most_recent_recipes(limit=100):
         reverse = True
     )
     return sorted_recipes[:limit]
+
+def filter_recipes_by_difficulties(difficulties):
+    db = firestore.client()
+    recipes = []
+    users_ref = db.collection('users')
+
+    for user in users_ref.stream():
+        user_id = user.id
+        subcol = db.collection('users').document(user_id).collection('created_recipes')
+        for recipe_doc in subcol.stream():
+            data = recipe_doc.to_dict()
+            data["postId"] = recipe_doc.id
+            if data.get("difficulty", "").lower() in difficulties:
+                recipes.append(data)
+    return recipes
