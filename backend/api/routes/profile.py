@@ -59,6 +59,6 @@ def unsave_post_route():
     """
     return unsave_post_controller()
 
-@profile_blueprint.route('/<username>', methods=['GET'])
+@profile_blueprint.route('profile/<username>', methods=['GET'])
 def get_user_by_username_route(username):
     return fetch_user_by_username(username)

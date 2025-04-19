@@ -13,32 +13,30 @@ import RecipeDetail from "./pages/RecipeDetail";
 import SignInPage from "./pages/SignInPage";
 import SignUpPage from "./pages/SignUpPage";
 import LandingPage from "./pages/Landing"
+import ProfileRedirect from "./components/ProfileRedirect";
 
 function App() {
   return (
-    <AuthProvider> {/* Wrap your app with AuthProvider */}
+    <AuthProvider>
       <div className="app-container">
         <Navbar />
         <div className="main-content">
-          <Routes>
-            {/* Public routes */}
+        <Routes>
+  {/* Public routes */}
             <Route path="/" element={<LandingPage />} />
             <Route path="/home" element={<Home />} />
             <Route path="/discovery" element={<Discovery />} />
             <Route path="/landing" element={<Landing />} />
-            <Route path="/Signin" element={<SignInPage />} />
-            <Route path="/Signup" element={<SignUpPage />} />
+            <Route path="/signin" element={<SignInPage />} />
+            <Route path="/signup" element={<SignUpPage />} />
             <Route path="/recipe/:id" element={<RecipeDetail />} />
             
-            {/* Protected routes */}
+            {/* Public profile route - for viewing other profiles */}
+            <Route path="/profile/:profileUsername" element={<Profile />} />
+            
+            {/* Protected empty profile route - will redirect to username-based profile */}
             <Route element={<ProtectedRoute />}>
               <Route path="/profile" element={<Profile />} />
-              {/* Add any other protected routes here */}
-            </Route>
-
-            {/* Protected routes */}
-            <Route element={<ProtectedRoute />}>
-              <Route path="/:username" element={<Profile />} />
             </Route>
           </Routes>
         </div>

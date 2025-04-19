@@ -14,6 +14,7 @@ import savedIcon from "../images/savedIcon.png";
 import profileIcon from "../images/profileIcon.png";
 import createPostIcon from "../images/createPostIcon.png";
 
+
 export default function Navbar() {
   const [isCreatePostOpen, setIsCreatePostOpen] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -27,6 +28,8 @@ export default function Navbar() {
   // Use auth context for login state
   const { currentUser, logout } = useAuth();
   const isLoggedIn = !!currentUser;
+  console.log(currentUser);
+  
 
   useEffect(() => {
 
@@ -139,15 +142,11 @@ export default function Navbar() {
               variants={buttonVariants}
             >
               <Link
-                to="/profile"
-                className="px-4 py-2 flex items-center text-gray-700 rounded-md hover:bg-gray-100 transition-all duration-300"
-              >
-                <img
-                  src={profileIcon}
-                  alt="Profile"
-                  className="w-5 h-5 mr-2 object-contain"
-                />
-                <span>Profile</span>
+                  to={isLoggedIn ? `/profile/${currentUser?.username}` : '/signin'}
+                  className="px-4 py-2 flex items-center text-gray-700 rounded-md hover:bg-gray-100 transition-all duration-300"
+                >
+                <img src={profileIcon} alt="Profile" className="w-5 h-5 mr-2 object-contain" />
+                <span>{isLoggedIn ? 'Profile' : 'Sign In'}</span>
               </Link>
             </motion.div>
           </div>
@@ -275,12 +274,14 @@ export default function Navbar() {
                 whileHover={{ scale: 1.02, x: 5 }}
                 transition={{ duration: 0.2 }}
               >
-                <Link
-                  to="/profile"
-                  className="block px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-md text-gray-900 transition-all duration-300"
-                >
-                  Profile
-                </Link>
+              <Link
+                to={isLoggedIn && currentUser?.user ? 
+                    `/profile/${currentUser.user.username}` : 
+                    isLoggedIn ? '/profile' : '/signin'}
+                className="block px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-md text-gray-900 transition-all duration-300"
+              >
+                {isLoggedIn ? 'Profile' : 'Sign In'}
+              </Link>
               </motion.div>
 
               {/* Only show Create Post button when logged in */}

@@ -1,4 +1,4 @@
 /node_modules
 *.json
-/backend
-backend/.env
+# /backend
+# backend/.env

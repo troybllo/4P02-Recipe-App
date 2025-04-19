@@ -8,15 +8,21 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // This function runs when the component mounts
     const token = localStorage.getItem('token');
     const userId = localStorage.getItem('userId');
+    const userString = localStorage.getItem('user');
     
-    if (token && userId) {
-      // Important: Make sure this is being set correctly
-      setCurrentUser({ userId, token });
+    if (token && userId && userString) {
+      try {
+        setCurrentUser({
+          token,
+          userId,
+          user: JSON.parse(userString) // ← Parse here
+        });
+      } catch (error) {
+        console.error("Failed to parse user data:", error);
+      }
     }
-    
     setLoading(false);
   }, []);
 
@@ -34,8 +40,9 @@ export const AuthProvider = ({ children }) => {
     checkAuth: () => {
       const token = localStorage.getItem('token');
       const userId = localStorage.getItem('userId');
+      const user = localStorage.getItem('user');
       if (token && userId) {
-        setCurrentUser({ userId, token });
+        setCurrentUser({ userId, token, user });
         return true;
       }
       return false;
