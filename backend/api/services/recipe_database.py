@@ -69,4 +69,4 @@ def get_most_liked_recipes():
             recipes.append(data)
 
     sorted_recipes = sorted(recipes, key=lambda x: x.get("likes", 0), reverse=True)
-    return sorted_recipes[:10] 
+    return sorted_recipes
