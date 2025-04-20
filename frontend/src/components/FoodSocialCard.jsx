@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import styles from "../styles/FoodSocialCard.module.css";
@@ -24,6 +24,11 @@ const FoodSocialCard = ({
   userId,
 }) => {
   const recipeId = id || postId;
+
+  const [authorData, setAuthorData] = useState({
+    username: "",
+    profileImageUrl: "",
+  });
 
   const displayImageUrl =
     imageUrl || (imageList && imageList.length > 0 ? imageList[0].url : null);
@@ -171,6 +176,29 @@ const FoodSocialCard = ({
     ? parsedInstructions
     : [];
 
+    useEffect(() => {
+      const fetchAuthor = async () => {
+        if (!authorId) return;
+    
+        try {
+          const res = await fetch(`http://localhost:5000/api/profile/username?userId=${authorId}`);
+          const data = await res.json();
+          if (res.ok) {
+            setAuthorData({
+              username: data.username,
+              profileImageUrl: data.profileImageUrl || "https://via.placeholder.com/40",
+            });
+          } else {
+            console.error("Error fetching author:", data.error);
+          }
+        } catch (err) {
+          console.error("Error fetching author:", err);
+        }
+      };
+    
+      fetchAuthor();
+    }, [authorId]);
+
   return (
     <>
       <motion.div
@@ -185,12 +213,14 @@ const FoodSocialCard = ({
       >
         <div className="flex items-center justify-between px-4 py-3 border-b border-gray-100">
           <div className="flex items-center">
-            <motion.div
-              className="w-9 h-9 rounded-full bg-gradient-to-br from-green-500 to-green-700 text-white flex items-center justify-center font-semibold text-sm flex-shrink-0"
-              whileHover={{ scale: 1.1 }}
-            >
-              {author && author[0] ? author[0] : "?"}
-            </motion.div>
+            <Link to={`/profile/${authorData.username}`}>
+              <motion.div
+                className="w-9 h-9 rounded-full bg-gradient-to-br from-green-500 to-green-700 text-white flex items-center justify-center font-semibold text-sm flex-shrink-0"
+                whileHover={{ scale: 1.2 }}
+              >
+                {authorData.username && authorData.username[0] ? authorData.username[0] : "?"}
+              </motion.div>
+            </Link>
             <div className="ml-3 flex-1 min-w-0">
               <h3
                 className="font-semibold text-gray-800"
@@ -201,9 +231,9 @@ const FoodSocialCard = ({
               >
                 {title || "Untitled Recipe"}
               </h3>
-              <p className="text-xs text-gray-500">
-                by {author || "Unknown"} • {formattedDate}
-              </p>
+              <Link to={`/profile/${authorData.username}`} className="text-xs text-gray-500">
+                by {authorData.username || "Unknown"} • {formattedDate}
+              </Link>
             </div>
           </div>
 

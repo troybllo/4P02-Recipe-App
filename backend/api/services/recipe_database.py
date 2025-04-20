@@ -85,6 +85,7 @@ def get_most_liked_recipes():
         for recipe_doc in subcol.stream():
             data = recipe_doc.to_dict()
             data["postId"] = recipe_doc.id
+            data["userId"] = user_id
             recipes.append(data)
 
     sorted_recipes = sorted(recipes, key=lambda x: x.get("likes", 0), reverse=True)
@@ -102,6 +103,7 @@ def get_most_recent_recipes(limit=100):
         for recipe_doc in subcol.stream():
             data = recipe_doc.to_dict()
             data["postId"] = recipe_doc.id
+            data["userId"] = user_id
             recipes.append(data)
 
     sorted_recipes = sorted(
@@ -121,6 +123,7 @@ def get_easy_recipes():
             data = recipe_doc.to_dict()
             if data.get("difficulty", "").lower() == "easy":
                 data["postId"] = recipe_doc.id
+                data["userId"] = user_id
                 recipes.append(data)
 
     return recipes
@@ -143,6 +146,7 @@ def get_quick_picks():
                     if minutes <= 30:
                         data["postId"] = recipe_doc.id
                         data["parsedCookingTime"] = minutes  # Add temp field for sorting
+                        data["userId"] = user_id
                         recipes.append(data)
                 except (ValueError, IndexError):
                     pass
@@ -156,3 +160,37 @@ def get_quick_picks():
 
     return sorted_recipes
 
+EDITORS_PICKS = {
+    "Best Taste": [
+        {"userId": "",
+         "postId": ""}
+    ],
+    "Healthiest": [
+        {"userId": "",
+         "postId": ""}
+    ],
+    "Student's Favorite": [
+        {"userId": "",
+         "postId": ""}
+    ],
+}
+
+def get_editors_picks_by_category():
+    db = firestore.client()
+    picks_response = {}
+
+    for category, picks in EDITORS_PICKS.items():
+        category_recipes = []
+        for pick in picks:
+            user_id = pick["userId"]
+            post_id = pick["postId"]
+            doc_ref = db.collection("users").document(user_id).collection("created_recipes").document(post_id)
+            doc = doc_ref.get()
+            if doc.exists:
+                data = doc.to_dict()
+                data["postId"] = post_id
+                data["userId"] = user_id
+                category_recipes.append(data)
+        picks_response[category] = category_recipes
+
+    return picks_response

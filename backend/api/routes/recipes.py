@@ -40,6 +40,8 @@ def get_easy_recipes_route():
 def get_quick_picks_route():
     return list_quick_picks()
 
+
+
 @recipes_blueprint.route("/recipes/<post_id>", methods=["PUT"])
 def update_recipe_route(post_id):
     return update_recipe(post_id)

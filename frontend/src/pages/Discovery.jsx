@@ -312,9 +312,68 @@ const Discovery = () => {
     });
   };
 
+  // Add this component inside Discovery
+  const FilterDropdown = ({ category, options, activeFilters, toggleFilter }) => {
+    const [open, setOpen] = useState(false);
+    const dropdownRef = React.useRef();
+
+    useEffect(() => {
+      const handleClickOutside = (event) => {
+        if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+          setOpen(false);
+        }
+      };
+      document.addEventListener("mousedown", handleClickOutside);
+      return () => {
+        document.removeEventListener("mousedown", handleClickOutside);
+      };
+    }, []);
+
+    const handleToggle = () => setOpen(!open);
+
+    return (
+      <div ref={dropdownRef} className="relative z-50">
+      <button
+        onClick={handleToggle}
+        className="px-4 py-3 bg-white rounded-full shadow-md hover:shadow-lg transition-all text-gray-700 font-medium capitalize flex items-center gap-2 text-base"
+      >
+        <span>{category.replace(/([A-Z])/g, " $1").trim()}</span>
+        <svg
+        className={`w-5 h-5 text-gray-500 transition-transform duration-200 ${
+          open ? "rotate-180" : ""
+        }`}
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+        >
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+        </svg>
+      </button>
+      {open && (
+        <div className="absolute z-50 mt-2 bg-white rounded-xl shadow-xl p-5 min-w-[240px] border border-gray-100 right-0">
+        {options.map((option) => (
+          <label
+          key={option}
+          className="flex items-center gap-3 p-3 hover:bg-gray-50 rounded-lg cursor-pointer transition-colors"
+          >
+          <input
+            type="checkbox"
+            checked={activeFilters[category].includes(option)}
+            onChange={() => toggleFilter(category, option)}
+            className="form-checkbox h-5 w-5 text-green-600 rounded border-gray-300 focus:ring-green-500"
+          />
+          <span className="text-gray-800 font-medium text-base">{option}</span>
+          </label>
+        ))}
+        </div>
+      )}
+      </div>
+    );
+  };
+
   return (
     <div className="w-full mt-[7rem] bg-gray-50">
-      <div className="relative flex flex-col items-center justify-center mb-12 py-12 bg-gradient-to-b from-white to-gray-50">
+      <div className="relative flex flex-col items-center justify-center py-4 bg-gradient-to-b from-white to-gray-50">
         <motion.div
           className="absolute w-48 h-48 rounded-full bg-gradient-to-r from-orange-400 via-yellow-200 to-green-500 opacity-20 blur-3xl"
           animate={{
@@ -329,7 +388,7 @@ const Discovery = () => {
         />
 
         <motion.h1
-          className="relative z-10 text-7xl font-extrabold text-center bg-gradient-to-r from-[#FF7E29] via-[#fceabb] to-[#1d9c3f] bg-clip-text text-transparent drop-shadow-xl tracking-tight"
+          className="relative z-10 text-7xl font-extrabold text-center text-black"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
@@ -338,7 +397,7 @@ const Discovery = () => {
         </motion.h1>
 
         <motion.p
-          className="text-xl text-gray-600 text-center mt-4 max-w-md"
+          className="text-xl text-gray-600 text-center mt-4 mb-4"
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.1 }}
@@ -400,48 +459,19 @@ const Discovery = () => {
                   </svg>
                 </button>
               </motion.span>
-            )),
+            ))
           )}
         </div>
 
         <div className="flex flex-wrap justify-center gap-4 mb-16 w-full max-w-5xl">
           {Object.entries(filterOptions).map(([category, options]) => (
-            <div key={category} className="relative group">
-              <button className="px-6 py-3 bg-white rounded-full shadow-md hover:shadow-lg transition-all text-gray-700 font-medium capitalize flex items-center gap-2 text-base">
-                <span>{category.replace(/([A-Z])/g, " $1").trim()}</span>
-                <svg
-                  className="w-5 h-5 text-gray-500"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M19 9l-7 7-7-7"
-                  />
-                </svg>
-              </button>
-              <div className="absolute hidden group-hover:block z-10 mt-2 bg-white rounded-xl shadow-xl p-5 min-w-[240px] border border-gray-100 right-0">
-                {options.map((option) => (
-                  <label
-                    key={option}
-                    className="flex items-center gap-3 p-3 hover:bg-gray-50 rounded-lg cursor-pointer transition-colors"
-                  >
-                    <input
-                      type="checkbox"
-                      checked={activeFilters[category].includes(option)}
-                      onChange={() => toggleFilter(category, option)}
-                      className="form-checkbox h-5 w-5 text-green-600 rounded border-gray-300 focus:ring-green-500"
-                    />
-                    <span className="text-gray-800 font-medium text-base">
-                      {option}
-                    </span>
-                  </label>
-                ))}
-              </div>
-            </div>
+            <FilterDropdown
+              key={category}
+              category={category}
+              options={options}
+              activeFilters={activeFilters}
+              toggleFilter={toggleFilter}
+            />
           ))}
         </div>
       </div>
@@ -496,10 +526,10 @@ const Discovery = () => {
                           recipe?.postId ||
                           `recipe-${Date.now()}-${index}`;
                         const recipeIngredients = ensureStringArray(
-                          recipe.ingredients,
+                          recipe.ingredients
                         );
                         const recipeInstructions = ensureStringArray(
-                          recipe.instructions,
+                          recipe.instructions
                         );
 
                         return (
@@ -532,9 +562,7 @@ const Discovery = () => {
                                   recipe?.userName ||
                                   "Unknown"
                                 }
-                                authorId={
-                                  recipe?.authorId || recipe?.userId || ""
-                                }
+                                authorId={recipe?.authorId || recipe?.userId || ""}
                                 userId={userId || recipe?.userId}
                                 datePosted={
                                   recipe?.datePosted ||
@@ -547,9 +575,7 @@ const Discovery = () => {
                                   "30 minutes"
                                 }
                                 difficulty={recipe?.difficulty || "Medium"}
-                                servings={
-                                  recipe?.servings || recipe?.serves || 4
-                                }
+                                servings={recipe?.servings || recipe?.serves || 4}
                                 ingredients={recipeIngredients}
                                 instructions={recipeInstructions}
                                 likes={recipe?.likes || recipe?.likesCount || 0}
@@ -600,7 +626,7 @@ const Discovery = () => {
                   </h2>
                 </motion.div>
 
-                <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-8 px-2">
+                <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-8 p-8 border bg-gray-50 rounded-xl shadow-lg">
                   {loading ? (
                     Array(5)
                       .fill(0)
@@ -625,10 +651,10 @@ const Discovery = () => {
                           recipe?.postId ||
                           `recipe-${Date.now()}-${index}`;
                         const recipeIngredients = ensureStringArray(
-                          recipe.ingredients,
+                          recipe.ingredients
                         );
                         const recipeInstructions = ensureStringArray(
-                          recipe.instructions,
+                          recipe.instructions
                         );
 
                         return (
@@ -650,12 +676,8 @@ const Discovery = () => {
                                 recipe?.imageUrl ||
                                 "/placeholder.jpg"
                               }
-                              author={
-                                recipe?.author || recipe?.userName || "Unknown"
-                              }
-                              authorId={
-                                recipe?.authorId || recipe?.userId || ""
-                              }
+                              author={recipe?.author || recipe?.userName || "Unknown"}
+                              authorId={recipe?.authorId || recipe?.userId || ""}
                               userId={userId || recipe?.userId}
                               datePosted={
                                 recipe?.datePosted ||
@@ -683,10 +705,10 @@ const Discovery = () => {
                         {sectionName === "Most Liked 💖"
                           ? "❤️"
                           : sectionName === "Recently Added"
-                            ? "🆕"
-                            : sectionName === "Quick Picks"
-                              ? "⏱️"
-                              : "😌"}
+                          ? "🆕"
+                          : sectionName === "Quick Picks"
+                          ? "⏱️"
+                          : "😌"}
                       </div>
                       <p className="text-gray-600 text-xl font-medium">
                         No recipes found
@@ -695,10 +717,10 @@ const Discovery = () => {
                         {sectionName === "Most Liked 💖"
                           ? "Be the first to like some amazing recipes!"
                           : sectionName === "Recently Added"
-                            ? "New recipes will appear here soon"
-                            : sectionName === "Quick Picks"
-                              ? "Quick meal ideas are on their way"
-                              : "Easy recipe suggestions coming soon"}
+                          ? "New recipes will appear here soon"
+                          : sectionName === "Quick Picks"
+                          ? "Quick meal ideas are on their way"
+                          : "Easy recipe suggestions coming soon"}
                       </p>
                     </div>
                   )}
