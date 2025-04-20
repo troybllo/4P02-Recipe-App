@@ -3,6 +3,7 @@ from firebase_admin import firestore
 import cloudinary
 import cloudinary.uploader
 from werkzeug.security import generate_password_hash
+from .database_interface import get_user_by_username
 
 def get_user_doc(user_id):
     """
@@ -131,3 +132,43 @@ def unsave_post(user_id, post_id):
         "savedPosts": firestore.ArrayRemove([post_id])
     })
     return user_ref.get().to_dict()
+
+
+def get_user_with_recipes(username):
+    # First get the user document
+    db = firestore.client()
+    users_ref = db.collection('users').where('username', '==', username).limit(1)
+    user_docs = list(users_ref.stream())
+    
+    if not user_docs:
+        return None
+    
+    # Get the user data
+    user_doc = user_docs[0]
+    user_data = user_doc.to_dict()
+    
+    # Now get the recipes subcollection using the document reference
+    recipes_ref = user_doc.reference.collection('created_recipes')
+    print(f"Recipes reference: {recipes_ref}")
+    
+    # Debug the actual documents in the collection
+    recipes = []
+    recipe_count = 0
+    
+    # Try to retrieve the recipes
+    try:
+        recipe_docs = list(recipes_ref.stream())
+        print(f"Number of recipe documents found: {len(recipe_docs)}")
+        
+        for recipe in recipe_docs:
+            recipe_count += 1
+            recipe_data = recipe.to_dict()
+            print(f"Recipe {recipe_count} ID: {recipe.id}")
+            print(f"Recipe {recipe_count} data: {recipe_data}")
+            recipes.append(recipe_data)
+    except Exception as e:
+        print(f"Error retrieving recipes: {e}")
+    
+    # Add recipes to user data
+    user_data['recipes'] = recipes
+    return user_data

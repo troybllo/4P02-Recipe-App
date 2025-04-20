@@ -7,7 +7,8 @@ from ..controllers.profile import (
     save_post_controller,
     unsave_post_controller,
     fetch_user_by_username,
-    is_following_controller
+    is_following_controller,
+    fetch_username_by_user_id,
 )
 
 profile_blueprint = Blueprint('profile_features', __name__)
@@ -68,3 +69,7 @@ def check_is_following():
 @profile_blueprint.route('profile/<username>', methods=['GET'])
 def get_user_by_username_route(username):
     return fetch_user_by_username(username)
+
+@profile_blueprint.route('/profile/username', methods=['GET'])
+def get_username_from_user_id_route():
+    return fetch_username_by_user_id()

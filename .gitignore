@@ -10,3 +10,6 @@ __pycache__/
 *.pyc
 *.pyo
 *.pyd
+*.pyc
+*.pyc
+backend/api/routes/__pycache__/recipes.cpython-311.pyc

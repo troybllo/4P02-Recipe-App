@@ -7,9 +7,10 @@ from ..services.profile_database import (
     follow_user,
     unfollow_user,
     save_post,
-    unsave_post
+    unsave_post,
+    get_user_with_recipes
 )
-from ..services.database_interface import get_user_by_username , get_user_by_id
+from ..services.database_interface import get_user_by_username , get_user_by_id 
 
 def edit_profile(user_id):
     """
@@ -192,9 +193,27 @@ def unsave_post_controller():
     return jsonify({"message": "Post unsaved", "profile": updated_doc}), 200
 
 def fetch_user_by_username(username):
-    user_data = get_user_by_username(username)
+    user_data = get_user_with_recipes(username)
+    print(user_data)
     if not user_data:
         return jsonify({"error": "User not found"}), 404
     return jsonify(user_data), 200
 
+def fetch_username_by_user_id():
+    """
+    GET /api/profile/username?userId=...
+    Returns: { "username": "...", "profileImageUrl": "...", ... }
+    """
+    user_id = request.args.get("userId")
+    if not user_id:
+        return jsonify({"error": "Missing userId"}), 400
 
+    user_doc = get_user_by_id(user_id)
+    if not user_doc:
+        return jsonify({"error": "User not found"}), 404
+
+    return jsonify({
+        "username": user_doc.get("username"),
+        "profileImageUrl": user_doc.get("profileImageUrl"),
+        "userId": user_id
+    }), 200

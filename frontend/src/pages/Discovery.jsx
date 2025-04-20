@@ -26,7 +26,9 @@ const Discovery = () => {
   useEffect(() => {
     const fetchMostLiked = async () => {
       try {
-        const response = await fetch(`${API}/api/recipes/most-liked`);
+        const response = await fetch(
+          `http://127.0.0.1:5000/api/recipes/most-liked`,
+        );
         const data = await response.json();
         console.log("Most liked API response:", data);
 
@@ -53,7 +55,9 @@ const Discovery = () => {
 
     const fetchQuickPicks = async () => {
       try {
-        const response = await fetch(`${API}/api/recipes/quick-picks`);
+        const response = await fetch(
+          `http://127.0.0.1:5000/api/recipes/quick-picks`,
+        );
         const data = await response.json();
         console.log("Quick picks API response:", data);
 
@@ -80,7 +84,9 @@ const Discovery = () => {
 
     const fetchEasiest = async () => {
       try {
-        const response = await fetch(`${API}/api/recipes/easy-recipes`);
+        const response = await fetch(
+          `http://127.0.0.1:5000/api/recipes/easy-recipes`,
+        );
         const data = await response.json();
         console.log("Easiest API response:", data);
 
@@ -107,7 +113,9 @@ const Discovery = () => {
 
     const fetchRecentlyAdded = async () => {
       try {
-        const response = await fetch(`${API}/api/recipes/most-recent?limit=30`);
+        const response = await fetch(
+          `http://127.0.0.1:5000/api/recipes/most-recent?limit=30`,
+        );
         const data = await response.json();
         console.log("Recently added API response:", data);
 
@@ -190,8 +198,8 @@ const Discovery = () => {
   const filterRecipes = (recipes) => {
     return recipes.filter((recipe) => {
       const matchesSearch =
-        recipe.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        recipe.description.toLowerCase().includes(searchQuery.toLowerCase());
+        recipe.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        recipe.description?.toLowerCase().includes(searchQuery.toLowerCase());
 
       const matchesFilters = Object.entries(activeFilters).every(
         ([category, values]) => {
@@ -282,9 +290,90 @@ const Discovery = () => {
     "Healthy Choice",
   ];
 
+  // Helper to ensure ingredients and instructions are strings, not objects
+  const ensureStringArray = (arr) => {
+    if (!arr) return [];
+    if (typeof arr === "string") {
+      try {
+        return JSON.parse(arr);
+      } catch (e) {
+        return [arr];
+      }
+    }
+    if (!Array.isArray(arr)) return [];
+
+    return arr.map((item) => {
+      if (typeof item === "string") return item;
+      if (typeof item === "object" && item !== null) {
+        // If it's an object, try to get a string representation
+        return item.name || item.text || item.value || JSON.stringify(item);
+      }
+      return String(item);
+    });
+  };
+
+  // Add this component inside Discovery
+  const FilterDropdown = ({ category, options, activeFilters, toggleFilter }) => {
+    const [open, setOpen] = useState(false);
+    const dropdownRef = React.useRef();
+
+    useEffect(() => {
+      const handleClickOutside = (event) => {
+        if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+          setOpen(false);
+        }
+      };
+      document.addEventListener("mousedown", handleClickOutside);
+      return () => {
+        document.removeEventListener("mousedown", handleClickOutside);
+      };
+    }, []);
+
+    const handleToggle = () => setOpen(!open);
+
+    return (
+      <div ref={dropdownRef} className="relative z-50">
+      <button
+        onClick={handleToggle}
+        className="px-4 py-3 bg-white rounded-full shadow-md hover:shadow-lg transition-all text-gray-700 font-medium capitalize flex items-center gap-2 text-base"
+      >
+        <span>{category.replace(/([A-Z])/g, " $1").trim()}</span>
+        <svg
+        className={`w-5 h-5 text-gray-500 transition-transform duration-200 ${
+          open ? "rotate-180" : ""
+        }`}
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+        >
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+        </svg>
+      </button>
+      {open && (
+        <div className="absolute z-50 mt-2 bg-white rounded-xl shadow-xl p-5 min-w-[240px] border border-gray-100 right-0">
+        {options.map((option) => (
+          <label
+          key={option}
+          className="flex items-center gap-3 p-3 hover:bg-gray-50 rounded-lg cursor-pointer transition-colors"
+          >
+          <input
+            type="checkbox"
+            checked={activeFilters[category].includes(option)}
+            onChange={() => toggleFilter(category, option)}
+            className="form-checkbox h-5 w-5 text-green-600 rounded border-gray-300 focus:ring-green-500"
+          />
+          <span className="text-gray-800 font-medium text-base">{option}</span>
+          </label>
+        ))}
+        </div>
+      )}
+      </div>
+    );
+  };
+
   return (
     <div className="w-full mt-[7rem] bg-gray-50">
-      <div className="relative flex flex-col items-center justify-center mb-12 py-12 bg-gradient-to-b from-white to-gray-50">
+      <div className="relative flex flex-col items-center justify-center py-4 bg-gradient-to-b from-white to-gray-50">
         <motion.div
           className="absolute w-48 h-48 rounded-full bg-gradient-to-r from-orange-400 via-yellow-200 to-green-500 opacity-20 blur-3xl"
           animate={{
@@ -299,7 +388,7 @@ const Discovery = () => {
         />
 
         <motion.h1
-          className="relative z-10 text-7xl font-extrabold text-center bg-gradient-to-r from-[#FF7E29] via-[#fceabb] to-[#1d9c3f] bg-clip-text text-transparent drop-shadow-xl tracking-tight"
+          className="relative z-10 text-7xl font-extrabold text-center text-black"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
@@ -308,7 +397,7 @@ const Discovery = () => {
         </motion.h1>
 
         <motion.p
-          className="text-xl text-gray-600 text-center mt-4 max-w-md"
+          className="text-xl text-gray-600 text-center mt-4 mb-4"
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.1 }}
@@ -370,48 +459,19 @@ const Discovery = () => {
                   </svg>
                 </button>
               </motion.span>
-            )),
+            ))
           )}
         </div>
 
         <div className="flex flex-wrap justify-center gap-4 mb-16 w-full max-w-5xl">
           {Object.entries(filterOptions).map(([category, options]) => (
-            <div key={category} className="relative group">
-              <button className="px-6 py-3 bg-white rounded-full shadow-md hover:shadow-lg transition-all text-gray-700 font-medium capitalize flex items-center gap-2 text-base">
-                <span>{category.replace(/([A-Z])/g, " $1").trim()}</span>
-                <svg
-                  className="w-5 h-5 text-gray-500"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M19 9l-7 7-7-7"
-                  />
-                </svg>
-              </button>
-              <div className="absolute hidden group-hover:block z-10 mt-2 bg-white rounded-xl shadow-xl p-5 min-w-[240px] border border-gray-100 right-0">
-                {options.map((option) => (
-                  <label
-                    key={option}
-                    className="flex items-center gap-3 p-3 hover:bg-gray-50 rounded-lg cursor-pointer transition-colors"
-                  >
-                    <input
-                      type="checkbox"
-                      checked={activeFilters[category].includes(option)}
-                      onChange={() => toggleFilter(category, option)}
-                      className="form-checkbox h-5 w-5 text-green-600 rounded border-gray-300 focus:ring-green-500"
-                    />
-                    <span className="text-gray-800 font-medium text-base">
-                      {option}
-                    </span>
-                  </label>
-                ))}
-              </div>
-            </div>
+            <FilterDropdown
+              key={category}
+              category={category}
+              options={options}
+              activeFilters={activeFilters}
+              toggleFilter={toggleFilter}
+            />
           ))}
         </div>
       </div>
@@ -460,54 +520,71 @@ const Discovery = () => {
                   ) : data && data.length > 0 ? (
                     filterRecipes(data)
                       .slice(0, 5)
-                      .map((recipe, index) => (
-                        <motion.div
-                          key={recipe.postId || `recipe-${index}`}
-                          className="relative"
-                          initial={{ opacity: 0, y: 10 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          transition={{ duration: 0.4, delay: index * 0.1 }}
-                        >
-                          <div className="absolute -top-12 left-0 right-0 flex justify-center">
-                            <span className="bg-gradient-to-r from-emerald-600 to-green-400 text-white py-2 px-6 rounded-full text-base font-semibold shadow-lg z-10">
-                              {editorsTitles[index % editorsTitles.length]}
-                            </span>
+                      .map((recipe, index) => {
+                        const uniqueId =
+                          recipe?.id ||
+                          recipe?.postId ||
+                          `recipe-${Date.now()}-${index}`;
+                        const recipeIngredients = ensureStringArray(
+                          recipe.ingredients
+                        );
+                        const recipeInstructions = ensureStringArray(
+                          recipe.instructions
+                        );
+
+                        return (
+                          <div
+                            key={uniqueId}
+                            className="relative"
+                            style={{ isolation: "isolate" }}
+                          >
+                            <div className="absolute -top-12 left-0 right-0 flex justify-center z-10">
+                              <span className="bg-gradient-to-r from-emerald-600 to-green-400 text-white py-2 px-6 rounded-full text-base font-semibold shadow-lg">
+                                {editorsTitles[index % editorsTitles.length]}
+                              </span>
+                            </div>
+                            <div className="mt-6" style={{ zIndex: 0 }}>
+                              <FoodSocialCard
+                                id={uniqueId}
+                                postId={uniqueId}
+                                title={recipe?.title || "Untitled Recipe"}
+                                description={
+                                  recipe?.description ||
+                                  "No description available"
+                                }
+                                imageUrl={
+                                  recipe?.imageList?.[0]?.url ||
+                                  recipe?.imageUrl ||
+                                  "/placeholder.jpg"
+                                }
+                                author={
+                                  recipe?.author ||
+                                  recipe?.userName ||
+                                  "Unknown"
+                                }
+                                authorId={recipe?.authorId || recipe?.userId || ""}
+                                userId={userId || recipe?.userId}
+                                datePosted={
+                                  recipe?.datePosted ||
+                                  recipe?.date ||
+                                  new Date().toISOString()
+                                }
+                                cookingTime={
+                                  recipe?.cookingTime ||
+                                  recipe?.time ||
+                                  "30 minutes"
+                                }
+                                difficulty={recipe?.difficulty || "Medium"}
+                                servings={recipe?.servings || recipe?.serves || 4}
+                                ingredients={recipeIngredients}
+                                instructions={recipeInstructions}
+                                likes={recipe?.likes || recipe?.likesCount || 0}
+                                isLiked={recipe?.isLiked || false}
+                              />
+                            </div>
                           </div>
-                          <div className="bg-white rounded-2xl overflow-visible shadow-lg transition-all duration-300 hover:shadow-xl transform hover:-translate-y-1 mt-6 border border-gray-100">
-                            <FoodSocialCard
-                              key={recipe.postId || `recipe-${index}`}
-                              postId={recipe.postId || `recipe-${index}`}
-                              title={recipe.title || "Untitled Recipe"}
-                              description={
-                                recipe.description || "No description available"
-                              }
-                              imageUrl={
-                                recipe.imageList?.[0]?.url || "/placeholder.jpg"
-                              }
-                              author={recipe.author || "Unknown"}
-                              authorId={recipe.authorId || ""}
-                              datePosted={
-                                recipe.datePosted || new Date().toISOString()
-                              }
-                              cookingTime={recipe.cookingTime || "30 minutes"}
-                              difficulty={recipe.difficulty || "Medium"}
-                              servings={recipe.servings || 4}
-                              ingredients={
-                                Array.isArray(recipe.ingredients)
-                                  ? recipe.ingredients
-                                  : []
-                              }
-                              instructions={
-                                Array.isArray(recipe.instructions)
-                                  ? recipe.instructions
-                                  : []
-                              }
-                              likes={recipe.likes || 0}
-                              isLiked={recipe.isLiked || false}
-                            />
-                          </div>
-                        </motion.div>
-                      ))
+                        );
+                      })
                   ) : (
                     <div className="col-span-5 text-center py-16 bg-white rounded-2xl shadow-sm">
                       <div className="text-6xl mb-4">🍽️</div>
@@ -549,7 +626,7 @@ const Discovery = () => {
                   </h2>
                 </motion.div>
 
-                <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-8 px-2">
+                <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-8 p-8 border bg-gray-50 rounded-xl shadow-lg">
                   {loading ? (
                     Array(5)
                       .fill(0)
@@ -568,57 +645,70 @@ const Discovery = () => {
                   ) : data && data.length > 0 ? (
                     filterRecipes(data)
                       .slice(0, 5)
-                      .map((recipe, index) => (
-                        <motion.div
-                          key={recipe.postId || `recipe-${index}`}
-                          className="bg-white rounded-xl overflow-hidden shadow-md transition-all duration-300 hover:shadow-lg transform hover:-translate-y-1 border border-gray-100 h-full"
-                          initial={{ opacity: 0, y: 20 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          transition={{ duration: 0.4, delay: index * 0.08 }}
-                        >
-                          <FoodSocialCard
-                            key={recipe.postId || `recipe-${index}`}
-                            postId={recipe.postId || `recipe-${index}`}
-                            title={recipe.title || "Untitled Recipe"}
-                            description={
-                              recipe.description || "No description available"
-                            }
-                            imageUrl={
-                              recipe.imageList?.[0]?.url || "/placeholder.jpg"
-                            }
-                            author={recipe.author || "Unknown"}
-                            authorId={recipe.authorId || ""}
-                            datePosted={
-                              recipe.datePosted || new Date().toISOString()
-                            }
-                            cookingTime={recipe.cookingTime || "30 minutes"}
-                            difficulty={recipe.difficulty || "Medium"}
-                            servings={recipe.servings || 4}
-                            ingredients={
-                              Array.isArray(recipe.ingredients)
-                                ? recipe.ingredients
-                                : []
-                            }
-                            instructions={
-                              Array.isArray(recipe.instructions)
-                                ? recipe.instructions
-                                : []
-                            }
-                            likes={recipe.likes || 0}
-                            isLiked={recipe.isLiked || false}
-                          />
-                        </motion.div>
-                      ))
+                      .map((recipe, index) => {
+                        const uniqueId =
+                          recipe?.id ||
+                          recipe?.postId ||
+                          `recipe-${Date.now()}-${index}`;
+                        const recipeIngredients = ensureStringArray(
+                          recipe.ingredients
+                        );
+                        const recipeInstructions = ensureStringArray(
+                          recipe.instructions
+                        );
+
+                        return (
+                          <div
+                            key={uniqueId}
+                            className="relative"
+                            style={{ isolation: "isolate" }}
+                          >
+                            <FoodSocialCard
+                              id={uniqueId}
+                              postId={uniqueId}
+                              title={recipe?.title || "Untitled Recipe"}
+                              description={
+                                recipe?.description ||
+                                "No description available"
+                              }
+                              imageUrl={
+                                recipe?.imageList?.[0]?.url ||
+                                recipe?.imageUrl ||
+                                "/placeholder.jpg"
+                              }
+                              author={recipe?.author || recipe?.userName || "Unknown"}
+                              authorId={recipe?.authorId || recipe?.userId || ""}
+                              userId={userId || recipe?.userId}
+                              datePosted={
+                                recipe?.datePosted ||
+                                recipe?.date ||
+                                new Date().toISOString()
+                              }
+                              cookingTime={
+                                recipe?.cookingTime ||
+                                recipe?.time ||
+                                "30 minutes"
+                              }
+                              difficulty={recipe?.difficulty || "Medium"}
+                              servings={recipe?.servings || recipe?.serves || 4}
+                              ingredients={recipeIngredients}
+                              instructions={recipeInstructions}
+                              likes={recipe?.likes || recipe?.likesCount || 0}
+                              isLiked={recipe?.isLiked || false}
+                            />
+                          </div>
+                        );
+                      })
                   ) : (
                     <div className="col-span-5 text-center py-16 bg-white rounded-xl shadow-sm">
                       <div className="text-5xl mb-4">
                         {sectionName === "Most Liked 💖"
                           ? "❤️"
                           : sectionName === "Recently Added"
-                            ? "🆕"
-                            : sectionName === "Quick Picks"
-                              ? "⏱️"
-                              : "😌"}
+                          ? "🆕"
+                          : sectionName === "Quick Picks"
+                          ? "⏱️"
+                          : "😌"}
                       </div>
                       <p className="text-gray-600 text-xl font-medium">
                         No recipes found
@@ -627,10 +717,10 @@ const Discovery = () => {
                         {sectionName === "Most Liked 💖"
                           ? "Be the first to like some amazing recipes!"
                           : sectionName === "Recently Added"
-                            ? "New recipes will appear here soon"
-                            : sectionName === "Quick Picks"
-                              ? "Quick meal ideas are on their way"
-                              : "Easy recipe suggestions coming soon"}
+                          ? "New recipes will appear here soon"
+                          : sectionName === "Quick Picks"
+                          ? "Quick meal ideas are on their way"
+                          : "Easy recipe suggestions coming soon"}
                       </p>
                     </div>
                   )}
