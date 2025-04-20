@@ -15,7 +15,8 @@ export default function SignInPage() {
   const location = useLocation();
   const { checkAuth } = useAuth();
 
-  const from = location.state?.from || "/profile";
+  // Change default redirect to home instead of profile
+  const from = location.state?.from || "/";
 
   useEffect(() => {
     if (localStorage.getItem("token")) {
@@ -54,15 +55,19 @@ export default function SignInPage() {
           bio: "Welcome to Feastly! Edit your profile to update your bio.",
         };
 
+        const userData = data.user || fallbackUser;
+        
         localStorage.setItem("token", data.firebase_custom_token);
         localStorage.setItem("userId", data.userId);
-        localStorage.setItem("user", JSON.stringify(data.user || fallbackUser));
+        localStorage.setItem("user", JSON.stringify(userData));
 
         console.log("User: ", data);
 
         setFormData({ username: "", password: "" });
         checkAuth && checkAuth();
-        navigate(from, { replace: true });
+        
+        // Redirect to profile with username in the URL
+        navigate(`/profile/${userData.username}`, { replace: true });
       } else {
         setError(data.error || "Login failed");
       }

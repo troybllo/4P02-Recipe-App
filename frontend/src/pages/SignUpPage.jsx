@@ -16,8 +16,8 @@ export default function SignUpPage() {
   const location = useLocation();
   const { checkAuth } = useAuth();
 
-  // Check if redirected from a protected route
-  const from = location.state?.from || "/profile";
+  // Change default redirect to home instead of profile
+  const from = location.state?.from || "/";
 
   useEffect(() => {
     // If user is already signed up, redirect to the home page
@@ -53,23 +53,33 @@ export default function SignUpPage() {
         body: JSON.stringify(formData),
       });
 
-      const data = await response.json;
+      const data = await response.json();
 
       if (response.ok) {
         localStorage.setItem("token", data.firebase_custom_token);
         localStorage.setItem("userId", data.userId);
+        
+        // Create a user object to store in local storage
+        const userData = {
+          username: formData.username,
+          email: formData.email,
+          bio: "Welcome to Feastly! Edit your profile to update your bio."
+        };
+        
+        localStorage.setItem("user", JSON.stringify(userData));
         setError("Sign up Success!");
 
         // Update auth context
         checkAuth && checkAuth();
         
-        // Navigate to the original requested page or profile
-        navigate(from, { replace: true });
+        // Navigate to profile with username in the URL path
+        navigate(`/profile/${formData.username}`, { replace: true });
       } else {
         setError(data.error || "Sign up failed");
       }
     } catch (err) {
       setError("Network error. Please try again.");
+      console.error("Registration error:", err);
     } finally {
       setIsLoading(false);
     }

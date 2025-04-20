@@ -9,7 +9,7 @@ from ..services.profile_database import (
     save_post,
     unsave_post
 )
-from ..services.database_interface import get_user_by_username 
+from ..services.database_interface import get_user_by_username , get_user_by_id
 
 def edit_profile(user_id):
     """
@@ -21,13 +21,23 @@ def edit_profile(user_id):
     if "multipart/form-data" in content_type:
         # parse form data
         form_data = request.form.to_dict()
-        about = form_data.get("about")
+        print("This is formdata",form_data)
+        updated_bio = form_data.get("bio")
         image_file = request.files.get("profileImage")
+        changed_username = form_data.get("username")
 
         updates = {}
-        if about is not None:
-            updates["about"] = about
+        if updated_bio is not None:
+            updates["bio"] = updated_bio
 
+        
+        if changed_username is not None:
+    # Check if the new username is already taken
+            if not get_user_by_username(changed_username):  # Note: checking the new username
+                updates["username"] = changed_username
+            else:
+            # Username already taken, return an error response
+                return jsonify({"error": "Username already taken"}), 400
         # If a new profile image is uploaded
         if image_file:
             img_result = upload_profile_image_to_cloudinary(image_file)
@@ -40,6 +50,7 @@ def edit_profile(user_id):
     else:
         # JSON approach
         data = request.get_json(silent=True) or {}
+        print("This is formdata /json",data)
         about = data.get("about")
 
         updates = {}
@@ -92,6 +103,7 @@ def follow_user_controller():
     Body: { "currentUserId": "...", "targetUserId": "..." }
     """
     data = request.get_json(silent=True) or {}
+    print(data)
     current_user_id = data.get("currentUserId")
     target_user_id = data.get("targetUserId")
     if not current_user_id or not target_user_id:
@@ -101,6 +113,35 @@ def follow_user_controller():
     if not updated_doc:
         return jsonify({"error": "User not found"}), 404
     return jsonify({"message": "Followed successfully", "profile": updated_doc}), 200
+
+def is_following_controller():
+    """
+    Controller for checking follow status
+    Query params: userId (current user), targetId (profile being viewed)
+    Returns: { "isFollowing": boolean }
+    """
+    print("we get in the function")
+    current_user_id = request.args.get("userId")
+    target_user_id = request.args.get("targetId")
+    
+    
+    # Validate input
+    if not current_user_id or not target_user_id:
+        return jsonify({"error": "Missing user IDs"}), 400
+
+    # Get user data
+    current_user = get_user_by_id(current_user_id)
+
+    if not current_user:
+        print(current_user_id)
+        print(target_user_id)
+        return jsonify({"error": "Current user not found"}), 404
+    
+    # Business logic
+    following = current_user.get("following", [])
+    is_following = target_user_id in following
+    
+    return jsonify({"isFollowing": is_following}), 200
 
 def unfollow_user_controller():
     """
@@ -155,3 +196,5 @@ def fetch_user_by_username(username):
     if not user_data:
         return jsonify({"error": "User not found"}), 404
     return jsonify(user_data), 200
+
+

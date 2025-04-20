@@ -22,6 +22,19 @@ def add_user_to_firebase(user_data):
     return {"message": "User added successfully", "userId": user_id}
 
 
+def get_user_by_id(user_id):
+    """
+    Query Firestore for a user doc with the given 'userId'.
+    Returns the user document as a dict, or None if not found.
+    """
+    db = firestore.client()
+    user_ref = db.collection('users').document(user_id)
+    user_doc = user_ref.get()
+    
+    if user_doc.exists:
+        return user_doc.to_dict()
+    return None
+
 def get_user_by_username(username):
     """
     Query Firestore for a user doc with the given 'username'.

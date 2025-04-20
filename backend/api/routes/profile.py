@@ -6,7 +6,8 @@ from ..controllers.profile import (
     unfollow_user_controller,
     save_post_controller,
     unsave_post_controller,
-    fetch_user_by_username
+    fetch_user_by_username,
+    is_following_controller
 )
 
 profile_blueprint = Blueprint('profile_features', __name__)
@@ -58,6 +59,11 @@ def unsave_post_route():
     - { "userId": "...", "postId": "..." }
     """
     return unsave_post_controller()
+
+@profile_blueprint.route('/profile/isFollowing', methods=['GET'])
+def check_is_following():
+    """Route that delegates to the controller"""
+    return is_following_controller()
 
 @profile_blueprint.route('profile/<username>', methods=['GET'])
 def get_user_by_username_route(username):
