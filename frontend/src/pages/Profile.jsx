@@ -311,6 +311,10 @@ const Profile = () => {
     }
   };
 
+  // Determine dynamic column count: if there are less than 3 recipes, use that count
+  const recipeCount = profileData.recipes?.length || 0;
+  const masonryColumns = showPosts && recipeCount > 0 && recipeCount < breakpointColumnsObj.default ? recipeCount : breakpointColumnsObj.default;
+
   return (
     <>
       <div className="text-center my-20">
@@ -323,7 +327,6 @@ const Profile = () => {
                 className="rounded-full w-32 h-32 object-cover"
               />
               {isOwnProfile ? (
-                // Show edit profile and logout buttons for own profile
                 <>
                   <button onClick={() => setIsEditProfileOpen(true)}>
                     <p className="border-2 border-gray-300 rounded-full px-4 py-1 mt-3 text-xs">
@@ -338,7 +341,6 @@ const Profile = () => {
                   </button>
                 </>
               ) : currentUser ? (
-                // Show follow/unfollow button for other profiles when logged in
                 <button
                   onClick={handleFollowToggle}
                   className={`border-2 ${isFollowing ? 'border-gray-300 bg-gray-100' : 'border-green-300 bg-green-50'} rounded-full px-4 py-1 mt-3 text-xs`}
@@ -383,7 +385,7 @@ const Profile = () => {
               <p className="text-gray-400 text-center">Loading...</p>
             ) : (
               <Masonry
-                breakpointCols={breakpointColumnsObj}
+                breakpointCols={masonryColumns}
                 className="my-masonry-grid justify-center"
                 columnClassName="my-masonry-grid_column"
               >
@@ -412,7 +414,7 @@ const Profile = () => {
                     <p className="text-gray-500">No posts yet.</p>
                   )
                 ) : (
-                  // This section only shows for the current user's profile (Saved posts)
+                  // Saved posts section for own profile
                   <div className="flex flex-col items-center justify-center">
                     <p className="text-lg font-semibold">No saved posts yet</p>
                     <p className="text-gray-500 mt-2">
