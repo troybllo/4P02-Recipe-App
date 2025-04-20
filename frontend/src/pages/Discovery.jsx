@@ -313,13 +313,21 @@ const Discovery = () => {
   };
 
   // Add this component inside Discovery
-  const FilterDropdown = ({ category, options, activeFilters, toggleFilter }) => {
+  const FilterDropdown = ({
+    category,
+    options,
+    activeFilters,
+    toggleFilter,
+  }) => {
     const [open, setOpen] = useState(false);
     const dropdownRef = React.useRef();
 
     useEffect(() => {
       const handleClickOutside = (event) => {
-        if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        if (
+          dropdownRef.current &&
+          !dropdownRef.current.contains(event.target)
+        ) {
           setOpen(false);
         }
       };
@@ -333,40 +341,47 @@ const Discovery = () => {
 
     return (
       <div ref={dropdownRef} className="relative z-50">
-      <button
-        onClick={handleToggle}
-        className="px-4 py-3 bg-white rounded-full shadow-md hover:shadow-lg transition-all text-gray-700 font-medium capitalize flex items-center gap-2 text-base"
-      >
-        <span>{category.replace(/([A-Z])/g, " $1").trim()}</span>
-        <svg
-        className={`w-5 h-5 text-gray-500 transition-transform duration-200 ${
-          open ? "rotate-180" : ""
-        }`}
-        fill="none"
-        stroke="currentColor"
-        viewBox="0 0 24 24"
+        <button
+          onClick={handleToggle}
+          className="px-4 py-3 bg-white rounded-full shadow-md hover:shadow-lg transition-all text-gray-700 font-medium capitalize flex items-center gap-2 text-base"
         >
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
-        </svg>
-      </button>
-      {open && (
-        <div className="absolute z-50 mt-2 bg-white rounded-xl shadow-xl p-5 min-w-[240px] border border-gray-100 right-0">
-        {options.map((option) => (
-          <label
-          key={option}
-          className="flex items-center gap-3 p-3 hover:bg-gray-50 rounded-lg cursor-pointer transition-colors"
+          <span>{category.replace(/([A-Z])/g, " $1").trim()}</span>
+          <svg
+            className={`w-5 h-5 text-gray-500 transition-transform duration-200 ${
+              open ? "rotate-180" : ""
+            }`}
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
           >
-          <input
-            type="checkbox"
-            checked={activeFilters[category].includes(option)}
-            onChange={() => toggleFilter(category, option)}
-            className="form-checkbox h-5 w-5 text-green-600 rounded border-gray-300 focus:ring-green-500"
-          />
-          <span className="text-gray-800 font-medium text-base">{option}</span>
-          </label>
-        ))}
-        </div>
-      )}
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              d="M19 9l-7 7-7-7"
+            />
+          </svg>
+        </button>
+        {open && (
+          <div className="absolute z-50 mt-2 bg-white rounded-xl shadow-xl p-5 min-w-[240px] border border-gray-100 right-0">
+            {options.map((option) => (
+              <label
+                key={option}
+                className="flex items-center gap-3 p-3 hover:bg-gray-50 rounded-lg cursor-pointer transition-colors"
+              >
+                <input
+                  type="checkbox"
+                  checked={activeFilters[category].includes(option)}
+                  onChange={() => toggleFilter(category, option)}
+                  className="form-checkbox h-5 w-5 text-green-600 rounded border-gray-300 focus:ring-green-500"
+                />
+                <span className="text-gray-800 font-medium text-base">
+                  {option}
+                </span>
+              </label>
+            ))}
+          </div>
+        )}
       </div>
     );
   };
@@ -459,7 +474,7 @@ const Discovery = () => {
                   </svg>
                 </button>
               </motion.span>
-            ))
+            )),
           )}
         </div>
 
@@ -526,10 +541,10 @@ const Discovery = () => {
                           recipe?.postId ||
                           `recipe-${Date.now()}-${index}`;
                         const recipeIngredients = ensureStringArray(
-                          recipe.ingredients
+                          recipe.ingredients,
                         );
                         const recipeInstructions = ensureStringArray(
-                          recipe.instructions
+                          recipe.instructions,
                         );
 
                         return (
@@ -562,7 +577,9 @@ const Discovery = () => {
                                   recipe?.userName ||
                                   "Unknown"
                                 }
-                                authorId={recipe?.authorId || recipe?.userId || ""}
+                                authorId={
+                                  recipe?.authorId || recipe?.userId || ""
+                                }
                                 userId={userId || recipe?.userId}
                                 datePosted={
                                   recipe?.datePosted ||
@@ -575,7 +592,9 @@ const Discovery = () => {
                                   "30 minutes"
                                 }
                                 difficulty={recipe?.difficulty || "Medium"}
-                                servings={recipe?.servings || recipe?.serves || 4}
+                                servings={
+                                  recipe?.servings || recipe?.serves || 4
+                                }
                                 ingredients={recipeIngredients}
                                 instructions={recipeInstructions}
                                 likes={recipe?.likes || recipe?.likesCount || 0}
@@ -651,10 +670,10 @@ const Discovery = () => {
                           recipe?.postId ||
                           `recipe-${Date.now()}-${index}`;
                         const recipeIngredients = ensureStringArray(
-                          recipe.ingredients
+                          recipe.ingredients,
                         );
                         const recipeInstructions = ensureStringArray(
-                          recipe.instructions
+                          recipe.instructions,
                         );
 
                         return (
@@ -676,8 +695,12 @@ const Discovery = () => {
                                 recipe?.imageUrl ||
                                 "/placeholder.jpg"
                               }
-                              author={recipe?.author || recipe?.userName || "Unknown"}
-                              authorId={recipe?.authorId || recipe?.userId || ""}
+                              author={
+                                recipe?.author || recipe?.userName || "Unknown"
+                              }
+                              authorId={
+                                recipe?.authorId || recipe?.userId || ""
+                              }
                               userId={userId || recipe?.userId}
                               datePosted={
                                 recipe?.datePosted ||
@@ -705,10 +728,10 @@ const Discovery = () => {
                         {sectionName === "Most Liked 💖"
                           ? "❤️"
                           : sectionName === "Recently Added"
-                          ? "🆕"
-                          : sectionName === "Quick Picks"
-                          ? "⏱️"
-                          : "😌"}
+                            ? "🆕"
+                            : sectionName === "Quick Picks"
+                              ? "⏱️"
+                              : "😌"}
                       </div>
                       <p className="text-gray-600 text-xl font-medium">
                         No recipes found
@@ -717,10 +740,10 @@ const Discovery = () => {
                         {sectionName === "Most Liked 💖"
                           ? "Be the first to like some amazing recipes!"
                           : sectionName === "Recently Added"
-                          ? "New recipes will appear here soon"
-                          : sectionName === "Quick Picks"
-                          ? "Quick meal ideas are on their way"
-                          : "Easy recipe suggestions coming soon"}
+                            ? "New recipes will appear here soon"
+                            : sectionName === "Quick Picks"
+                              ? "Quick meal ideas are on their way"
+                              : "Easy recipe suggestions coming soon"}
                       </p>
                     </div>
                   )}
