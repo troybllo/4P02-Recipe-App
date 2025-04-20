@@ -26,7 +26,9 @@ const Discovery = () => {
   useEffect(() => {
     const fetchMostLiked = async () => {
       try {
-        const response = await fetch(`${API}/api/recipes/most-liked`);
+        const response = await fetch(
+          `http://127.0.0.1:5000/api/recipes/most-liked`,
+        );
         const data = await response.json();
         console.log("Most liked API response:", data);
 
@@ -53,7 +55,9 @@ const Discovery = () => {
 
     const fetchQuickPicks = async () => {
       try {
-        const response = await fetch(`${API}/api/recipes/quick-picks`);
+        const response = await fetch(
+          `http://127.0.0.1:5000/api/recipes/quick-picks`,
+        );
         const data = await response.json();
         console.log("Quick picks API response:", data);
 
@@ -80,7 +84,9 @@ const Discovery = () => {
 
     const fetchEasiest = async () => {
       try {
-        const response = await fetch(`${API}/api/recipes/easy-recipes`);
+        const response = await fetch(
+          `http://127.0.0.1:5000/api/recipes/easy-recipes`,
+        );
         const data = await response.json();
         console.log("Easiest API response:", data);
 
@@ -107,7 +113,9 @@ const Discovery = () => {
 
     const fetchRecentlyAdded = async () => {
       try {
-        const response = await fetch(`${API}/api/recipes/most-recent?limit=30`);
+        const response = await fetch(
+          `http://127.0.0.1:5000/api/recipes/most-recent?limit=30`,
+        );
         const data = await response.json();
         console.log("Recently added API response:", data);
 
@@ -190,8 +198,8 @@ const Discovery = () => {
   const filterRecipes = (recipes) => {
     return recipes.filter((recipe) => {
       const matchesSearch =
-        recipe.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        recipe.description.toLowerCase().includes(searchQuery.toLowerCase());
+        recipe.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        recipe.description?.toLowerCase().includes(searchQuery.toLowerCase());
 
       const matchesFilters = Object.entries(activeFilters).every(
         ([category, values]) => {
@@ -281,6 +289,28 @@ const Discovery = () => {
     "Trending Now",
     "Healthy Choice",
   ];
+
+  // Helper to ensure ingredients and instructions are strings, not objects
+  const ensureStringArray = (arr) => {
+    if (!arr) return [];
+    if (typeof arr === "string") {
+      try {
+        return JSON.parse(arr);
+      } catch (e) {
+        return [arr];
+      }
+    }
+    if (!Array.isArray(arr)) return [];
+
+    return arr.map((item) => {
+      if (typeof item === "string") return item;
+      if (typeof item === "object" && item !== null) {
+        // If it's an object, try to get a string representation
+        return item.name || item.text || item.value || JSON.stringify(item);
+      }
+      return String(item);
+    });
+  };
 
   return (
     <div className="w-full mt-[7rem] bg-gray-50">
@@ -460,54 +490,75 @@ const Discovery = () => {
                   ) : data && data.length > 0 ? (
                     filterRecipes(data)
                       .slice(0, 5)
-                      .map((recipe, index) => (
-                        <motion.div
-                          key={recipe.postId || `recipe-${index}`}
-                          className="relative"
-                          initial={{ opacity: 0, y: 10 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          transition={{ duration: 0.4, delay: index * 0.1 }}
-                        >
-                          <div className="absolute -top-12 left-0 right-0 flex justify-center">
-                            <span className="bg-gradient-to-r from-emerald-600 to-green-400 text-white py-2 px-6 rounded-full text-base font-semibold shadow-lg z-10">
-                              {editorsTitles[index % editorsTitles.length]}
-                            </span>
+                      .map((recipe, index) => {
+                        const uniqueId =
+                          recipe?.id ||
+                          recipe?.postId ||
+                          `recipe-${Date.now()}-${index}`;
+                        const recipeIngredients = ensureStringArray(
+                          recipe.ingredients,
+                        );
+                        const recipeInstructions = ensureStringArray(
+                          recipe.instructions,
+                        );
+
+                        return (
+                          <div
+                            key={uniqueId}
+                            className="relative"
+                            style={{ isolation: "isolate" }}
+                          >
+                            <div className="absolute -top-12 left-0 right-0 flex justify-center z-10">
+                              <span className="bg-gradient-to-r from-emerald-600 to-green-400 text-white py-2 px-6 rounded-full text-base font-semibold shadow-lg">
+                                {editorsTitles[index % editorsTitles.length]}
+                              </span>
+                            </div>
+                            <div className="mt-6" style={{ zIndex: 0 }}>
+                              <FoodSocialCard
+                                id={uniqueId}
+                                postId={uniqueId}
+                                title={recipe?.title || "Untitled Recipe"}
+                                description={
+                                  recipe?.description ||
+                                  "No description available"
+                                }
+                                imageUrl={
+                                  recipe?.imageList?.[0]?.url ||
+                                  recipe?.imageUrl ||
+                                  "/placeholder.jpg"
+                                }
+                                author={
+                                  recipe?.author ||
+                                  recipe?.userName ||
+                                  "Unknown"
+                                }
+                                authorId={
+                                  recipe?.authorId || recipe?.userId || ""
+                                }
+                                userId={userId || recipe?.userId}
+                                datePosted={
+                                  recipe?.datePosted ||
+                                  recipe?.date ||
+                                  new Date().toISOString()
+                                }
+                                cookingTime={
+                                  recipe?.cookingTime ||
+                                  recipe?.time ||
+                                  "30 minutes"
+                                }
+                                difficulty={recipe?.difficulty || "Medium"}
+                                servings={
+                                  recipe?.servings || recipe?.serves || 4
+                                }
+                                ingredients={recipeIngredients}
+                                instructions={recipeInstructions}
+                                likes={recipe?.likes || recipe?.likesCount || 0}
+                                isLiked={recipe?.isLiked || false}
+                              />
+                            </div>
                           </div>
-                          <div className="bg-white rounded-2xl overflow-visible shadow-lg transition-all duration-300 hover:shadow-xl transform hover:-translate-y-1 mt-6 border border-gray-100">
-                            <FoodSocialCard
-                              key={recipe.postId || `recipe-${index}`}
-                              postId={recipe.postId || `recipe-${index}`}
-                              title={recipe.title || "Untitled Recipe"}
-                              description={
-                                recipe.description || "No description available"
-                              }
-                              imageUrl={
-                                recipe.imageList?.[0]?.url || "/placeholder.jpg"
-                              }
-                              author={recipe.author || "Unknown"}
-                              authorId={recipe.authorId || ""}
-                              datePosted={
-                                recipe.datePosted || new Date().toISOString()
-                              }
-                              cookingTime={recipe.cookingTime || "30 minutes"}
-                              difficulty={recipe.difficulty || "Medium"}
-                              servings={recipe.servings || 4}
-                              ingredients={
-                                Array.isArray(recipe.ingredients)
-                                  ? recipe.ingredients
-                                  : []
-                              }
-                              instructions={
-                                Array.isArray(recipe.instructions)
-                                  ? recipe.instructions
-                                  : []
-                              }
-                              likes={recipe.likes || 0}
-                              isLiked={recipe.isLiked || false}
-                            />
-                          </div>
-                        </motion.div>
-                      ))
+                        );
+                      })
                   ) : (
                     <div className="col-span-5 text-center py-16 bg-white rounded-2xl shadow-sm">
                       <div className="text-6xl mb-4">🍽️</div>
@@ -568,47 +619,64 @@ const Discovery = () => {
                   ) : data && data.length > 0 ? (
                     filterRecipes(data)
                       .slice(0, 5)
-                      .map((recipe, index) => (
-                        <motion.div
-                          key={recipe.postId || `recipe-${index}`}
-                          className="bg-white rounded-xl overflow-hidden shadow-md transition-all duration-300 hover:shadow-lg transform hover:-translate-y-1 border border-gray-100 h-full"
-                          initial={{ opacity: 0, y: 20 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          transition={{ duration: 0.4, delay: index * 0.08 }}
-                        >
-                          <FoodSocialCard
-                            key={recipe.postId || `recipe-${index}`}
-                            postId={recipe.postId || `recipe-${index}`}
-                            title={recipe.title || "Untitled Recipe"}
-                            description={
-                              recipe.description || "No description available"
-                            }
-                            imageUrl={
-                              recipe.imageList?.[0]?.url || "/placeholder.jpg"
-                            }
-                            author={recipe.author || "Unknown"}
-                            authorId={recipe.authorId || ""}
-                            datePosted={
-                              recipe.datePosted || new Date().toISOString()
-                            }
-                            cookingTime={recipe.cookingTime || "30 minutes"}
-                            difficulty={recipe.difficulty || "Medium"}
-                            servings={recipe.servings || 4}
-                            ingredients={
-                              Array.isArray(recipe.ingredients)
-                                ? recipe.ingredients
-                                : []
-                            }
-                            instructions={
-                              Array.isArray(recipe.instructions)
-                                ? recipe.instructions
-                                : []
-                            }
-                            likes={recipe.likes || 0}
-                            isLiked={recipe.isLiked || false}
-                          />
-                        </motion.div>
-                      ))
+                      .map((recipe, index) => {
+                        const uniqueId =
+                          recipe?.id ||
+                          recipe?.postId ||
+                          `recipe-${Date.now()}-${index}`;
+                        const recipeIngredients = ensureStringArray(
+                          recipe.ingredients,
+                        );
+                        const recipeInstructions = ensureStringArray(
+                          recipe.instructions,
+                        );
+
+                        return (
+                          <div
+                            key={uniqueId}
+                            className="relative"
+                            style={{ isolation: "isolate" }}
+                          >
+                            <FoodSocialCard
+                              id={uniqueId}
+                              postId={uniqueId}
+                              title={recipe?.title || "Untitled Recipe"}
+                              description={
+                                recipe?.description ||
+                                "No description available"
+                              }
+                              imageUrl={
+                                recipe?.imageList?.[0]?.url ||
+                                recipe?.imageUrl ||
+                                "/placeholder.jpg"
+                              }
+                              author={
+                                recipe?.author || recipe?.userName || "Unknown"
+                              }
+                              authorId={
+                                recipe?.authorId || recipe?.userId || ""
+                              }
+                              userId={userId || recipe?.userId}
+                              datePosted={
+                                recipe?.datePosted ||
+                                recipe?.date ||
+                                new Date().toISOString()
+                              }
+                              cookingTime={
+                                recipe?.cookingTime ||
+                                recipe?.time ||
+                                "30 minutes"
+                              }
+                              difficulty={recipe?.difficulty || "Medium"}
+                              servings={recipe?.servings || recipe?.serves || 4}
+                              ingredients={recipeIngredients}
+                              instructions={recipeInstructions}
+                              likes={recipe?.likes || recipe?.likesCount || 0}
+                              isLiked={recipe?.isLiked || false}
+                            />
+                          </div>
+                        );
+                      })
                   ) : (
                     <div className="col-span-5 text-center py-16 bg-white rounded-xl shadow-sm">
                       <div className="text-5xl mb-4">
