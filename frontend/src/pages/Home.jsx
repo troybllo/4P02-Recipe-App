@@ -1,4 +1,3 @@
-// src/pages/Home.jsx
 import React, { useState, useEffect, useRef } from "react";
 import Masonry from "react-masonry-css";
 import { motion, AnimatePresence } from "framer-motion";
