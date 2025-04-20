@@ -212,7 +212,7 @@ const FoodSocialCard = ({
     const downloadRecipeAsPDF = (recipe) => {
       const {
         title,
-        author = "Unknown",
+        author = authorData.username,
         datePosted,
         cookingTime = "N/A",
         difficulty = "N/A",
@@ -248,7 +248,8 @@ const FoodSocialCard = ({
     
           doc.setFont("helvetica", "normal");
           doc.setFontSize(12);
-          doc.text(`By: ${author}`, 20, 43);
+          console.log("Author Data:", authorData);
+          doc.text(`By: ${authorData.username}`, 20, 43);
           doc.text(`Date: ${formattedDate}`, 20, 49);
           doc.text(`Cooking Time: ${cookingTime}`, 20, 55);
           doc.text(`Difficulty: ${difficulty}`, 20, 61);
