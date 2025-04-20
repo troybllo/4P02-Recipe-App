@@ -96,20 +96,31 @@ def update_recipe(post_id):
             data = request.form.to_dict()
             user_id = data.get("userId")
 
+            if not user_id:
+                return jsonify({"error": "Missing userId"}), 400
+
             ingredients = json.loads(data.get("ingredients", "[]"))
             instructions = json.loads(data.get("instructions", "[]"))
 
-            # Upload new image to Cloudinary if provided
+            # Reference the recipe doc
+            doc_ref = db.collection("users").document(user_id).collection("created_recipes").document(post_id)
+            doc_snapshot = doc_ref.get()
+
+            if not doc_snapshot.exists:
+                return jsonify({"error": "Recipe not found"}), 404
+
+            current_data = doc_snapshot.to_dict()
+
+            # Check if a new image is uploaded
             image_file = request.files.get("image")
-            image_list = []
+            image_list = current_data.get("imageList", [])  # default to existing image list
 
             if image_file:
                 upload_result = cloudinary.uploader.upload(image_file)
-                image_list.append({ "url": upload_result["secure_url"] })
+                image_list = [{"url": upload_result["secure_url"]}]  # Replace with new image
 
-            # Update Firestore
-            doc_ref = db.collection("users").document(user_id).collection("created_recipes").document(post_id)
-            doc_ref.update({
+            # Build update data
+            update_data = {
                 "title": data.get("title"),
                 "description": data.get("description"),
                 "cookingTime": data.get("cookingTime"),
@@ -117,8 +128,10 @@ def update_recipe(post_id):
                 "servings": int(data.get("servings", 0)),
                 "ingredients": ingredients,
                 "instructions": instructions,
-                "imageList": image_list if image_list else firestore.DELETE_FIELD,  # Replace if image uploaded
-            })
+                "imageList": image_list,  # either unchanged or new
+            }
+
+            doc_ref.update(update_data)
 
             return jsonify({"message": "Recipe updated", "imageList": image_list}), 200
 
@@ -128,6 +141,7 @@ def update_recipe(post_id):
     except Exception as e:
         print(f"[update_recipe ERROR]: {e}")
         return jsonify({"error": str(e)}), 500
+
 
 
 def delete_recipe(post_id):

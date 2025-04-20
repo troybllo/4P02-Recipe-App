@@ -1,7 +1,20 @@
 import React, { useState, useEffect } from "react";
 import styles from "../styles/CreatePost.module.css";
 
-const EditPost = ({ isOpen, onClose, onSubmit, postId, title, description, cookingTime, difficulty, servings, ingredients, instructions, imageUrl }) => {
+const EditPost = ({
+  isOpen,
+  onClose,
+  onSubmit,
+  postId,
+  title,
+  description,
+  cookingTime,
+  difficulty,
+  servings,
+  ingredients,
+  instructions,
+  imageUrl, // URL string of existing image
+}) => {
   const [formData, setFormData] = useState({
     title: "",
     description: "",
@@ -10,22 +23,24 @@ const EditPost = ({ isOpen, onClose, onSubmit, postId, title, description, cooki
     servings: "",
     ingredients: "",
     instructions: "",
-    image: null,
+    image: null, // for new file
   });
+
+  const [existingImageUrl, setExistingImageUrl] = useState("");
 
   useEffect(() => {
     if (isOpen) {
-      setFormData((prev) => ({
-        ...prev,
+      setFormData({
         title: title || "",
         description: description || "",
         cookingTime: cookingTime || "",
         difficulty: difficulty || "Easy",
         servings: servings || "",
-        ingredients: ingredients.join("\n") || "",
-        instructions: instructions.join("\n") || "",
-        image: imageUrl || null,
-      }));
+        ingredients: ingredients?.join("\n") || "",
+        instructions: instructions?.join("\n") || "",
+        image: null, // we only track newly added image here
+      });
+      setExistingImageUrl(imageUrl || "");
     }
   }, [isOpen, title, description, cookingTime, difficulty, servings, ingredients, instructions, imageUrl]);
 
@@ -49,8 +64,8 @@ const EditPost = ({ isOpen, onClose, onSubmit, postId, title, description, cooki
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    onSubmit(formData);
-    onClose();
+    onSubmit(formData); // Pass to parent
+    onClose(); // Close modal
   };
 
   if (!isOpen) return null;
@@ -141,9 +156,7 @@ const EditPost = ({ isOpen, onClose, onSubmit, postId, title, description, cooki
           </div>
 
           <div className={styles.inputGroup}>
-            <label htmlFor="instructions">
-              Instructions (one step per line)
-            </label>
+            <label htmlFor="instructions">Instructions (one step per line)</label>
             <textarea
               id="instructions"
               name="instructions"
@@ -156,13 +169,24 @@ const EditPost = ({ isOpen, onClose, onSubmit, postId, title, description, cooki
 
           <div className={styles.inputGroup}>
             <label htmlFor="image">Recipe Image</label>
+
+            {/* Show current image if no new file selected */}
+            {existingImageUrl && !formData.image && (
+              <div style={{ marginBottom: "10px" }}>
+                <img
+                  src={existingImageUrl}
+                  alt="Current"
+                  style={{ width: "100%", maxHeight: "200px", objectFit: "cover", borderRadius: "6px" }}
+                />
+              </div>
+            )}
+
             <input
               type="file"
               id="image"
               name="image"
               onChange={handleImageChange}
               accept="image/*"
-              required
             />
           </div>
 

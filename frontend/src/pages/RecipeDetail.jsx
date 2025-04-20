@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { recipes as staticRecipes } from "../data/recipes";
@@ -31,23 +30,23 @@ export default function RecipeDetail() {
     return [];
   };
 
-  useEffect(() => {
-    const fetchRecipe = async () => {
-      try {
-        const response = await fetch(`http://127.0.0.1:5000/api/recipes/${postId}`);
-        if (!response.ok) throw new Error("Not in Firebase");
-        const data = await response.json();
-        setRecipe(data);
-        initializeForm(data);
-      } catch (err) {
-        const fallback = staticRecipes.find((r) => String(r.postId) === postId);
-        setRecipe(fallback || null);
-        initializeForm(fallback);
-      } finally {
-        setLoading(false);
-      }
-    };
+  const fetchRecipe = async () => {
+    try {
+      const response = await fetch(`http://127.0.0.1:5000/api/recipes/${postId}`);
+      if (!response.ok) throw new Error("Not in Firebase");
+      const data = await response.json();
+      setRecipe(data);
+      initializeForm(data);
+    } catch (err) {
+      const fallback = staticRecipes.find((r) => String(r.postId) === postId);
+      setRecipe(fallback || null);
+      initializeForm(fallback);
+    } finally {
+      setLoading(false);
+    }
+  };
 
+  useEffect(() => {
     fetchRecipe();
   }, [postId]);
 
@@ -71,42 +70,38 @@ export default function RecipeDetail() {
 
   const handleSave = async () => {
     if (!recipe || !recipe.userId) return;
-  
+
     const currentUserId = localStorage.getItem("userId");
     if (recipe.userId !== currentUserId) {
       alert("You do not have permission to edit this recipe.");
       return;
     }
-  
+
     try {
       const formData = new FormData();
       formData.append("userId", recipe.userId);
-      formData.append("title", recipe.title);
-      formData.append("description", recipe.description);
-      formData.append("cookingTime", recipe.cookingTime);
-      formData.append("difficulty", recipe.difficulty);
-      formData.append("servings", recipe.servings);
-      formData.append("ingredients", JSON.stringify(recipe.ingredients));
-      formData.append("instructions", JSON.stringify(recipe.instructions));
-  
+      formData.append("title", form.title);
+      formData.append("description", form.description);
+      formData.append("cookingTime", form.cookingTime);
+      formData.append("difficulty", form.difficulty);
+      formData.append("servings", form.servings);
+      formData.append("ingredients", JSON.stringify(form.ingredients.split("\n")));
+      formData.append("instructions", JSON.stringify(form.instructions.split("\n")));
+
       if (recipe.newImage) {
         formData.append("image", recipe.newImage);
       }
-  
+
       const response = await fetch(`http://127.0.0.1:5000/api/recipes/${recipe.postId}`, {
         method: "PUT",
         body: formData,
       });
-  
+
       const result = await response.json();
       if (response.ok) {
         alert("✅ Recipe updated!");
         setEditMode(false);
-        setRecipe((prev) => ({
-          ...prev,
-          imageList: result.imageList || prev.imageList,
-          ...form, // updated text data
-        }));
+        fetchRecipe(); // 🔁 Refresh updated data
       } else {
         alert("❌ Update failed: " + result.error);
       }
@@ -115,7 +110,6 @@ export default function RecipeDetail() {
       alert("❌ Update error");
     }
   };
-  
 
   if (loading) return <div className="p-6">Loading recipe...</div>;
   if (!recipe) return <div className="p-6 text-red-600">Recipe not found!</div>;
@@ -217,7 +211,9 @@ export default function RecipeDetail() {
             <input
               type="file"
               accept="image/*"
-              onChange={(e) => setRecipe({ ...recipe, newImage: e.target.files[0] })}
+              onChange={(e) =>
+                setRecipe((prev) => ({ ...prev, newImage: e.target.files[0] }))
+              }
             />
           </div>
         </div>
