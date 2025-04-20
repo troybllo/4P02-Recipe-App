@@ -25,6 +25,7 @@ const FoodSocialCard = ({
   likes,
   isLiked,
   userId,
+  triggerPopup,
 }) => {
   const recipeId = id || postId;
 
@@ -116,6 +117,7 @@ const FoodSocialCard = ({
       ingredients: parsedIngredients,
       instructions: parsedInstructions
     });
+    triggerPopup && triggerPopup("Recipe downloaded!");
   };
 
   const currentUserId = localStorage.getItem("userId");
@@ -457,6 +459,7 @@ const FoodSocialCard = ({
               >
                 ⏬
               </motion.button>
+              
             </div>
 
             <motion.button
@@ -559,8 +562,12 @@ const FoodSocialCard = ({
         imageList={imageList}
       />
     </>
+    
   );
+  
 };
+
+
 
 FoodSocialCard.defaultProps = {
   likes: 0,

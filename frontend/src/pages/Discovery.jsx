@@ -1,9 +1,20 @@
 import React, { useState, useEffect } from "react";
 import FoodSocialCard from "../components/FoodSocialCard";
 import { motion } from "framer-motion";
+import Popup from "../components/Popup";
 
 const Discovery = () => {
   const API = process.env.REACT_APP_API_URL;
+
+  const [popupMessage, setPopupMessage] = useState("");
+  const [showPopup, setShowPopup] = useState(false);
+
+  const triggerPopup = (msg) => {
+    console.log("Triggering popup:", msg);
+    setPopupMessage(msg);
+    setShowPopup(true);
+    setTimeout(() => setShowPopup(false), 5000);
+  };
 
   const [categories, setCategories] = useState({
     mostLiked: [],
@@ -341,6 +352,7 @@ const Discovery = () => {
 
     return (
       <div ref={dropdownRef} className="relative z-50">
+        <Popup show={showPopup} message={popupMessage} type="success" />
         <button
           onClick={handleToggle}
           className="px-4 py-3 bg-white rounded-full shadow-md hover:shadow-lg transition-all text-gray-700 font-medium capitalize flex items-center gap-2 text-base"
