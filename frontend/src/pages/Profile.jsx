@@ -19,23 +19,27 @@ const breakpointColumnsObj = {
 const Profile = () => {
   const { profileUsername } = useParams();
   const navigate = useNavigate();
-  const { currentUser, logout } = useAuth();
+  const { currentUser, logout, checkAuth } = useAuth();
 
   const [profileData, setProfileData] = useState({
-    user: null,
+    username: null,
+    bio: null,
+    profileImageUrl: null,
+    userId: null,
     recipes: []
   });
   const [loading, setLoading] = useState(true);
   const [isEditProfileOpen, setIsEditProfileOpen] = useState(false);
   const [showPosts, setShowPosts] = useState(true);
   const [isFollowing, setIsFollowing] = useState(false);
+  const [profileUpdated, setProfileUpdated] = useState(false);
   
   // If currentUser is properly structured with username property
-  const isOwnProfile = currentUser && profileUsername === currentUser.user.username;
-  console.log('Raw currentUser:', currentUser);
-  console.log('Type of user:', typeof currentUser.user);
-  console.log(currentUser.user);
-  console.log(currentUser.user.username);
+  const isOwnProfile = currentUser?.user && profileUsername === currentUser.user.username;
+  
+  console.log("Current user:", currentUser);
+  console.log("Profile username:", profileUsername);
+  console.log("Is own profile:", isOwnProfile);
   
   useEffect(() => {
     // Redirect to login if no username provided and user not logged in
@@ -45,8 +49,8 @@ const Profile = () => {
     }
 
     // If viewing base /profile with no username param and user is logged in
-    if (!profileUsername && currentUser?.username) {
-      navigate(`/profile/${currentUser.username}`);
+    if (!profileUsername && currentUser?.user?.username) {
+      navigate(`/profile/${currentUser.user.username}`);
       return;
     }
     
@@ -56,35 +60,40 @@ const Profile = () => {
       setLoading(true);
       
       try {
-        // Fetch profile data
-        const response = await fetch(`http://127.0.0.1:5000/api/profile/${profileUsername}`);
+        // Add cache-busting parameter to prevent caching
+        const timestamp = new Date().getTime();
+        const response = await fetch(`http://127.0.0.1:5000/api/profile/${profileUsername}?_t=${timestamp}`, {
+          headers: {
+            'Cache-Control': 'no-cache'
+          }
+        });
         
         if (!response.ok) {
           throw new Error(`Failed to fetch profile data: ${response.status}`);
         }
         
         const data = await response.json();
+        console.log("Profile data from API:", data);
         
         // Sort recipes by date
         const sortedRecipes = (data.recipes || []).sort(
           (a, b) => new Date(b.datePosted) - new Date(a.datePosted)
         );
         
+        // Store API response directly in profileData
         setProfileData({
-          user: data.user,
-          recipes: sortedRecipes
+          ...data,                   // Include all fields from the API response
+          recipes: sortedRecipes     // Override recipes with sorted version
         });
 
-        // Check if current user is following this profile
-        if (!isOwnProfile && currentUser) {
-          try {
-            const followResponse = await fetch(`http://127.0.0.1:5000/api/users/isFollowing?userId=${currentUser.userId}&targetId=${data.user.userId}`);
-            if (followResponse.ok) {
-              const followData = await followResponse.json();
-              setIsFollowing(followData.isFollowing);
-            }
-          } catch (err) {
-            console.error("Error checking follow status:", err);
+        // Only check following status if this is not the user's own profile
+        if (!isOwnProfile && currentUser && data.userId) {
+          // Get the current user ID (from different possible locations)
+          const currentUserId = currentUser.user?.id || currentUser.userId;
+          
+          if (currentUserId) {
+            // Call the server to check follow status
+            checkFollowStatusFromServer(currentUserId, data.userId);
           }
         }
       } catch (err) {
@@ -95,7 +104,40 @@ const Profile = () => {
     };
 
     fetchProfileData();
-  }, [profileUsername, currentUser, isOwnProfile, navigate]);
+    
+    // Reset the profileUpdated flag after fetching
+    if (profileUpdated) {
+      setProfileUpdated(false);
+    }
+  }, [profileUsername, currentUser, isOwnProfile, navigate, profileUpdated]);
+
+  // Function to check follow status from server
+  const checkFollowStatusFromServer = async (currentUserId, targetUserId) => {
+    try {
+      // Use the correct API endpoint with the expected query parameters
+      const url = `http://127.0.0.1:5000/api/profile/isFollowing?userId=${currentUserId}&targetId=${targetUserId}`;
+      console.log("Checking follow status from server with URL:", url);
+      
+      const response = await fetch(url);
+      
+      if (response.ok) {
+        const data = await response.json();
+        console.log("Server response for follow status:", data);
+        
+        // Update the following state based on server response
+        setIsFollowing(data.isFollowing);
+        
+        // Optionally update localStorage to match server state
+        updateLocalStorageFollowing(targetUserId, data.isFollowing);
+      } else {
+        console.error("Error checking follow status:", await response.text());
+        setIsFollowing(false);
+      }
+    } catch (error) {
+      console.error("Error checking follow status:", error);
+      setIsFollowing(false);
+    }
+  };
 
   const handleLogout = () => {
     logout();
@@ -107,25 +149,84 @@ const Profile = () => {
       navigate('/signin');
       return;
     }
-
+    
+    // Get the current user ID
+    const currentUserId = currentUser.user?.id || currentUser.userId;
+    const targetUserId = profileData.userId;
+    
+    // Validate we have the required IDs
+    if (!currentUserId || !targetUserId) {
+      console.error("Missing user IDs for follow/unfollow:", { currentUserId, targetUserId });
+      return;
+    }
+  
     try {
-      const action = isFollowing ? 'unfollow' : 'follow';
-      const response = await fetch(`http://127.0.0.1:5000/api/users/${action}`, {
+      // Use the correct endpoint for follow/unfollow
+      const endpoint = isFollowing ? 'http://127.0.0.1:5000/api/profile/unfollow' : 'http://127.0.0.1:5000/api/profile/follow';
+      
+      console.log("Follow toggle - sending currentUserId:", currentUserId);
+      console.log("Follow toggle - sending targetUserId:", targetUserId);
+      
+      const response = await fetch(endpoint, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          userId: currentUser.userId,
-          targetId: profileData.user.userId
+          currentUserId: currentUserId,
+          targetUserId: targetUserId
         }),
       });
-
+  
       if (response.ok) {
-        setIsFollowing(!isFollowing);
+        // Toggle following state for immediate UI update
+        const newFollowingState = !isFollowing;
+        setIsFollowing(newFollowingState);
+        
+        // Update localStorage to reflect the change
+        updateLocalStorageFollowing(targetUserId, newFollowingState);
+        
+        console.log(`Successfully ${isFollowing ? 'unfollowed' : 'followed'} user`);
+      } else {
+        const errorData = await response.json();
+        console.error("Error following/unfollowing:", errorData);
       }
     } catch (error) {
       console.error(`Error ${isFollowing ? 'unfollowing' : 'following'} user:`, error);
+    }
+  };
+  
+  // Function to update following list in localStorage
+  const updateLocalStorageFollowing = (targetUserId, isNowFollowing) => {
+    try {
+      const userDataString = localStorage.getItem('user');
+      if (!userDataString) {
+        console.error("No user data in localStorage");
+        return;
+      }
+      
+      const userData = JSON.parse(userDataString);
+      
+      // Initialize following array if it doesn't exist
+      if (!userData.following) {
+        userData.following = [];
+      }
+      
+      if (isNowFollowing) {
+        // Add user to following list if not already there
+        if (!userData.following.includes(targetUserId)) {
+          userData.following.push(targetUserId);
+        }
+      } else {
+        // Remove user from following list
+        userData.following = userData.following.filter(id => id !== targetUserId);
+      }
+      
+      // Save updated user data back to localStorage
+      localStorage.setItem('user', JSON.stringify(userData));
+      console.log("Updated localStorage following:", userData.following);
+    } catch (error) {
+      console.error("Error updating localStorage following:", error);
     }
   };
 
@@ -135,11 +236,80 @@ const Profile = () => {
     return words.map((w, i) => ((i + 1) % 10 === 0 ? w + "\n" : w)).join(" ");
   };
 
-  // Display profile info based on whose profile it is
-  const displayUser = isOwnProfile ? currentUser : profileData.user;
-  const username = displayUser?.username || profileUsername || "User";
-  const bio = displayUser?.bio || "This user hasn't added a bio yet.";
-  const profilePic = "https://img.freepik.com/premium-vector/pixel-art-tree_735839-72.jpg"; 
+  // Use profileData directly instead of profileData.user
+  const username = profileData.username || profileUsername || "User";
+  
+  // FIXED: Access bio directly from profileData, not from a nested user object
+  let bio;
+  if (profileData.bio != null && profileData.bio !== "") {
+    bio = profileData.bio;
+    console.log("Using bio from API profile data:", bio);
+  } else {
+    bio = "This user hasn't added a bio yet.";
+    console.log("Using default bio message - no bio found in API response");
+  }
+  
+  const profilePic = profileData.profileImageUrl || "https://img.freepik.com/premium-vector/pixel-art-tree_735839-72.jpg"; 
+
+  // Debugging output
+  console.log("Full profile data:", profileData);
+  console.log("Username being displayed:", username);
+  console.log("Bio being displayed:", bio);
+
+  const handleProfileUpdate = async (updatedUser) => {
+    console.log("Profile updated with:", updatedUser);
+    
+    // Check if there's an error in the update response
+    if (updatedUser.error) {
+      console.error("Profile update failed:", updatedUser.error);
+      // Error is already displayed in the EditProfile component
+      return;
+    }
+    
+    try {
+      // Check if username was changed - note that the username is in updatedUser.profile.username
+      const usernameChanged = updatedUser.profile && updatedUser.profile.username && 
+                             currentUser?.user?.username !== updatedUser.profile.username;
+      
+      console.log("Username changed:", usernameChanged);
+      
+      // Close the modal first
+      setIsEditProfileOpen(false);
+      
+      if (usernameChanged) {
+        // If username changed, log the user out and have them sign in again
+        console.log("Username was changed - logging out");
+        
+        // Notify the user first
+        alert("Your username has been updated to " + updatedUser.profile.username + ". Please sign in again with your new username.");
+        
+        // Perform logout - make sure we're calling the actual logout function
+        if (typeof logout === 'function') {
+          try {
+            logout();
+            console.log("Logout successful");
+          } catch (logoutError) {
+            console.error("Error during logout:", logoutError);
+          }
+        } else {
+          console.error("Logout function is not available:", logout);
+        }
+        
+        // Clear any remaining auth data to be sure
+        localStorage.removeItem('user');
+        localStorage.removeItem('token');
+        
+        // Redirect to login page
+        navigate('/signin');
+      } else {
+        // For other updates, just refresh the profile
+        setProfileUpdated(true);
+      }
+    } catch (error) {
+      console.error("Error updating profile:", error);
+      alert("There was an error updating your profile. Please try again.");
+    }
+  };
 
   return (
     <>
@@ -150,7 +320,7 @@ const Profile = () => {
               <img
                 src={profilePic}
                 alt="Profile Pic"
-                className="rounded-full w-32 h-32"
+                className="rounded-full w-32 h-32 object-cover"
               />
               {isOwnProfile ? (
                 // Show edit profile and logout buttons for own profile
@@ -218,7 +388,7 @@ const Profile = () => {
                 columnClassName="my-masonry-grid_column"
               >
                 {showPosts ? (
-                  profileData.recipes.length > 0 ? (
+                  profileData.recipes && profileData.recipes.length > 0 ? (
                     profileData.recipes.map((recipe) => (
                       <FoodSocialCard
                         key={recipe.postId}
@@ -233,7 +403,7 @@ const Profile = () => {
                         imageUrl={recipe.imageList?.[0]?.url || "https://via.placeholder.com/400x300?text=No+Image"}
                         datePosted={recipe.datePosted}
                         author={username}
-                        authorId={displayUser?.userId}
+                        authorId={profileData.userId}
                         likes={recipe.likes || 0}
                         isLiked={recipe.isLiked || false}
                       />
@@ -267,13 +437,8 @@ const Profile = () => {
         <EditProfile
           isOpen={isEditProfileOpen}
           onClose={() => setIsEditProfileOpen(false)}
-          onSubmit={(updatedUser) => {
-            localStorage.setItem("user", JSON.stringify(updatedUser));
-            setProfileData(prevData => ({
-              ...prevData,
-              user: updatedUser
-            }));
-          }}
+          onSubmit={handleProfileUpdate}
+          currentUser={currentUser?.user}
         />
       )}
     </>
