@@ -399,7 +399,7 @@ const Discovery = () => {
   };
 
   return (
-    <div className="w-full mt-[7rem] bg-gray-50">
+    <div className="w-full mt-[4rem] bg-gray-50">
       <div className="relative flex flex-col items-center justify-center py-4 bg-gradient-to-b from-white to-gray-50">
         <motion.div
           className="absolute w-48 h-48 rounded-full bg-gradient-to-r from-orange-400 via-yellow-200 to-green-500 opacity-20 blur-3xl"
@@ -415,7 +415,7 @@ const Discovery = () => {
         />
 
         <motion.h1
-          className="relative z-10 text-7xl font-extrabold text-center text-black"
+          className="relative z-10 text-7xl font-extrabold text-center text-black pt-10"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}

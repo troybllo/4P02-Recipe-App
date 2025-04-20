@@ -34,7 +34,11 @@ export default function Navbar() {
   useEffect(() => {
 
     
-    // Add scroll listener
+    // Set navbar z-index to ensure it's always on top
+    const navbar = document.querySelector('.fixed');
+    if (navbar) {
+      navbar.style.zIndex = "9999";
+    }
     const handleScroll = () => {
       if (window.scrollY > 10) {
         setIsScrolled(true);
