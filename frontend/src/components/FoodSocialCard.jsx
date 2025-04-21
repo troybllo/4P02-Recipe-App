@@ -6,6 +6,7 @@ import EditPost from "../components/EditPost";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 import feastlyLogo from "../images/feastly_black.png";
+import Popup from "./Popup";
 
 const FoodSocialCard = ({
   postId,
@@ -25,7 +26,6 @@ const FoodSocialCard = ({
   likes,
   isLiked,
   userId,
-  triggerPopup,
 }) => {
   const recipeId = id || postId;
 
@@ -44,6 +44,17 @@ const FoodSocialCard = ({
   const [isLoading, setIsLoading] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
   const cardRef = useRef(null);
+
+  const [showPopup, setShowPopup] = useState(false);
+  const [popupMessage, setPopupMessage] = useState("");
+  const [popupType, setPopupType] = useState("");
+    
+  const triggerPopup = (message, type) => {
+    setPopupMessage(message);
+    setPopupType(type);
+    setShowPopup(true);
+    setTimeout(() => setShowPopup(false), 2500);
+  };
 
   const formattedDate = datePosted
     ? new Date(datePosted).toLocaleDateString("en-US", {
@@ -64,14 +75,21 @@ const FoodSocialCard = ({
     setIsLoading(true);
 
     const heart = document.createElement("div");
+    if (!localStorage.getItem("userId")) {
+      triggerPopup(`This feature requires sign in`, `error`);
+      return;
+    }
     heart.className = styles.floatingHeart;
-    heart.innerHTML = "❤️";
     cardRef.current.appendChild(heart);
     setTimeout(() => heart.remove(), 1000);
 
     try {
       setLiked(!liked);
       setLikeCount((prevCount) => (liked ? prevCount - 1 : prevCount + 1));
+      if (triggerPopup) {
+        if(liked) triggerPopup("Removed Like!");
+        else triggerPopup("Liked Recipe!");
+      }
     } catch (error) {
       console.error("Error toggling like:", error);
     } finally {
@@ -294,6 +312,7 @@ const FoodSocialCard = ({
 
   return (
     <>
+      <Popup show={showPopup} message={popupMessage} type="success" className="flex z-[9999]"/>
       <motion.div
         className="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 relative"
         ref={cardRef}
