@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from 'react-router-dom';
 import FoodSocialCard from "../components/FoodSocialCard";
 import EditProfile from "../components/EditProfile";
+import UserListModal from "../components/UserListModal";
 import Masonry from "react-masonry-css";
 import { useAuth } from "../components/AuthContext";
 
@@ -26,6 +27,8 @@ const Profile = () => {
     bio: null,
     profileImageUrl: null,
     userId: null,
+    followers: [],
+    following: [],
     recipes: []
   });
   const [loading, setLoading] = useState(true);
@@ -33,6 +36,8 @@ const Profile = () => {
   const [showPosts, setShowPosts] = useState(true);
   const [isFollowing, setIsFollowing] = useState(false);
   const [profileUpdated, setProfileUpdated] = useState(false);
+  const [showFollowersModal, setShowFollowersModal] = useState(false);
+  const [showFollowingModal, setShowFollowingModal] = useState(false);
   
   // If currentUser is properly structured with username property
   const isOwnProfile = currentUser?.user && profileUsername === currentUser.user.username;
@@ -83,7 +88,9 @@ const Profile = () => {
         // Store API response directly in profileData
         setProfileData({
           ...data,                   // Include all fields from the API response
-          recipes: sortedRecipes     // Override recipes with sorted version
+          recipes: sortedRecipes,     // Override recipes with sorted version
+          followers: data.followers || [], // Ensure followers is an array
+          following: data.following || [] // Ensure following is an array
         });
 
         // Only check following status if this is not the user's own profile
@@ -183,6 +190,19 @@ const Profile = () => {
         const newFollowingState = !isFollowing;
         setIsFollowing(newFollowingState);
         
+        // Update follower count in UI immediately
+        if (newFollowingState) {
+          setProfileData(prev => ({
+            ...prev,
+            followers: [...prev.followers, currentUserId]
+          }));
+        } else {
+          setProfileData(prev => ({
+            ...prev,
+            followers: prev.followers.filter(id => id !== currentUserId)
+          }));
+        }
+        
         // Update localStorage to reflect the change
         updateLocalStorageFollowing(targetUserId, newFollowingState);
         
@@ -255,6 +275,8 @@ const Profile = () => {
   console.log("Full profile data:", profileData);
   console.log("Username being displayed:", username);
   console.log("Bio being displayed:", bio);
+  console.log("Follower count:", profileData.followers?.length || 0);
+  console.log("Following count:", profileData.following?.length || 0);
 
   const handleProfileUpdate = async (updatedUser) => {
     console.log("Profile updated with:", updatedUser);
@@ -352,6 +374,25 @@ const Profile = () => {
             <div className="text-left ml-4">
               <p className="text-xs font-thin text-gray-500 pb-1">Username:</p>
               <h2 className="inline-block">{username}</h2>
+              
+              {/* Followers and Following counts */}
+              <div className="flex gap-8 mt-4">
+                <div 
+                  className="text-center cursor-pointer" 
+                  onClick={() => setShowFollowersModal(true)}
+                >
+                  <p className="text-lg font-semibold">{profileData.followers?.length || 0}</p>
+                  <p className="text-xs font-thin text-gray-500">Followers</p>
+                </div>
+                <div 
+                  className="text-center cursor-pointer" 
+                  onClick={() => setShowFollowingModal(true)}
+                >
+                  <p className="text-lg font-semibold">{profileData.following?.length || 0}</p>
+                  <p className="text-xs font-thin text-gray-500">Following</p>
+                </div>
+              </div>
+              
               <p className="text-xs font-thin text-gray-500 pt-4 pb-1">
                 Short Bio:
               </p>
@@ -443,6 +484,25 @@ const Profile = () => {
           currentUser={currentUser?.user}
         />
       )}
+
+      {/* Follower/Following Modals */}
+      <UserListModal
+        isOpen={showFollowersModal}
+        onClose={() => setShowFollowersModal(false)}
+        type="followers"
+        userId={profileData.userId}
+        username={username}
+        userIds={profileData.followers || []}
+      />
+
+      <UserListModal
+        isOpen={showFollowingModal}
+        onClose={() => setShowFollowingModal(false)}
+        type="following"
+        userId={profileData.userId}
+        username={username}
+        userIds={profileData.following || []}
+      />
     </>
   );
 };
