@@ -141,3 +141,13 @@ def get_following_feed_route(user_id):
 
     return get_following_feed_controller(user_id)
 
+
+@profile_blueprint.route("/profile/suggested/<user_id>", methods=["GET"])
+def get_suggested_users_route(user_id):
+    """
+    GET /api/profile/suggested/<user_id>
+    - Get a list of suggested users that the specified user might want to follow
+    """
+    from ..controllers.profile import suggested_users_controller
+
+    return suggested_users_controller(user_id)

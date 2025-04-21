@@ -36,10 +36,6 @@ function getCategory(recipe) {
   return "other";
 }
 
-// Masonry breakpoints
-// We're no longer using the masonry layout
-// Instead, we'll use a single column layout for better card visibility
-
 export default function Home() {
   const [activeFilter, setActiveFilter] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
@@ -134,9 +130,9 @@ export default function Home() {
   const fetchSuggestedUsers = async (userId) => {
     const token = localStorage.getItem("token");
     try {
-      // Get user data to see who they're already following
-      const userResponse = await fetch(
-        `http://127.0.0.1:5000/api/profile/username?userId=${userId}`,
+      // Call the new suggested users API endpoint
+      const response = await fetch(
+        `http://127.0.0.1:5000/api/profile/suggested/${userId}`,
         {
           method: "GET",
           headers: {
@@ -146,54 +142,14 @@ export default function Home() {
         },
       );
 
-      if (userResponse.ok) {
-        const userData = await userResponse.json();
-
-        // Fetch users the current user is following
-        const followingResponse = await fetch(
-          `http://127.0.0.1:5000/api/profile/following/${userId}`,
-          {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-          },
-        );
-
-        if (followingResponse.ok) {
-          const followingData = await followingResponse.json();
-          const following = followingData.users || [];
-          const followingIds = following.map((user) => user.userId);
-
-          // For now, show some sample suggested users
-          // In a real implementation, this would call an API endpoint for user recommendations
-          const sampleUsers = [
-            {
-              userId: "user1",
-              username: "ChefMaster",
-              profileImageUrl: "https://via.placeholder.com/40",
-            },
-            {
-              userId: "user2",
-              username: "FoodieDelight",
-              profileImageUrl: "https://via.placeholder.com/40",
-            },
-            {
-              userId: "user3",
-              username: "CookingPro",
-              profileImageUrl: "https://via.placeholder.com/40",
-            },
-          ];
-
-          // Filter out users already being followed
-          const filtered = sampleUsers.filter(
-            (user) =>
-              !followingIds.includes(user.userId) && user.userId !== userId,
-          );
-
-          setSuggestedUsers(filtered);
-        }
+      if (response.ok) {
+        const data = await response.json();
+        const suggestedUsers = data.users || [];
+        setSuggestedUsers(suggestedUsers);
+      } else {
+        console.error("Failed to fetch suggested users");
+        // If API call fails, fall back to empty array
+        setSuggestedUsers([]);
       }
     } catch (error) {
       console.error("Error fetching suggested users:", error);

@@ -231,3 +231,43 @@ def get_following_feed(user_id):
 
     return all_following_recipes
 
+
+def get_suggested_users(user_id, limit=5):
+    """
+    Get a list of suggested users for the specified user to follow
+    Excludes users that the user already follows
+    Returns a list of user documents with basic profile info
+    """
+    db = firestore.client()
+    user_ref = get_user_doc(user_id)
+    user_doc = user_ref.get()
+
+    if not user_doc.exists:
+        return None
+
+    user_data = user_doc.to_dict()
+    following = user_data.get("following", [])
+    # Add the user's own ID to exclude from suggestions
+    following.append(user_id)
+
+    # Get random sample of users that the user doesn't follow
+    # Limit the results to the specified number
+    users_ref = db.collection("users").limit(20)
+    all_users = list(users_ref.stream())
+
+    # Filter out users that the current user already follows
+    suggested_users = []
+    for user in all_users:
+        if user.id not in following:
+            user_data = user.to_dict()
+            suggested_users.append(
+                {
+                    "userId": user.id,
+                    "username": user_data.get("username", ""),
+                    "profileImageUrl": user_data.get("profileImageUrl", ""),
+                }
+            )
+            if len(suggested_users) >= limit:
+                break
+
+    return suggested_users

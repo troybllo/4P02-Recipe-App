@@ -377,3 +377,21 @@ def batch_get_user_info_controller():
     except Exception as e:
         print(f"Error batch getting user info: {str(e)}")
         return jsonify({"error": "Failed to get user info"}), 500
+
+
+def suggested_users_controller(user_id):
+    """
+    GET /api/profile/suggested/:user_id
+    Returns a list of suggested users for the specified user to follow
+    """
+    try:
+        from ..services.profile_database import get_suggested_users
+
+        suggested_users = get_suggested_users(user_id)
+        if suggested_users is None:
+            return jsonify({"error": "User not found"}), 404
+
+        return jsonify({"users": suggested_users}), 200
+    except Exception as e:
+        print(f"Error getting suggested users: {str(e)}")
+        return jsonify({"error": "Failed to get suggested users"}), 500
