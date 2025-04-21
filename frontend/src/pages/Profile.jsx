@@ -3,6 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import FoodSocialCard from "../components/FoodSocialCard";
 import EditProfile from "../components/EditProfile";
 import UserListModal from "../components/UserListModal";
+import CreatePost from "../components/CreatePost"; // Import CreatePost component
 import Masonry from "react-masonry-css";
 import { useAuth } from "../components/AuthContext";
 
@@ -33,6 +34,7 @@ const Profile = () => {
   });
   const [loading, setLoading] = useState(true);
   const [isEditProfileOpen, setIsEditProfileOpen] = useState(false);
+  const [isCreatePostOpen, setIsCreatePostOpen] = useState(false); // New state for CreatePost modal
   const [showPosts, setShowPosts] = useState(true);
   const [isFollowing, setIsFollowing] = useState(false);
   const [profileUpdated, setProfileUpdated] = useState(false);
@@ -46,6 +48,21 @@ const Profile = () => {
   console.log("Current user:", currentUser);
   console.log("Profile username:", profileUsername);
   console.log("Is own profile:", isOwnProfile);
+
+  // Handle create post modal
+  const handleOpenCreatePost = () => {
+    setIsCreatePostOpen(true);
+  };
+
+  const handleCloseCreatePost = () => {
+    setIsCreatePostOpen(false);
+  };
+
+  const handleCreatePostSuccess = () => {
+    setIsCreatePostOpen(false);
+    // Refresh the profile after creating a new post
+    setProfileUpdated(true);
+  };
 
   useEffect(() => {
     // Redirect to login if no username provided and user not logged in
@@ -628,7 +645,7 @@ const Profile = () => {
                     {isOwnProfile && (
                       <button
                         className="mt-5 px-4 py-2 bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-full hover:from-green-600 hover:to-emerald-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 shadow-sm transition-colors"
-                        onClick={() => navigate("/create")}
+                        onClick={handleOpenCreatePost}
                       >
                         Create Recipe
                       </button>
@@ -671,12 +688,22 @@ const Profile = () => {
         </div>
       </div>
 
+      {/* EditProfile modal */}
       {isOwnProfile && (
         <EditProfile
           isOpen={isEditProfileOpen}
           onClose={() => setIsEditProfileOpen(false)}
           onSubmit={handleProfileUpdate}
           currentUser={currentUser?.user}
+        />
+      )}
+
+      {/* CreatePost modal */}
+      {isCreatePostOpen && (
+        <CreatePost
+          isOpen={isCreatePostOpen}
+          onClose={handleCloseCreatePost}
+          onSuccess={handleCreatePostSuccess}
         />
       )}
 
@@ -703,4 +730,3 @@ const Profile = () => {
 };
 
 export default Profile;
-
