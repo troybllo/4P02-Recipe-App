@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import FoodSocialCard from "../components/FoodSocialCard";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 // Helper function to infer category from various fields
 function getCategory(recipe) {
@@ -37,6 +37,7 @@ function getCategory(recipe) {
 }
 
 export default function Home() {
+  const navigate = useNavigate();
   const [activeFilter, setActiveFilter] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [isSearchFocused, setIsSearchFocused] = useState(false);
@@ -187,6 +188,11 @@ export default function Home() {
     } catch (error) {
       console.error("Follow user error:", error);
     }
+  };
+
+  // Navigate to user profile
+  const navigateToProfile = (username) => {
+    navigate(`/profile/${username}`);
   };
 
   // Get filtered recipes
@@ -600,19 +606,29 @@ export default function Home() {
 
             {/* Sidebar */}
             <motion.div className="md:w-1/3" variants={itemVariants}>
-              {/* User profile card */}
               <div className="bg-white rounded-xl shadow-sm p-6 mb-6">
-                <div className="flex items-center">
-                  <img
-                    src={
-                      localStorage.getItem("profileImageUrl") ||
-                      "https://via.placeholder.com/50"
-                    }
-                    alt="Your profile"
-                    className="w-14 h-14 rounded-full object-cover border-2 border-[#1d9c3f]"
-                  />
+                <div
+                  className="flex items-center cursor-pointer"
+                  onClick={() =>
+                    navigate(`/profile/${localStorage.getItem("username")}`)
+                  }
+                >
+                  {localStorage.getItem("profileImageUrl") ? (
+                    <img
+                      src={localStorage.getItem("profileImageUrl")}
+                      alt="Your profile"
+                      className="w-14 h-14 rounded-full object-cover border-2 border-[#1d9c3f]"
+                    />
+                  ) : (
+                    <div className="w-14 h-14 rounded-full bg-gradient-to-br from-green-500 to-green-700 text-white flex items-center justify-center font-semibold text-xl">
+                      {localStorage.getItem("username") &&
+                      localStorage.getItem("username")[0]
+                        ? localStorage.getItem("username")[0].toUpperCase()
+                        : "U"}
+                    </div>
+                  )}
                   <div className="ml-3">
-                    <h3 className="font-bold text-lg">
+                    <h3 className="font-bold text-lg text-gray-800">
                       {localStorage.getItem("username") || "User"}
                     </h3>
                     <p className="text-gray-500 text-sm">Your Profile</p>
@@ -631,17 +647,27 @@ export default function Home() {
                         key={user.userId || index}
                         className="flex items-center justify-between"
                       >
-                        <div className="flex items-center">
-                          <img
-                            src={
-                              user.profileImageUrl ||
-                              "https://via.placeholder.com/40"
-                            }
-                            alt={user.username}
-                            className="w-10 h-10 rounded-full object-cover"
-                          />
+                        <div
+                          className="flex items-center cursor-pointer"
+                          onClick={() => navigateToProfile(user.username)}
+                        >
+                          {user.profileImageUrl ? (
+                            <img
+                              src={user.profileImageUrl}
+                              alt={user.username}
+                              className="w-10 h-10 rounded-full object-cover border border-gray-200"
+                            />
+                          ) : (
+                            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-green-500 to-green-700 text-white flex items-center justify-center font-semibold text-sm">
+                              {user.username && user.username[0]
+                                ? user.username[0].toUpperCase()
+                                : "?"}
+                            </div>
+                          )}
                           <div className="ml-3">
-                            <p className="font-medium">{user.username}</p>
+                            <p className="font-medium text-gray-800">
+                              {user.username}
+                            </p>
                             <p className="text-gray-500 text-xs">
                               Suggested for you
                             </p>
