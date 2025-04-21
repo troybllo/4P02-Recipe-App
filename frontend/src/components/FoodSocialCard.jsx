@@ -312,7 +312,7 @@ const FoodSocialCard = ({
 
   return (
     <>
-      <Popup show={showPopup} message={popupMessage} type="success" className="flex z-[9999]"/>
+      <Popup show={showPopup} message={popupMessage} type={popupType} className="z-[9999]"/>
       <motion.div
         className="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 relative"
         ref={cardRef}
