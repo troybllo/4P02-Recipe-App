@@ -73,25 +73,55 @@ const FoodSocialCard = ({
   const handleLike = async () => {
     if (isLoading) return;
     setIsLoading(true);
-
+  
     const heart = document.createElement("div");
-    if (!localStorage.getItem("userId")) {
+    const currentUserId = localStorage.getItem("userId");
+    
+    if (!currentUserId) {
       triggerPopup(`This feature requires sign in`, `error`);
+      setIsLoading(false);
       return;
     }
+    
     heart.className = styles.floatingHeart;
     cardRef.current.appendChild(heart);
     setTimeout(() => heart.remove(), 1000);
-
+  
     try {
-      setLiked(!liked);
-      setLikeCount((prevCount) => (liked ? prevCount - 1 : prevCount + 1));
-      if (triggerPopup) {
-        if(liked) triggerPopup("Removed Like!");
-        else triggerPopup("Liked Recipe!");
+      // Determine if we're liking or unliking
+      const endpoint = liked 
+        ? 'http://127.0.0.1:5000/api/recipes/unlike'
+        : 'http://127.0.0.1:5000/api/recipes/like';
+      
+      const response = await fetch(endpoint, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          ownerId: authorId || userId,
+          postId: recipeId,
+          likerId: currentUserId
+        }),
+      });
+  
+      const data = await response.json();
+      
+      if (response.ok) {
+        setLiked(!liked);
+        setLikeCount((prevCount) => (liked ? prevCount - 1 : prevCount + 1));
+        
+        if (triggerPopup) {
+          if(liked) triggerPopup("Removed Like!");
+          else triggerPopup("Liked Recipe!");
+        }
+      } else {
+        console.error("Error toggling like:", data.error);
+        triggerPopup(`Error: ${data.error}`, "error");
       }
     } catch (error) {
       console.error("Error toggling like:", error);
+      triggerPopup("Something went wrong", "error");
     } finally {
       setIsLoading(false);
     }
@@ -205,31 +235,33 @@ const FoodSocialCard = ({
     ? parsedInstructions
     : [];
 
-  useEffect(() => {
-    const fetchAuthor = async () => {
-      if (!authorId) return;
-
-      try {
-        const res = await fetch(
-          `http://127.0.0.1:5000/api/profile/username?userId=${authorId}`,
-        );
-        const data = await res.json();
-        if (res.ok) {
-          setAuthorData({
-            username: data.username,
-            profileImageUrl:
-              data.profileImageUrl || "https://via.placeholder.com/40",
-          });
-        } else {
-          console.error("Error fetching author:", data.error);
+    useEffect(() => {
+      const checkLikedStatus = async () => {
+        const currentUserId = localStorage.getItem("userId");
+        if (!currentUserId || !recipeId) return;
+        
+        try {
+          // Use the correct endpoint structure: /recipes/{postId}?userId={authorId}
+          const response = await fetch(
+            `http://127.0.0.1:5000/api/recipes/${recipeId}?userId=${authorId || userId}`
+          );
+          
+          if (response.ok) {
+            const data = await response.json();
+            if (data && data.likedBy) {
+              // Check if current user is in the likedBy array
+              setLiked(data.likedBy.includes(currentUserId));
+              // Update like count
+              setLikeCount(data.likes || 0);
+            }
+          }
+        } catch (error) {
+          console.error("Error checking liked status:", error);
         }
-      } catch (err) {
-        console.error("Error fetching author:", err);
-      }
-    };
-
-    fetchAuthor();
-  }, [authorId]);
+      };
+      
+      checkLikedStatus();
+    }, [recipeId, authorId, userId]);
 
   const downloadRecipeAsPDF = (recipe) => {
     const {
