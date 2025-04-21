@@ -1,3 +1,8 @@
+# helper that guarantees a unique string every run
+import uuid
+def _uid(prefix="usr"):
+    return f"{prefix}_{uuid.uuid4().hex[:6]}"
+
 def test_login_success(client):
     """
     Register a user, then login with correct credentials.
@@ -5,8 +10,8 @@ def test_login_success(client):
     """
     # Register
     reg_payload = {
-        "username": "loginuser",
-        "email": "loginuser@example.com",
+        "username": _uid("login"),
+        "email":    f"{_uid('l')}@example.com",
         "password": "loginpassword"
     }
     reg_resp = client.post("/api/register", json=reg_payload)
@@ -14,7 +19,7 @@ def test_login_success(client):
 
     # Login
     login_payload = {
-        "username": "loginuser",
+        "username": reg_payload["username"],
         "password": "loginpassword"
     }
     login_resp = client.post("/api/login", json=login_payload)

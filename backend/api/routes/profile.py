@@ -109,3 +109,9 @@ def batch_get_user_info_route():
     - Body: { "userIds": ["id1", "id2", ...] }
     """
     return batch_get_user_info_controller()
+
+@profile_blueprint.route('/user/profile/<username>', methods=['GET'])
+def alias_get_user(username):
+    """Alias so tests (and old FE code) can call /api/user/profile/<username>."""
+    from ..controllers.profile import fetch_user_by_username
+    return fetch_user_by_username(username)

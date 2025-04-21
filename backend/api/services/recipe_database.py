@@ -69,9 +69,10 @@ def like_recipe(owner_id: str, post_id: str, liker_id: str):
     snap = doc_ref.get()
     if not snap.exists:
         return None
-
+    
+    data = snap.to_dict()
     if liker_id in snap.get("likedBy", []):    
-        return snap.to_dict()
+        return data
 
     doc_ref.update({
         "likedBy": firestore.ArrayUnion([liker_id]),
@@ -86,9 +87,10 @@ def unlike_recipe(owner_id: str, post_id: str, liker_id: str):
     snap = doc_ref.get()
     if not snap.exists:
         return None
-
+    
+    data = snap.to_dict()
     if liker_id not in snap.get("likedBy", []):     
-        return snap.to_dict()
+        return data
 
     doc_ref.update({
         "likedBy": firestore.ArrayRemove([liker_id]),

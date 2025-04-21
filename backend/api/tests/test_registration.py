@@ -1,11 +1,18 @@
 import pytest
 from werkzeug.security import check_password_hash
 
+
+# helper that guarantees a unique string every run
+import uuid
+def _uid(prefix="usr"):
+    return f"{prefix}_{uuid.uuid4().hex[:6]}"
+
+
 def test_registration_success_minimal(client):
     """Test registration with only required fields"""
     payload = {
-        "username": "testuser",
-        "email": "test@example.com",
+        "username": _uid("min"),
+        "email":    f"{_uid('m')}@example.com",
         "password": "testpassword"
     }
     response = client.post("/api/register", json=payload)
@@ -23,8 +30,8 @@ def test_registration_success_minimal(client):
 def test_registration_success_full(client):
     """Test registration with all optional fields"""
     payload = {
-        "username": "fulluser",
-        "email": "full@example.com",
+        "username": _uid("full"),
+        "email":    f"{_uid('f')}@example.com",
         "password": "fullpassword",
         "country": "Canada",
         "preferences": ["vegan", "gluten-free"]
@@ -46,8 +53,8 @@ def test_registration_missing_required_fields(client):
     
     for missing_field in required_fields:
         payload = {
-            "username": "testuser",
-            "email": "test@example.com",
+            "username": _uid("miss"),
+            "email":    f"{_uid('miss')}@example.com",
             "password": "testpass"
         }
         del payload[missing_field]
@@ -61,7 +68,7 @@ def test_registration_missing_required_fields(client):
 def test_registration_invalid_email(client):
     """Test registration with invalid email format"""
     payload = {
-        "username": "emailtest",
+        "username": _uid("badmail"),
         "email": "invalid-email",
         "password": "testpass"
     }
@@ -72,8 +79,8 @@ def test_registration_invalid_email(client):
 def test_registration_duplicate_email(client):
     """Test registration with duplicate email"""
     payload = {
-        "username": "user1",
-        "email": "duplicate@example.com",
+        "username": _uid("dup1"),
+        "email":    f"{_uid('dup')}@example.com",
         "password": "testpass"
     }
     # First registration
@@ -81,7 +88,7 @@ def test_registration_duplicate_email(client):
     assert response1.status_code == 201
     
     # Second registration with same email but different username
-    payload["username"] = "user2"
+    payload["username"] = _uid("dup2")
     response2 = client.post("/api/register", json=payload)
     assert response2.status_code == 409
     assert "email already exists" in response2.get_json()["error"].lower()
@@ -89,8 +96,8 @@ def test_registration_duplicate_email(client):
 def test_registration_invalid_preferences(client):
     """Test registration with invalid preferences format"""
     payload = {
-        "username": "preftest",
-        "email": "pref@example.com",
+        "username": _uid("pref"),
+        "email":    f"{_uid('pref')}@example.com",
         "password": "testpass",
         "preferences": "invalid-not-a-list"
     }
@@ -101,8 +108,8 @@ def test_registration_invalid_preferences(client):
 def test_password_hashing(client):
     """Test that password is properly hashed"""
     payload = {
-        "username": "hashtest",
-        "email": "hash@example.com",
+        "username": _uid("hash"),
+        "email":    f"{_uid('hash')}@example.com",
         "password": "testpass"
     }
     response = client.post("/api/register", json=payload)

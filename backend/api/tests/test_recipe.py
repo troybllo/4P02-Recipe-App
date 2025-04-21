@@ -197,3 +197,50 @@ def test_delete_recipe_success(client):
     # Confirm that a GET for this recipe now returns a 404.
     get_resp = client.get(f"/api/recipes/{post_id}", query_string={"userId": user_id})
     assert get_resp.status_code == 404, get_resp.get_json()
+
+def test_like_unlike_persistence(client):
+    """
+    1. ownerUser registers and creates a recipe.
+    2. likerUser registers and likes that recipe.
+    3. GET (refresh) – likes must be 1 and likerUser in likedBy.
+    4. likerUser unlikes the recipe.
+    5. GET again – likes goes back to 0 and likerUser removed.
+    """
+    # --- 1.  create two users ------------------------------------------------
+    owner_payload = {
+        "username": unique_username("owner"),
+        "email":    f"{uuid.uuid4().hex[:6]}@ex.com",
+        "password": "pw"
+    }
+    liker_payload = {
+        "username": unique_username("liker"),
+        "email":    f"{uuid.uuid4().hex[:6]}@ex.com",
+        "password": "pw"
+    }
+    owner_id = client.post("/api/register", json=owner_payload).get_json()["user"]["userId"]
+    liker_id = client.post("/api/register", json=liker_payload).get_json()["user"]["userId"]
+
+    # --- 2.  owner creates a recipe -----------------------------------------
+    recipe_body = {"userId": owner_id, "title": "Like Me"}
+    post_id = client.post("/api/recipes", json=recipe_body).get_json()["postId"]
+
+    # --- 3.  liker likes it --------------------------------------------------
+    like_body = {"ownerId": owner_id, "postId": post_id, "likerId": liker_id}
+    res_like = client.post("/api/recipes/like", json=like_body)
+    assert res_like.status_code == 200
+
+    # refresh (GET)
+    get1 = client.get(f"/api/recipes/{post_id}", query_string={"userId": owner_id})
+    data1 = get1.get_json()
+    assert data1["likes"] == 1
+    assert liker_id in data1.get("likedBy", [])
+
+    # --- 4.  liker unlikes ---------------------------------------------------
+    res_unlike = client.post("/api/recipes/unlike", json=like_body)
+    assert res_unlike.status_code == 200
+
+    # refresh (GET) again
+    get2 = client.get(f"/api/recipes/{post_id}", query_string={"userId": owner_id})
+    data2 = get2.get_json()
+    assert data2["likes"] == 0
+    assert liker_id not in data2.get("likedBy", [])

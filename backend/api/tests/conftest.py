@@ -1,6 +1,7 @@
 import os
+import cloudinary.uploader
+import uuid, os
 import pytest
-
 from backend.api import create_app
 import firebase_admin
 from firebase_admin import delete_app, get_app
@@ -39,6 +40,30 @@ def app():
         delete_app(default_app)
     except ValueError:
         pass
+
+@pytest.fixture(scope="session", autouse=True)
+def _mock_cloudinary(monkeypatch):
+    """
+    Replace real Cloudinary calls during the test‑suite so we never need
+    a network request or real API‑key.
+    """
+    # make cloudinary.config() happy even if the env‑var is missing
+    os.environ.setdefault(
+        "CLOUDINARY_URL",
+        "cloudinary://dummy_key:dummy_secret@dummy_cloud"
+    )
+
+    def _fake_upload(file_obj, public_id=None, folder=None, **_):
+        # return a predictable fake‑response
+        pub = public_id or f"mock_{uuid.uuid4().hex}"
+        return {
+            "secure_url": f"https://mock.cloud/{folder}/{pub}.png",
+            "public_id":  pub,
+        }
+
+    monkeypatch.setattr(cloudinary.uploader, "upload",  _fake_upload)
+    monkeypatch.setattr(cloudinary.uploader, "destroy", lambda *_: None)
+    yield
 
 
 @pytest.fixture(scope="session")
