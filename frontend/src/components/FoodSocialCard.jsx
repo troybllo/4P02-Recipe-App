@@ -30,7 +30,7 @@ const FoodSocialCard = ({
   const recipeId = id || postId;
 
   const [authorData, setAuthorData] = useState({
-    username: "",
+    username: author || "Recipe Creator",
     profileImageUrl: "",
   });
 
@@ -235,33 +235,69 @@ const FoodSocialCard = ({
     ? parsedInstructions
     : [];
 
-    useEffect(() => {
-      const checkLikedStatus = async () => {
-        const currentUserId = localStorage.getItem("userId");
-        if (!currentUserId || !recipeId) return;
-        
-        try {
-          // Use the correct endpoint structure: /recipes/{postId}?userId={authorId}
-          const response = await fetch(
-            `http://127.0.0.1:5000/api/recipes/${recipeId}?userId=${authorId || userId}`
-          );
-          
-          if (response.ok) {
-            const data = await response.json();
-            if (data && data.likedBy) {
-              // Check if current user is in the likedBy array
-              setLiked(data.likedBy.includes(currentUserId));
-              // Update like count
-              setLikeCount(data.likes || 0);
-            }
-          }
-        } catch (error) {
-          console.error("Error checking liked status:", error);
+  // Original author fetch effect
+  useEffect(() => {
+    const fetchAuthor = async () => {
+      if (!authorId) return;
+
+      try {
+        const res = await fetch(
+          `http://127.0.0.1:5000/api/profile/username?userId=${authorId}`
+        );
+        const data = await res.json();
+        if (res.ok) {
+          setAuthorData({
+            username: data.username || author || "Recipe Creator",
+            profileImageUrl: data.profileImageUrl || "https://via.placeholder.com/40",
+          });
+        } else {
+          console.error("Error fetching author:", data.error);
         }
-      };
+      } catch (err) {
+        console.error("Error fetching author:", err);
+      }
+    };
+
+    fetchAuthor();
+  }, [authorId, author]);
+
+  // Check liked status effect
+  useEffect(() => {
+    const checkLikedStatus = async () => {
+      const currentUserId = localStorage.getItem("userId");
+      if (!currentUserId || !recipeId) return;
       
-      checkLikedStatus();
-    }, [recipeId, authorId, userId]);
+      try {
+        // Use the correct endpoint structure: /recipes/{postId}?userId={authorId}
+        const response = await fetch(
+          `http://127.0.0.1:5000/api/recipes/${recipeId}?userId=${authorId || userId}`
+        );
+        
+        if (response.ok) {
+          const data = await response.json();
+          
+          // Set liked status and count
+          if (data && data.likedBy) {
+            setLiked(data.likedBy.includes(currentUserId));
+            setLikeCount(data.likes || 0);
+          }
+          
+          // If the response includes author info, update it
+          if (data && data.author) {
+            setAuthorData(prevData => ({
+              ...prevData,
+              username: data.author.username || data.author || prevData.username,
+              profileImageUrl: data.author.profileImageUrl || prevData.profileImageUrl,
+            }));
+          }
+        }
+      } catch (error) {
+        console.error("Error checking liked status:", error);
+      }
+    };
+    
+    checkLikedStatus();
+  }, [recipeId, authorId, userId, author]);
 
   const downloadRecipeAsPDF = (recipe) => {
     const {
