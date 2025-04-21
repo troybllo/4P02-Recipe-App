@@ -3,8 +3,20 @@ import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation, Link } from "react-router-dom";
 import { useAuth } from "../components/AuthContext";
 import "../styles/SignIn.css";
+import Popup from "../components/Popup";
 
 export default function SignInPage() {
+  const [showPopup, setShowPopup] = useState(false);
+  const [popupMessage, setPopupMessage] = useState("");
+  const [popupType, setPopupType] = useState("success");
+
+  const triggerPopup = (message, type) => {
+    setPopupMessage(message);
+    setPopupType(type);
+    setShowPopup(true);
+    setTimeout(() => setShowPopup(false), 2500);
+  };
+
   const [formData, setFormData] = useState({
     username: "",
     password: "",
@@ -70,6 +82,7 @@ export default function SignInPage() {
         navigate(`/profile/${userData.username}`, { replace: true });
       } else {
         setError(data.error || "Login failed");
+        triggerPopup("Login Failed!", "error");
       }
     } catch (err) {
       setError("Network error. Please try again.");
@@ -80,6 +93,7 @@ export default function SignInPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-50 to-green-100 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+      <Popup show={showPopup} message={popupMessage} type={popupType} />
       <div className="max-w-md w-full bg-white rounded-xl shadow-2xl overflow-hidden">
         <div className="h-2 bg-gradient-to-r from-green-600 via-green-500 to-orange-400"></div>
         <div className="px-6 py-8 sm:px-10">

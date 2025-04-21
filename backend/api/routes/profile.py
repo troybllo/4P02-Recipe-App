@@ -9,6 +9,9 @@ from ..controllers.profile import (
     fetch_user_by_username,
     is_following_controller,
     fetch_username_by_user_id,
+    get_followers_controller,
+    get_following_controller,
+    batch_get_user_info_controller
 )
 
 profile_blueprint = Blueprint('profile_features', __name__)
@@ -66,10 +69,43 @@ def check_is_following():
     """Route that delegates to the controller"""
     return is_following_controller()
 
-@profile_blueprint.route('profile/<username>', methods=['GET'])
+@profile_blueprint.route('/profile/<username>', methods=['GET'])
 def get_user_by_username_route(username):
+    """
+    GET /api/profile/<username>
+    - Get a user profile by username
+    """
     return fetch_user_by_username(username)
 
 @profile_blueprint.route('/profile/username', methods=['GET'])
 def get_username_from_user_id_route():
+    """
+    GET /api/profile/username?userId=...
+    - Get a username from a user ID
+    """
     return fetch_username_by_user_id()
+
+@profile_blueprint.route('/profile/followers/<user_id>', methods=['GET'])
+def get_followers_route(user_id):
+    """
+    GET /api/profile/followers/<user_id>
+    - Get a list of users who follow the specified user
+    """
+    return get_followers_controller(user_id)
+
+@profile_blueprint.route('/profile/following/<user_id>', methods=['GET'])
+def get_following_route(user_id):
+    """
+    GET /api/profile/following/<user_id>
+    - Get a list of users that the specified user follows
+    """
+    return get_following_controller(user_id)
+
+@profile_blueprint.route('/profile/batch-info', methods=['POST'])
+def batch_get_user_info_route():
+    """
+    POST /api/profile/batch-info
+    - Get basic information for multiple users in one request
+    - Body: { "userIds": ["id1", "id2", ...] }
+    """
+    return batch_get_user_info_controller()

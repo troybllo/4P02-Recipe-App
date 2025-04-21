@@ -6,14 +6,15 @@ import Popup from "../components/Popup";
 const Discovery = () => {
   const API = process.env.REACT_APP_API_URL;
 
-  const [popupMessage, setPopupMessage] = useState("");
   const [showPopup, setShowPopup] = useState(false);
+  const [popupMessage, setPopupMessage] = useState("");
+  
 
-  const triggerPopup = (msg) => {
-    console.log("Triggering popup:", msg);
-    setPopupMessage(msg);
+  const triggerPopup = (message) => {
+    console.log("message: ", message);
+    setPopupMessage(message);
     setShowPopup(true);
-    setTimeout(() => setShowPopup(false), 5000);
+    setTimeout(() => setShowPopup(false), 2500); // hide after 2.5 seconds
   };
 
   const [categories, setCategories] = useState({
@@ -38,7 +39,7 @@ const Discovery = () => {
     const fetchMostLiked = async () => {
       try {
         const response = await fetch(
-          `http://127.0.0.1:5000/api/recipes/most-liked`,
+          //`http://127.0.0.1:5000/api/recipes/most-liked`,
         );
         const data = await response.json();
         console.log("Most liked API response:", data);
@@ -67,7 +68,7 @@ const Discovery = () => {
     const fetchQuickPicks = async () => {
       try {
         const response = await fetch(
-          `http://127.0.0.1:5000/api/recipes/quick-picks`,
+          //`http://127.0.0.1:5000/api/recipes/quick-picks`,
         );
         const data = await response.json();
         console.log("Quick picks API response:", data);
@@ -96,7 +97,7 @@ const Discovery = () => {
     const fetchEasiest = async () => {
       try {
         const response = await fetch(
-          `http://127.0.0.1:5000/api/recipes/easy-recipes`,
+          //`http://127.0.0.1:5000/api/recipes/easy-recipes`,
         );
         const data = await response.json();
         console.log("Easiest API response:", data);
@@ -125,7 +126,7 @@ const Discovery = () => {
     const fetchRecentlyAdded = async () => {
       try {
         const response = await fetch(
-          `http://127.0.0.1:5000/api/recipes/most-recent?limit=30`,
+          //`http://127.0.0.1:5000/api/recipes/most-recent?limit=30`,
         );
         const data = await response.json();
         console.log("Recently added API response:", data);
@@ -352,7 +353,6 @@ const Discovery = () => {
 
     return (
       <div ref={dropdownRef} className="relative z-50">
-        <Popup show={showPopup} message={popupMessage} type="success" />
         <button
           onClick={handleToggle}
           className="px-4 py-3 bg-white rounded-full shadow-md hover:shadow-lg transition-all text-gray-700 font-medium capitalize flex items-center gap-2 text-base"
@@ -399,178 +399,305 @@ const Discovery = () => {
   };
 
   return (
-    <div className="w-full mt-[4rem] bg-gray-50">
-      <div className="relative flex flex-col items-center justify-center py-4 bg-gradient-to-b from-white to-gray-50">
-        <motion.div
-          className="absolute w-48 h-48 rounded-full bg-gradient-to-r from-orange-400 via-yellow-200 to-green-500 opacity-20 blur-3xl"
-          animate={{
-            scale: [1, 1.2, 1],
-            opacity: [0.2, 0.3, 0.2],
-          }}
-          transition={{
-            duration: 5,
-            repeat: Infinity,
-            repeatType: "mirror",
-          }}
-        />
-
-        <motion.h1
-          className="relative z-10 text-7xl font-extrabold text-center text-black pt-10"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-        >
-          Culinary Discovery
-        </motion.h1>
-
-        <motion.p
-          className="text-xl text-gray-600 text-center mt-4 mb-4"
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.1 }}
-          style={{ zIndex: 1 }}
-        >
-          Explore a world of flavors, techniques and inspiration
-        </motion.p>
-      </div>
-
-      <div className="flex flex-col items-center justify-center w-full mb-10 px-4">
-        <div className="relative w-full max-w-2xl mx-auto mb-8">
-          <div className="absolute inset-y-0 left-0 pl-6 flex items-center pointer-events-none">
-            <svg
-              className="w-6 h-6 text-gray-400"
-              fill="currentColor"
-              viewBox="0 0 20 20"
-            >
-              <path
-                fillRule="evenodd"
-                d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
-                clipRule="evenodd"
-              />
-            </svg>
-          </div>
-          <input
-            type="text"
-            placeholder="Search for recipes..."
-            className="w-full py-5 pl-16 pr-6 bg-white border-none rounded-full shadow-lg text-xl text-gray-900 focus:ring-2 focus:ring-green-500 focus:outline-none transition-all"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
+    <>
+      <div className="w-full mt-[4rem] bg-gray-50">
+        <div className="relative flex flex-col items-center justify-center py-4 bg-gradient-to-b from-white to-gray-50">
+          <motion.div
+            className="absolute w-48 h-48 rounded-full bg-gradient-to-r from-orange-400 via-yellow-200 to-green-500 opacity-20 blur-3xl"
+            animate={{
+              scale: [1, 1.2, 1],
+              opacity: [0.2, 0.3, 0.2],
+            }}
+            transition={{
+              duration: 5,
+              repeat: Infinity,
+              repeatType: "mirror",
+            }}
           />
+
+          <motion.h1
+            className="relative z-10 text-7xl font-extrabold text-center text-black pt-10"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+          >
+            Culinary Discovery
+          </motion.h1>
+
+          <motion.p
+            className="text-xl text-gray-600 text-center mt-4 mb-4"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.1 }}
+            style={{ zIndex: 1 }}
+          >
+            Explore a world of flavors, techniques and inspiration
+          </motion.p>
         </div>
 
-        <div className="flex flex-wrap justify-center gap-4 mb-8 w-full max-w-5xl">
-          {Object.entries(activeFilters).map(([category, values]) =>
-            values.map((value) => (
-              <motion.span
-                key={`${category}-${value}`}
-                className="flex items-center px-5 py-2 text-base bg-indigo-100 text-indigo-800 rounded-full shadow-sm"
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.3 }}
+        <Popup show={showPopup} message={popupMessage} type="success" className="flex z-[9999]"/>
+
+        <div className="flex flex-col items-center justify-center w-full mb-10 px-4">
+          <div className="relative w-full max-w-2xl mx-auto mb-8">
+            <div className="absolute inset-y-0 left-0 pl-6 flex items-center pointer-events-none">
+              <svg
+                className="w-6 h-6 text-gray-400"
+                fill="currentColor"
+                viewBox="0 0 20 20"
               >
-                {value}
-                <button
-                  onClick={() => toggleFilter(category, value)}
-                  className="ml-2 text-indigo-600 hover:text-indigo-800 focus:outline-none"
-                >
-                  <svg
-                    className="w-5 h-5"
-                    fill="currentColor"
-                    viewBox="0 0 20 20"
-                  >
-                    <path
-                      fillRule="evenodd"
-                      d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
-                      clipRule="evenodd"
-                    />
-                  </svg>
-                </button>
-              </motion.span>
-            )),
-          )}
-        </div>
-
-        <div className="flex flex-wrap justify-center gap-4 mb-16 w-full max-w-5xl">
-          {Object.entries(filterOptions).map(([category, options]) => (
-            <FilterDropdown
-              key={category}
-              category={category}
-              options={options}
-              activeFilters={activeFilters}
-              toggleFilter={toggleFilter}
+                <path
+                  fillRule="evenodd"
+                  d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
+                  clipRule="evenodd"
+                />
+              </svg>
+            </div>
+            <input
+              type="text"
+              placeholder="Search for recipes..."
+              className="w-full py-5 pl-16 pr-6 bg-white border-none rounded-full shadow-lg text-xl text-gray-900 focus:ring-2 focus:ring-green-500 focus:outline-none transition-all"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
             />
-          ))}
-        </div>
-      </div>
+          </div>
 
-      <div className="w-full px-6 pb-20">
-        {Object.entries(categoryMap).map(([sectionName, { data, loading }]) => (
-          <div key={sectionName} className="mb-24">
-            {sectionName === "Editors Pick" ? (
-              <div className="mb-16">
-                <motion.div
-                  className="relative py-8 overflow-hidden"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ duration: 0.8 }}
+          <div className="flex flex-wrap justify-center gap-4 mb-8 w-full max-w-5xl">
+            {Object.entries(activeFilters).map(([category, values]) =>
+              values.map((value) => (
+                <motion.span
+                  key={`${category}-${value}`}
+                  className="flex items-center px-5 py-2 text-base bg-indigo-100 text-indigo-800 rounded-full shadow-sm"
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 0.3 }}
                 >
-                  <div className="absolute inset-0 bg-gradient-to-r from-emerald-600 to-green-400 opacity-90 rounded-3xl"></div>
-                  <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10"></div>
+                  {value}
+                  <button
+                    onClick={() => toggleFilter(category, value)}
+                    className="ml-2 text-indigo-600 hover:text-indigo-800 focus:outline-none"
+                  >
+                    <svg
+                      className="w-5 h-5"
+                      fill="currentColor"
+                      viewBox="0 0 20 20"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+                        clipRule="evenodd"
+                      />
+                    </svg>
+                  </button>
+                </motion.span>
+              )),
+            )}
+          </div>
 
-                  <div className="relative z-10 px-12 py-8">
-                    <h2 className="text-6xl font-bold text-white mb-3 tracking-tight flex items-center">
-                      <span className="text-6xl mr-3">✨</span> {sectionName}
-                    </h2>
-                    <p className="text-emerald-100 text-xl max-w-2xl">
-                      Our team's handpicked selection of extraordinary recipes
-                      that are sure to impress.
-                    </p>
-                  </div>
-                </motion.div>
+          <div className="flex flex-wrap justify-center gap-4 mb-16 w-full max-w-5xl">
+            {Object.entries(filterOptions).map(([category, options]) => (
+              <FilterDropdown
+                key={category}
+                category={category}
+                options={options}
+                activeFilters={activeFilters}
+                toggleFilter={toggleFilter}
+              />
+            ))}
+          </div>
+        </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-10 -mt-6 px-2">
-                  {loading ? (
-                    Array(5)
-                      .fill(0)
-                      .map((_, i) => (
-                        <div
-                          key={i}
-                          className="h-96 bg-white rounded-2xl overflow-hidden shadow-lg animate-pulse"
-                        >
-                          <div className="h-56 bg-gray-200"></div>
-                          <div className="p-6">
-                            <div className="h-5 bg-gray-200 rounded mb-3 w-3/4"></div>
-                            <div className="h-5 bg-gray-200 rounded w-1/2"></div>
-                          </div>
-                        </div>
-                      ))
-                  ) : data && data.length > 0 ? (
-                    filterRecipes(data)
-                      .slice(0, 5)
-                      .map((recipe, index) => {
-                        const uniqueId =
-                          recipe?.id ||
-                          recipe?.postId ||
-                          `recipe-${Date.now()}-${index}`;
-                        const recipeIngredients = ensureStringArray(
-                          recipe.ingredients,
-                        );
-                        const recipeInstructions = ensureStringArray(
-                          recipe.instructions,
-                        );
+        <div className="w-full px-6 pb-20">
+          {Object.entries(categoryMap).map(([sectionName, { data, loading }]) => (
+            <div key={sectionName} className="mb-24">
+              {sectionName === "Editors Pick" ? (
+                <div className="mb-16">
+                  <motion.div
+                    className="relative py-8 overflow-hidden"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ duration: 0.8 }}
+                  >
+                    <div className="absolute inset-0 bg-gradient-to-r from-emerald-600 to-green-400 opacity-90 rounded-3xl"></div>
+                    <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10"></div>
 
-                        return (
+                    <div className="relative z-10 px-12 py-8">
+                      <h2 className="text-6xl font-bold text-white mb-3 tracking-tight flex items-center">
+                        <span className="text-6xl mr-3">✨</span> {sectionName}
+                      </h2>
+                      <p className="text-emerald-100 text-xl max-w-2xl">
+                        Our team's handpicked selection of extraordinary recipes
+                        that are sure to impress.
+                      </p>
+                    </div>
+                  </motion.div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-10 -mt-6 px-2">
+                    {loading ? (
+                      Array(5)
+                        .fill(0)
+                        .map((_, i) => (
                           <div
-                            key={uniqueId}
-                            className="relative"
-                            style={{ isolation: "isolate" }}
+                            key={i}
+                            className="h-96 bg-white rounded-2xl overflow-hidden shadow-lg animate-pulse"
                           >
-                            <div className="absolute -top-12 left-0 right-0 flex justify-center z-10">
-                              <span className="bg-gradient-to-r from-emerald-600 to-green-400 text-white py-2 px-6 rounded-full text-base font-semibold shadow-lg">
-                                {editorsTitles[index % editorsTitles.length]}
-                              </span>
+                            <div className="h-56 bg-gray-200"></div>
+                            <div className="p-6">
+                              <div className="h-5 bg-gray-200 rounded mb-3 w-3/4"></div>
+                              <div className="h-5 bg-gray-200 rounded w-1/2"></div>
                             </div>
-                            <div className="mt-6" style={{ zIndex: 0 }}>
+                          </div>
+                        ))
+                    ) : data && data.length > 0 ? (
+                      filterRecipes(data)
+                        .slice(0, 5)
+                        .map((recipe, index) => {
+                          const uniqueId =
+                            recipe?.id ||
+                            recipe?.postId ||
+                            `recipe-${Date.now()}-${index}`;
+                          const recipeIngredients = ensureStringArray(
+                            recipe.ingredients,
+                          );
+                          const recipeInstructions = ensureStringArray(
+                            recipe.instructions,
+                          );
+
+                          return (
+                            <div
+                              key={uniqueId}
+                              className="relative"
+                              style={{ isolation: "isolate" }}
+                            >
+                              <div className="absolute -top-12 left-0 right-0 flex justify-center z-10">
+                                <span className="bg-gradient-to-r from-emerald-600 to-green-400 text-white py-2 px-6 rounded-full text-base font-semibold shadow-lg">
+                                  {editorsTitles[index % editorsTitles.length]}
+                                </span>
+                              </div>
+                              <div className="mt-6" style={{ zIndex: 0 }}>
+                                <FoodSocialCard
+                                  id={uniqueId}
+                                  postId={uniqueId}
+                                  title={recipe?.title || "Untitled Recipe"}
+                                  description={
+                                    recipe?.description ||
+                                    "No description available"
+                                  }
+                                  imageUrl={
+                                    recipe?.imageList?.[0]?.url ||
+                                    recipe?.imageUrl ||
+                                    "/placeholder.jpg"
+                                  }
+                                  author={
+                                    recipe?.author ||
+                                    recipe?.userName ||
+                                    "Unknown"
+                                  }
+                                  authorId={
+                                    recipe?.authorId || recipe?.userId || ""
+                                  }
+                                  userId={userId || recipe?.userId}
+                                  datePosted={
+                                    recipe?.datePosted ||
+                                    recipe?.date ||
+                                    new Date().toISOString()
+                                  }
+                                  cookingTime={
+                                    recipe?.cookingTime ||
+                                    recipe?.time ||
+                                    "30 minutes"
+                                  }
+                                  difficulty={recipe?.difficulty || "Medium"}
+                                  servings={
+                                    recipe?.servings || recipe?.serves || 4
+                                  }
+                                  ingredients={recipeIngredients}
+                                  instructions={recipeInstructions}
+                                  likes={recipe?.likes || recipe?.likesCount || 0}
+                                  isLiked={recipe?.isLiked || false}
+                                  triggerPopup={triggerPopup}
+                                />
+                              </div>
+                            </div>
+                          );
+                        })
+                    ) : (
+                      <div className="col-span-5 text-center py-16 bg-white rounded-2xl shadow-sm">
+                        <div className="text-6xl mb-4">🍽️</div>
+                        <p className="text-gray-600 text-xl font-medium">
+                          No recipes found
+                        </p>
+                        <p className="text-gray-400 text-base mt-2">
+                          Stay tuned for our editors' recommendations coming soon!
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              ) : (
+                <div className="mb-20">
+                  <motion.div
+                    className="flex items-center mb-10 px-4"
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.5 }}
+                  >
+                    {sectionName === "Most Liked 💖" && (
+                      <span className="text-5xl mr-5">❤️</span>
+                    )}
+                    {sectionName === "Recently Added" && (
+                      <span className="text-5xl mr-5">🆕</span>
+                    )}
+                    {sectionName === "Quick Picks" && (
+                      <span className="text-5xl mr-5">⏱️</span>
+                    )}
+                    {sectionName === "Easy Meals" && (
+                      <span className="text-5xl mr-5">😌</span>
+                    )}
+                    <h2
+                      className="text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r 
+                      from-gray-700 to-gray-900 tracking-tight"
+                    >
+                      {sectionName}
+                    </h2>
+                  </motion.div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-8 p-8 border bg-gray-50 rounded-xl shadow-lg">
+                    {loading ? (
+                      Array(5)
+                        .fill(0)
+                        .map((_, i) => (
+                          <div
+                            key={i}
+                            className="h-96 bg-white rounded-xl overflow-hidden shadow-md animate-pulse"
+                          >
+                            <div className="h-56 bg-gray-200"></div>
+                            <div className="p-6">
+                              <div className="h-5 bg-gray-200 rounded mb-3 w-3/4"></div>
+                              <div className="h-5 bg-gray-200 rounded w-1/2"></div>
+                            </div>
+                          </div>
+                        ))
+                    ) : data && data.length > 0 ? (
+                      filterRecipes(data)
+                        .slice(0, 5)
+                        .map((recipe, index) => {
+                          const uniqueId =
+                            recipe?.id ||
+                            recipe?.postId ||
+                            `recipe-${Date.now()}-${index}`;
+                          const recipeIngredients = ensureStringArray(
+                            recipe.ingredients,
+                          );
+                          const recipeInstructions = ensureStringArray(
+                            recipe.instructions,
+                          );
+
+                          return (
+                            <div
+                              key={uniqueId}
+                              className="relative"
+                              style={{ isolation: "isolate" }}
+                            >
                               <FoodSocialCard
                                 id={uniqueId}
                                 postId={uniqueId}
@@ -585,9 +712,7 @@ const Discovery = () => {
                                   "/placeholder.jpg"
                                 }
                                 author={
-                                  recipe?.author ||
-                                  recipe?.userName ||
-                                  "Unknown"
+                                  recipe?.author || recipe?.userName || "Unknown"
                                 }
                                 authorId={
                                   recipe?.authorId || recipe?.userId || ""
@@ -604,168 +729,49 @@ const Discovery = () => {
                                   "30 minutes"
                                 }
                                 difficulty={recipe?.difficulty || "Medium"}
-                                servings={
-                                  recipe?.servings || recipe?.serves || 4
-                                }
+                                servings={recipe?.servings || recipe?.serves || 4}
                                 ingredients={recipeIngredients}
                                 instructions={recipeInstructions}
                                 likes={recipe?.likes || recipe?.likesCount || 0}
                                 isLiked={recipe?.isLiked || false}
+                                triggerPopup={triggerPopup}
                               />
                             </div>
-                          </div>
-                        );
-                      })
-                  ) : (
-                    <div className="col-span-5 text-center py-16 bg-white rounded-2xl shadow-sm">
-                      <div className="text-6xl mb-4">🍽️</div>
-                      <p className="text-gray-600 text-xl font-medium">
-                        No recipes found
-                      </p>
-                      <p className="text-gray-400 text-base mt-2">
-                        Stay tuned for our editors' recommendations coming soon!
-                      </p>
-                    </div>
-                  )}
-                </div>
-              </div>
-            ) : (
-              <div className="mb-20">
-                <motion.div
-                  className="flex items-center mb-10 px-4"
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.5 }}
-                >
-                  {sectionName === "Most Liked 💖" && (
-                    <span className="text-5xl mr-5">❤️</span>
-                  )}
-                  {sectionName === "Recently Added" && (
-                    <span className="text-5xl mr-5">🆕</span>
-                  )}
-                  {sectionName === "Quick Picks" && (
-                    <span className="text-5xl mr-5">⏱️</span>
-                  )}
-                  {sectionName === "Easy Meals" && (
-                    <span className="text-5xl mr-5">😌</span>
-                  )}
-                  <h2
-                    className="text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r 
-                    from-gray-700 to-gray-900 tracking-tight"
-                  >
-                    {sectionName}
-                  </h2>
-                </motion.div>
-
-                <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-8 p-8 border bg-gray-50 rounded-xl shadow-lg">
-                  {loading ? (
-                    Array(5)
-                      .fill(0)
-                      .map((_, i) => (
-                        <div
-                          key={i}
-                          className="h-96 bg-white rounded-xl overflow-hidden shadow-md animate-pulse"
-                        >
-                          <div className="h-56 bg-gray-200"></div>
-                          <div className="p-6">
-                            <div className="h-5 bg-gray-200 rounded mb-3 w-3/4"></div>
-                            <div className="h-5 bg-gray-200 rounded w-1/2"></div>
-                          </div>
+                          );
+                        })
+                    ) : (
+                      <div className="col-span-5 text-center py-16 bg-white rounded-xl shadow-sm">
+                        <div className="text-5xl mb-4">
+                          {sectionName === "Most Liked 💖"
+                            ? "❤️"
+                            : sectionName === "Recently Added"
+                              ? "🆕"
+                              : sectionName === "Quick Picks"
+                                ? "⏱️"
+                                : "😌"}
                         </div>
-                      ))
-                  ) : data && data.length > 0 ? (
-                    filterRecipes(data)
-                      .slice(0, 5)
-                      .map((recipe, index) => {
-                        const uniqueId =
-                          recipe?.id ||
-                          recipe?.postId ||
-                          `recipe-${Date.now()}-${index}`;
-                        const recipeIngredients = ensureStringArray(
-                          recipe.ingredients,
-                        );
-                        const recipeInstructions = ensureStringArray(
-                          recipe.instructions,
-                        );
-
-                        return (
-                          <div
-                            key={uniqueId}
-                            className="relative"
-                            style={{ isolation: "isolate" }}
-                          >
-                            <FoodSocialCard
-                              id={uniqueId}
-                              postId={uniqueId}
-                              title={recipe?.title || "Untitled Recipe"}
-                              description={
-                                recipe?.description ||
-                                "No description available"
-                              }
-                              imageUrl={
-                                recipe?.imageList?.[0]?.url ||
-                                recipe?.imageUrl ||
-                                "/placeholder.jpg"
-                              }
-                              author={
-                                recipe?.author || recipe?.userName || "Unknown"
-                              }
-                              authorId={
-                                recipe?.authorId || recipe?.userId || ""
-                              }
-                              userId={userId || recipe?.userId}
-                              datePosted={
-                                recipe?.datePosted ||
-                                recipe?.date ||
-                                new Date().toISOString()
-                              }
-                              cookingTime={
-                                recipe?.cookingTime ||
-                                recipe?.time ||
-                                "30 minutes"
-                              }
-                              difficulty={recipe?.difficulty || "Medium"}
-                              servings={recipe?.servings || recipe?.serves || 4}
-                              ingredients={recipeIngredients}
-                              instructions={recipeInstructions}
-                              likes={recipe?.likes || recipe?.likesCount || 0}
-                              isLiked={recipe?.isLiked || false}
-                            />
-                          </div>
-                        );
-                      })
-                  ) : (
-                    <div className="col-span-5 text-center py-16 bg-white rounded-xl shadow-sm">
-                      <div className="text-5xl mb-4">
-                        {sectionName === "Most Liked 💖"
-                          ? "❤️"
-                          : sectionName === "Recently Added"
-                            ? "🆕"
-                            : sectionName === "Quick Picks"
-                              ? "⏱️"
-                              : "😌"}
+                        <p className="text-gray-600 text-xl font-medium">
+                          No recipes found
+                        </p>
+                        <p className="text-gray-400 text-base mt-3">
+                          {sectionName === "Most Liked 💖"
+                            ? "Be the first to like some amazing recipes!"
+                            : sectionName === "Recently Added"
+                              ? "New recipes will appear here soon"
+                              : sectionName === "Quick Picks"
+                                ? "Quick meal ideas are on their way"
+                                : "Easy recipe suggestions coming soon"}
+                        </p>
                       </div>
-                      <p className="text-gray-600 text-xl font-medium">
-                        No recipes found
-                      </p>
-                      <p className="text-gray-400 text-base mt-3">
-                        {sectionName === "Most Liked 💖"
-                          ? "Be the first to like some amazing recipes!"
-                          : sectionName === "Recently Added"
-                            ? "New recipes will appear here soon"
-                            : sectionName === "Quick Picks"
-                              ? "Quick meal ideas are on their way"
-                              : "Easy recipe suggestions coming soon"}
-                      </p>
-                    </div>
-                  )}
+                    )}
+                  </div>
                 </div>
-              </div>
-            )}
-          </div>
-        ))}
+              )}
+            </div>
+          ))}
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 
