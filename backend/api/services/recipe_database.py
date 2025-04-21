@@ -1,56 +1,45 @@
 import uuid
+from typing import List, Dict
 from firebase_admin import firestore
 import cloudinary
 import cloudinary.uploader
 
 
-def create_recipe_in_firebase(user_id, recipe_data):
+
+def _user_recipes_ref(uid: str):
+    """Return users/{uid}/created_recipes Collection Reference."""
     db = firestore.client()
-    user_ref = db.collection("users").document(user_id)
-    subcol_ref = user_ref.collection("created_recipes")
+    return db.collection("users").document(uid).collection("created_recipes")
 
+
+def create_recipe_in_firebase(user_id: str, recipe_data: Dict) -> str:
     post_id = recipe_data.get("postId") or str(uuid.uuid4())
-    recipe_data["postId"] = post_id
 
-    doc_ref = subcol_ref.document(post_id)
-    doc_ref.set(recipe_data)
+    # like‑tracking fields are present at creation
+    recipe_data.update({
+        "postId":  post_id,
+        "likes":   recipe_data.get("likes", 0),
+        "likedBy": recipe_data.get("likedBy", []) 
+    })
+
+    _user_recipes_ref(user_id).document(post_id).set(recipe_data)
     return post_id
 
 
-def get_recipe_from_firebase(user_id, post_id):
-    db = firestore.client()
-    doc_ref = (
-        db.collection("users")
-        .document(user_id)
-        .collection("created_recipes")
-        .document(post_id)
-    )
-    doc = doc_ref.get()
-    return doc.to_dict() if doc.exists else None
+def get_recipe_from_firebase(user_id: str, post_id: str):
+    snap = _user_recipes_ref(user_id).document(post_id).get()
+    return snap.to_dict() if snap.exists else None
 
 
-def update_recipe_in_firebase(user_id, post_id, updated_data):
-    db = firestore.client()
-    doc_ref = (
-        db.collection("users")
-        .document(user_id)
-        .collection("created_recipes")
-        .document(post_id)
-    )
+def update_recipe_in_firebase(user_id: str, post_id: str, updated_data: Dict):
+    doc_ref = _user_recipes_ref(user_id).document(post_id)
     if not doc_ref.get().exists:
         return None
     doc_ref.update(updated_data)
     return doc_ref.get().to_dict()
 
-
-def delete_recipe_from_firebase(user_id, post_id):
-    db = firestore.client()
-    doc_ref = (
-        db.collection("users")
-        .document(user_id)
-        .collection("created_recipes")
-        .document(post_id)
-    )
+def delete_recipe_from_firebase(user_id: str, post_id: str) -> bool:
+    doc_ref = _user_recipes_ref(user_id).document(post_id)
     if not doc_ref.get().exists:
         return False
     doc_ref.delete()
@@ -72,6 +61,40 @@ def upload_images_to_cloudinary(file_list):
 
 def delete_image_from_cloudinary(public_id):
     cloudinary.uploader.destroy(public_id)
+
+
+def like_recipe(owner_id: str, post_id: str, liker_id: str):
+    """Add liker_id to likedBy and increment likes (idempotent)."""
+    doc_ref = _user_recipes_ref(owner_id).document(post_id)
+    snap = doc_ref.get()
+    if not snap.exists:
+        return None
+
+    if liker_id in snap.get("likedBy", []):    
+        return snap.to_dict()
+
+    doc_ref.update({
+        "likedBy": firestore.ArrayUnion([liker_id]),
+        "likes":   firestore.Increment(1)
+    })
+    return doc_ref.get().to_dict()
+
+
+def unlike_recipe(owner_id: str, post_id: str, liker_id: str):
+    """Remove liker_id from likedBy and decrement likes (idempotent)."""
+    doc_ref = _user_recipes_ref(owner_id).document(post_id)
+    snap = doc_ref.get()
+    if not snap.exists:
+        return None
+
+    if liker_id not in snap.get("likedBy", []):     
+        return snap.to_dict()
+
+    doc_ref.update({
+        "likedBy": firestore.ArrayRemove([liker_id]),
+        "likes":   firestore.Increment(-1)
+    })
+    return doc_ref.get().to_dict()
 
 
 def get_most_liked_recipes():
@@ -195,54 +218,3 @@ def get_editors_picks_by_category():
 
     return picks_response
 
-from firebase_admin import firestore
-
-def like_recipe(owner_id: str, post_id: str, liker_id: str):
-    """Add liker_id to likedBy and increment likes (if not already liked)."""
-    db = firestore.client()
-    doc_ref = (
-        db.collection("users")
-          .document(owner_id)
-          .collection("created_recipes")
-          .document(post_id)
-    )
-    doc = doc_ref.get()
-    if not doc.exists:
-        return None
-
-    data = doc.to_dict()
-    liked_by = set(data.get("likedBy", []))
-
-    if liker_id in liked_by:
-        # already liked → do nothing
-        return data
-
-    doc_ref.update({
-        "likedBy": firestore.ArrayUnion([liker_id]),
-        "likes":   firestore.Increment(1)
-    })
-    return doc_ref.get().to_dict()
-
-def unlike_recipe(owner_id: str, post_id: str, liker_id: str):
-    """Remove liker_id from likedBy and decrement likes (if previously liked)."""
-    db = firestore.client()
-    doc_ref = (
-        db.collection("users")
-          .document(owner_id)
-          .collection("created_recipes")
-          .document(post_id)
-    )
-    doc = doc_ref.get()
-    if not doc.exists:
-        return None
-
-    data = doc.to_dict()
-    if liker_id not in data.get("likedBy", []):
-        # wasn’t liked → nothing to undo
-        return data
-
-    doc_ref.update({
-        "likedBy": firestore.ArrayRemove([liker_id]),
-        "likes":   firestore.Increment(-1)
-    })
-    return doc_ref.get().to_dict()

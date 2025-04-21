@@ -17,30 +17,23 @@ from ..services.recipe_database import (
 
 
 def create_recipe():
-    """
-    Expects in JSON or form-data:
-      - userId (the unique ID returned at login)
-      - other recipe fields
-      - optional images in request.files.getlist('images')
-    """
     data = request.form.to_dict() or request.get_json() or {}
     user_id = data.get("userId")
     if not user_id:
         return jsonify({"error": "Missing userId"}), 400
 
-    # if multipart form-data in postman
     image_files = request.files.getlist("images")
 
     recipe_data = {
-        "title": data.get("title"),
-        "description": data.get("description"),
-        "cookingTime": data.get("cookingTime"),
-        "difficulty": data.get("difficulty"),
-        "servings": data.get("servings"),
-        "datePosted": datetime.utcnow().isoformat(),
-        "likes": 0,
-        "isLiked": False,
-        "ingredients": data.get("ingredients"),
+        "title":        data.get("title"),
+        "description":  data.get("description"),
+        "cookingTime":  data.get("cookingTime"),
+        "difficulty":   data.get("difficulty"),
+        "servings":     data.get("servings"),
+        "datePosted":   datetime.utcnow().isoformat(),
+        "likes":        0,          
+        "likedBy":      [],        
+        "ingredients":  data.get("ingredients"),
         "instructions": data.get("instructions"),
     }
 
