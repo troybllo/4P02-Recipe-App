@@ -368,7 +368,14 @@ const FoodSocialCard = ({
 
         {/* Card Image */}
         <div className="relative overflow-hidden">
-          <Link to={`/recipes/${userId}/${recipeId}`}>
+        <Link
+            to={`/recipes/${recipeId}`}
+            onClick={() => {
+              if (userId) {
+                localStorage.setItem("viewedRecipeUserId", userId);
+              }
+            }}
+          >
             <motion.div className="relative group">
               {displayImageUrl ? (
                 <motion.img
