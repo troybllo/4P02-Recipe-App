@@ -535,7 +535,7 @@ export default function Home() {
                           }}
                           className="bg-white rounded-xl shadow-sm overflow-hidden"
                         >
-                          <div className="p-4 border-b border-gray-100">
+                          {/* <div className="p-4 border-b border-gray-100">
                             {recipe.username && (
                               <div className="flex items-center">
                                 <Link to={`/profile/${recipe.username}`}>
@@ -560,7 +560,7 @@ export default function Home() {
                                 </Link>
                               </div>
                             )}
-                          </div>
+                          </div> */}
                           <div className="w-full">
                             <FoodSocialCard
                               id={recipe.id || recipe.postId}
