@@ -117,6 +117,7 @@ const FoodSocialCard = ({
       ingredients: parsedIngredients,
       instructions: parsedInstructions
     });
+    console.log("Recipe downloaded!");
     triggerPopup && triggerPopup("Recipe downloaded!");
   };
 
