@@ -6,6 +6,7 @@ import UserListModal from "../components/UserListModal";
 import CreatePost from "../components/CreatePost"; // Import CreatePost component
 import Masonry from "react-masonry-css";
 import { useAuth } from "../components/AuthContext";
+import "../styles/masonry.css";
 
 const breakpointColumnsObj = {
   default: 3,
@@ -581,78 +582,92 @@ const Profile = () => {
           </div>
         </div>
 
-        {/* Recipe Grid */}
-        <div className="mt-8">
-          {loading ? (
-            <div className="flex justify-center items-center py-20">
-              <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-green-500"></div>
-            </div>
-          ) : (
-            <>
-              {showPosts ? (
-                profileData.recipes && profileData.recipes.length > 0 ? (
+        
+          <div className="mt-8">
+            {loading ? (
+              <div className="flex justify-center items-center py-20">
+                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-green-500"></div>
+              </div>
+            ) : (
+              <>
+                {showPosts ? (
+            profileData.recipes && profileData.recipes.length > 0 ? (
+              // Wrap the Masonry grid in a centered container with a maxWidth based on columns
+              <div style={{ display: "flex", justifyContent: "center" }}>
+                <div style={{ width: "100%", maxWidth: `${masonryColumns * 400}px` }}>
                   <Masonry
-                    breakpointCols={masonryColumns}
-                    className="my-masonry-grid"
-                    columnClassName="my-masonry-grid_column"
+              breakpointCols={masonryColumns}
+              className="my-masonry-grid"
+              columnClassName="my-masonry-grid_column"
                   >
-                    {profileData.recipes.map((recipe) => (
-                      <FoodSocialCard
-                        key={recipe.postId}
-                        postId={recipe.postId}
-                        title={recipe.title}
-                        description={recipe.description}
-                        cookingTime={recipe.cookingTime}
-                        difficulty={recipe.difficulty}
-                        servings={recipe.servings}
-                        ingredients={recipe.ingredients}
-                        instructions={recipe.instructions}
-                        imageUrl={
-                          recipe.imageList?.[0]?.url ||
-                          "https://via.placeholder.com/400x300?text=No+Image"
-                        }
-                        datePosted={recipe.datePosted}
-                        author={username}
-                        authorId={profileData.userId}
-                        likes={recipe.likes || 0}
-                        isLiked={recipe.isLiked || false}
-                      />
-                    ))}
+              {profileData.recipes.map((recipe) => (
+                // Wrap each card in a container to prevent stretching
+                <div
+                  key={recipe.postId}
+                  style={{
+                    width: "100%",
+                    maxWidth: "400px",
+                    margin: "0 auto 30px", // bottom margin to separate cards vertically
+                  }}
+                >
+                  <FoodSocialCard
+                    postId={recipe.postId}
+                    title={recipe.title}
+                    description={recipe.description}
+                    cookingTime={recipe.cookingTime}
+                    difficulty={recipe.difficulty}
+                    servings={recipe.servings}
+                    ingredients={recipe.ingredients}
+                    instructions={recipe.instructions}
+                    imageUrl={
+                recipe.imageList?.[0]?.url ||
+                "https://via.placeholder.com/400x300?text=No+Image"
+                    }
+                    datePosted={recipe.datePosted}
+                    author={username}
+                    authorId={profileData.userId}
+                    likes={recipe.likes || 0}
+                    isLiked={recipe.isLiked || false}
+                  />
+                </div>
+              ))}
                   </Masonry>
+                </div>
+              </div>
+            ) : (
+              <div className="text-center py-20 bg-gray-50 rounded-lg">
+                <svg
+                  className="w-16 h-16 mx-auto text-gray-300"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              d="M9 13h6m-3-3v6m-9 1V7a2 2 0 012-2h6l2 2h6a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z"
+                  />
+                </svg>
+                <h3 className="mt-4 text-lg font-medium text-gray-900">
+                  No posts yet
+                </h3>
+                <p className="mt-2 text-sm text-gray-500 max-w-sm mx-auto">
+                  {isOwnProfile
+              ? "Share your first recipe to get started!"
+              : `${username} hasn't shared any recipes yet.`}
+                </p>
+                {isOwnProfile && (
+                  <button
+              className="mt-5 px-4 py-2 bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-full hover:from-green-600 hover:to-emerald-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 shadow-sm transition-colors"
+              onClick={handleOpenCreatePost}
+                  >
+              Create Recipe
+                  </button>
+                )}
+              </div>
+            )
                 ) : (
-                  <div className="text-center py-20 bg-gray-50 rounded-lg">
-                    <svg
-                      className="w-16 h-16 mx-auto text-gray-300"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="2"
-                        d="M9 13h6m-3-3v6m-9 1V7a2 2 0 012-2h6l2 2h6a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z"
-                      />
-                    </svg>
-                    <h3 className="mt-4 text-lg font-medium text-gray-900">
-                      No posts yet
-                    </h3>
-                    <p className="mt-2 text-sm text-gray-500 max-w-sm mx-auto">
-                      {isOwnProfile
-                        ? "Share your first recipe to get started!"
-                        : `${username} hasn't shared any recipes yet.`}
-                    </p>
-                    {isOwnProfile && (
-                      <button
-                        className="mt-5 px-4 py-2 bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-full hover:from-green-600 hover:to-emerald-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 shadow-sm transition-colors"
-                        onClick={handleOpenCreatePost}
-                      >
-                        Create Recipe
-                      </button>
-                    )}
-                  </div>
-                )
-              ) : (
                 // Saved posts section for own profile
                 <div className="text-center py-20 bg-gray-50 rounded-lg">
                   <svg
