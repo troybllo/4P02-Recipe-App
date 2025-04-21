@@ -61,9 +61,10 @@ def register_user():
         "password_hash": new_user.password_hash,
         "country": new_user.country,
         "preferences": new_user.preferences,
-        "following": new_user.following,
-        "followers": new_user.followers,
-        "created_recipes": new_user.created_recipes
+        "following": [],
+        "followers": [],
+        "savedPosts": [],
+        "created_recipes": []
     }
 
     # This now returns: {"message": "...", "userId": "..."}

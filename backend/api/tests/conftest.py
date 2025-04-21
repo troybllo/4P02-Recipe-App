@@ -41,7 +41,7 @@ def app():
     except ValueError:
         pass
 
-@pytest.fixture(scope="session", autouse=True)
+@pytest.fixture(autouse=True)
 def _mock_cloudinary(monkeypatch):
     """
     Replace real Cloudinary calls during the test‑suite so we never need

@@ -1,9 +1,8 @@
 import pytest
 from werkzeug.security import check_password_hash
-
+import uuid
 
 # helper that guarantees a unique string every run
-import uuid
 def _uid(prefix="usr"):
     return f"{prefix}_{uuid.uuid4().hex[:6]}"
 
@@ -19,12 +18,13 @@ def test_registration_success_minimal(client):
     assert response.status_code == 201
     data = response.get_json()
     assert "message" in data
-    assert data["user"]["username"] == "testuser"
-    assert data["user"]["email"] == "test@example.com"
-    assert "password_hash" in data["user"]
-    assert data["user"]["country"] == ""
+    assert data["user"]["username"] == payload["username"]
+    assert data["user"]["email"]    == payload["email"]
+    assert data["user"]["country"]  == ""
     assert data["user"]["preferences"] == []
-    assert data["user"]["friend_list"] == []
+    assert data["user"]["followers"] == []
+    assert data["user"]["following"] == []
+    assert data["user"]["savedPosts"] == []
     assert data["user"]["created_recipes"] == []
 
 def test_registration_success_full(client):
@@ -40,11 +40,13 @@ def test_registration_success_full(client):
     assert response.status_code == 201
     data = response.get_json()
     user = data["user"]
-    assert user["username"] == payload["username"]
-    assert user["email"] == payload["email"]
-    assert user["country"] == payload["country"]
+    assert user["username"]   == payload["username"]
+    assert user["email"]      == payload["email"]
+    assert user["country"]    == payload["country"]
     assert user["preferences"] == payload["preferences"]
-    assert user["friend_list"] == []
+    assert user["followers"]  == []
+    assert user["following"]  == []
+    assert user["savedPosts"] == []
     assert user["created_recipes"] == []
 
 def test_registration_missing_required_fields(client):

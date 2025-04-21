@@ -4,7 +4,13 @@ from firebase_admin import firestore
 import cloudinary
 import cloudinary.uploader
 
-
+def _user_recipes_ref(user_id: str):
+    return (
+        firestore.client()
+        .collection("users")
+        .document(user_id)
+        .collection("created_recipes")
+    )
 
 def _user_recipes_ref(uid: str):
     """Return users/{uid}/created_recipes Collection Reference."""
@@ -69,9 +75,11 @@ def like_recipe(owner_id: str, post_id: str, liker_id: str):
     snap = doc_ref.get()
     if not snap.exists:
         return None
-    
+
     data = snap.to_dict()
-    if liker_id in snap.get("likedBy", []):    
+    liked_by = data.get("likedBy", [])
+
+    if liker_id in liked_by:           
         return data
 
     doc_ref.update({
@@ -87,9 +95,11 @@ def unlike_recipe(owner_id: str, post_id: str, liker_id: str):
     snap = doc_ref.get()
     if not snap.exists:
         return None
-    
+
     data = snap.to_dict()
-    if liker_id not in snap.get("likedBy", []):     
+    liked_by = data.get("likedBy", [])
+
+    if liker_id not in liked_by:        
         return data
 
     doc_ref.update({
@@ -97,6 +107,7 @@ def unlike_recipe(owner_id: str, post_id: str, liker_id: str):
         "likes":   firestore.Increment(-1)
     })
     return doc_ref.get().to_dict()
+
 
 
 def get_most_liked_recipes():
