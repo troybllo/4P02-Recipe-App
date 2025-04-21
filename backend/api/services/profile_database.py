@@ -5,12 +5,13 @@ import cloudinary.uploader
 from werkzeug.security import generate_password_hash
 from .database_interface import get_user_by_username
 
+
 def get_user_doc(user_id):
     """
     Returns a Firestore doc reference for the user doc with ID 'user_id'.
     """
     db = firestore.client()
-    return db.collection('users').document(user_id)
+    return db.collection("users").document(user_id)
 
 
 def update_profile_in_firestore(user_id, updates):
@@ -26,6 +27,7 @@ def update_profile_in_firestore(user_id, updates):
     doc_ref.update(updates)
     return doc_ref.get().to_dict()
 
+
 def upload_profile_image_to_cloudinary(file_obj):
     """
     Upload a profile image to Cloudinary.
@@ -33,14 +35,10 @@ def upload_profile_image_to_cloudinary(file_obj):
     """
     public_id = "profile_" + str(uuid.uuid4())
     result = cloudinary.uploader.upload(
-        file_obj,
-        public_id=public_id,
-        folder="profile_images"
+        file_obj, public_id=public_id, folder="profile_images"
     )
-    return {
-        "url": result["secure_url"],
-        "publicId": result["public_id"]
-    }
+    return {"url": result["secure_url"], "publicId": result["public_id"]}
+
 
 def change_user_password(user_id, new_password):
     """
@@ -71,16 +69,17 @@ def follow_user(current_user_id, target_user_id):
         return None
 
     batch = db.batch()
-    batch.update(current_user_ref, {
-        "following": firestore.ArrayUnion([target_user_id])
-    })
-    batch.update(target_user_ref, {
-        "followers": firestore.ArrayUnion([current_user_id])
-    })
+    batch.update(
+        current_user_ref, {"following": firestore.ArrayUnion([target_user_id])}
+    )
+    batch.update(
+        target_user_ref, {"followers": firestore.ArrayUnion([current_user_id])}
+    )
     batch.commit()
 
     # Return the updated current user doc
     return current_user_ref.get().to_dict()
+
 
 def unfollow_user(current_user_id, target_user_id):
     """
@@ -96,12 +95,14 @@ def unfollow_user(current_user_id, target_user_id):
         return None
 
     batch = db.batch()
-    batch.update(current_user_ref, {
-        "following": firestore.ArrayRemove([target_user_id])
-    })
-    batch.update(target_user_ref, {
-        "followers": firestore.ArrayRemove([current_user_id])
-    })
+    batch.update(
+        current_user_ref, {
+            "following": firestore.ArrayRemove([target_user_id])}
+    )
+    batch.update(
+        target_user_ref, {
+            "followers": firestore.ArrayRemove([current_user_id])}
+    )
     batch.commit()
 
     return current_user_ref.get().to_dict()
@@ -115,10 +116,9 @@ def save_post(user_id, post_id):
     if not user_ref.get().exists:
         return None
 
-    user_ref.update({
-        "savedPosts": firestore.ArrayUnion([post_id])
-    })
+    user_ref.update({"savedPosts": firestore.ArrayUnion([post_id])})
     return user_ref.get().to_dict()
+
 
 def unsave_post(user_id, post_id):
     """
@@ -128,38 +128,37 @@ def unsave_post(user_id, post_id):
     if not user_ref.get().exists:
         return None
 
-    user_ref.update({
-        "savedPosts": firestore.ArrayRemove([post_id])
-    })
+    user_ref.update({"savedPosts": firestore.ArrayRemove([post_id])})
     return user_ref.get().to_dict()
 
 
 def get_user_with_recipes(username):
     # First get the user document
     db = firestore.client()
-    users_ref = db.collection('users').where('username', '==', username).limit(1)
+    users_ref = db.collection("users").where(
+        "username", "==", username).limit(1)
     user_docs = list(users_ref.stream())
-    
+
     if not user_docs:
         return None
-    
+
     # Get the user data
     user_doc = user_docs[0]
     user_data = user_doc.to_dict()
-    
+
     # Now get the recipes subcollection using the document reference
-    recipes_ref = user_doc.reference.collection('created_recipes')
+    recipes_ref = user_doc.reference.collection("created_recipes")
     print(f"Recipes reference: {recipes_ref}")
-    
+
     # Debug the actual documents in the collection
     recipes = []
     recipe_count = 0
-    
+
     # Try to retrieve the recipes
     try:
         recipe_docs = list(recipes_ref.stream())
         print(f"Number of recipe documents found: {len(recipe_docs)}")
-        
+
         for recipe in recipe_docs:
             recipe_count += 1
             recipe_data = recipe.to_dict()
@@ -168,7 +167,67 @@ def get_user_with_recipes(username):
             recipes.append(recipe_data)
     except Exception as e:
         print(f"Error retrieving recipes: {e}")
-    
+
     # Add recipes to user data
-    user_data['recipes'] = recipes
+    user_data["recipes"] = recipes
     return user_data
+
+
+def get_following_feed(user_id):
+    """
+    Get all recipes from users that the specified user follows
+    Returns a list of recipes with author information included
+    """
+    db = firestore.client()
+    user_ref = get_user_doc(user_id)
+    user_doc = user_ref.get()
+
+    if not user_doc.exists:
+        return None
+
+    user_data = user_doc.to_dict()
+    following = user_data.get("following", [])
+
+    # If user doesn't follow anyone, return empty list
+    if not following:
+        return []
+
+    all_following_recipes = []
+
+    # Get recipes from each followed user
+    for followed_user_id in following:
+        followed_user_ref = get_user_doc(followed_user_id)
+        followed_user_doc = followed_user_ref.get()
+
+        if not followed_user_doc.exists:
+            continue
+
+        followed_user_data = followed_user_doc.to_dict()
+
+        # Get recipes from the followed user's created_recipes subcollection
+        recipes_ref = followed_user_ref.collection("created_recipes")
+        recipe_docs = list(recipes_ref.stream())
+
+        for recipe_doc in recipe_docs:
+            recipe_data = recipe_doc.to_dict()
+            # Add author information to each recipe
+            recipe_data.update(
+                {
+                    "id": recipe_doc.id,
+                    "authorId": followed_user_id,
+                    "userId": followed_user_id,
+                    "username": followed_user_data.get("username", ""),
+                    "profileImageUrl": followed_user_data.get("profileImageUrl", ""),
+                }
+            )
+            all_following_recipes.append(recipe_data)
+
+    # Sort by timestamp (newest first)
+    all_following_recipes.sort(
+        key=lambda x: x.get("timestamp") or x.get(
+            "datePosted") or x.get("date") or 0,
+        reverse=True,
+    )
+
+    return all_following_recipes
+

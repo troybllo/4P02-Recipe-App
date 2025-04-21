@@ -11,12 +11,13 @@ from ..controllers.profile import (
     fetch_username_by_user_id,
     get_followers_controller,
     get_following_controller,
-    batch_get_user_info_controller
+    batch_get_user_info_controller,
 )
 
-profile_blueprint = Blueprint('profile_features', __name__)
+profile_blueprint = Blueprint("profile_features", __name__)
 
-@profile_blueprint.route('/profile/<user_id>', methods=['PUT'])
+
+@profile_blueprint.route("/profile/<user_id>", methods=["PUT"])
 def edit_profile_route(user_id):
     """
     PUT /api/profile/<user_id>
@@ -24,7 +25,8 @@ def edit_profile_route(user_id):
     """
     return edit_profile(user_id)
 
-@profile_blueprint.route('/profile/<user_id>/password', methods=['PUT'])
+
+@profile_blueprint.route("/profile/<user_id>/password", methods=["PUT"])
 def change_password_route(user_id):
     """
     PUT /api/profile/<user_id>/password
@@ -32,7 +34,8 @@ def change_password_route(user_id):
     """
     return change_password(user_id)
 
-@profile_blueprint.route('/profile/follow', methods=['POST'])
+
+@profile_blueprint.route("/profile/follow", methods=["POST"])
 def follow_user_route():
     """
     POST /api/profile/follow
@@ -40,7 +43,8 @@ def follow_user_route():
     """
     return follow_user_controller()
 
-@profile_blueprint.route('/profile/unfollow', methods=['POST'])
+
+@profile_blueprint.route("/profile/unfollow", methods=["POST"])
 def unfollow_user_route():
     """
     POST /api/profile/unfollow
@@ -48,7 +52,8 @@ def unfollow_user_route():
     """
     return unfollow_user_controller()
 
-@profile_blueprint.route('/profile/savePost', methods=['POST'])
+
+@profile_blueprint.route("/profile/savePost", methods=["POST"])
 def save_post_route():
     """
     POST /api/profile/savePost
@@ -56,7 +61,8 @@ def save_post_route():
     """
     return save_post_controller()
 
-@profile_blueprint.route('/profile/unsavePost', methods=['POST'])
+
+@profile_blueprint.route("/profile/unsavePost", methods=["POST"])
 def unsave_post_route():
     """
     POST /api/profile/unsavePost
@@ -64,12 +70,14 @@ def unsave_post_route():
     """
     return unsave_post_controller()
 
-@profile_blueprint.route('/profile/isFollowing', methods=['GET'])
+
+@profile_blueprint.route("/profile/isFollowing", methods=["GET"])
 def check_is_following():
     """Route that delegates to the controller"""
     return is_following_controller()
 
-@profile_blueprint.route('/profile/<username>', methods=['GET'])
+
+@profile_blueprint.route("/profile/<username>", methods=["GET"])
 def get_user_by_username_route(username):
     """
     GET /api/profile/<username>
@@ -77,7 +85,8 @@ def get_user_by_username_route(username):
     """
     return fetch_user_by_username(username)
 
-@profile_blueprint.route('/profile/username', methods=['GET'])
+
+@profile_blueprint.route("/profile/username", methods=["GET"])
 def get_username_from_user_id_route():
     """
     GET /api/profile/username?userId=...
@@ -85,7 +94,8 @@ def get_username_from_user_id_route():
     """
     return fetch_username_by_user_id()
 
-@profile_blueprint.route('/profile/followers/<user_id>', methods=['GET'])
+
+@profile_blueprint.route("/profile/followers/<user_id>", methods=["GET"])
 def get_followers_route(user_id):
     """
     GET /api/profile/followers/<user_id>
@@ -93,7 +103,8 @@ def get_followers_route(user_id):
     """
     return get_followers_controller(user_id)
 
-@profile_blueprint.route('/profile/following/<user_id>', methods=['GET'])
+
+@profile_blueprint.route("/profile/following/<user_id>", methods=["GET"])
 def get_following_route(user_id):
     """
     GET /api/profile/following/<user_id>
@@ -101,7 +112,8 @@ def get_following_route(user_id):
     """
     return get_following_controller(user_id)
 
-@profile_blueprint.route('/profile/batch-info', methods=['POST'])
+
+@profile_blueprint.route("/profile/batch-info", methods=["POST"])
 def batch_get_user_info_route():
     """
     POST /api/profile/batch-info
@@ -110,8 +122,22 @@ def batch_get_user_info_route():
     """
     return batch_get_user_info_controller()
 
-@profile_blueprint.route('/user/profile/<username>', methods=['GET'])
+
+@profile_blueprint.route("/user/profile/<username>", methods=["GET"])
 def alias_get_user(username):
     """Alias so tests (and old FE code) can call /api/user/profile/<username>."""
     from ..controllers.profile import fetch_user_by_username
+
     return fetch_user_by_username(username)
+
+
+@profile_blueprint.route("/profile/feed/<user_id>", methods=["GET"])
+def get_following_feed_route(user_id):
+    """
+    GET /api/profile/feed/<user_id>
+    - Get a feed of recipes from users that the specified user follows
+    """
+    from ..controllers.profile import get_following_feed_controller
+
+    return get_following_feed_controller(user_id)
+
