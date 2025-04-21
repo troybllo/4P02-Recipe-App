@@ -1,7 +1,19 @@
 import React, { useState } from "react";
 import styles from "../styles/CreatePost.module.css";
+import Popup from "./Popup"
 
 const CreatePost = ({ isOpen, onClose }) => {
+  const [showPopup, setShowPopup] = useState(false);
+  const [popupMessage, setPopupMessage] = useState("");
+  const [popupType, setPopupType] = useState("success");
+
+  const triggerPopup = (message, type) => {
+    setPopupMessage(message);
+    setPopupType(type);
+    setShowPopup(true);
+    setTimeout(() => setShowPopup(false), 2500);
+  };
+
   const [formData, setFormData] = useState({
     title: "",
     description: "",
@@ -112,7 +124,8 @@ const CreatePost = ({ isOpen, onClose }) => {
       });
 
       // Close modal on success if using as a modal
-      if (onClose) setTimeout(() => onClose(), 1500);
+      triggerPopup(`Recipe Created!`, `success`);
+      if (onClose) setTimeout(() => onClose(), 2500);
     } catch (err) {
       setError(err.message || "Error creating recipe");
       console.error("Error creating recipe:", err);
@@ -129,6 +142,7 @@ const CreatePost = ({ isOpen, onClose }) => {
       className="fixed inset-0 flex items-center justify-center z-[9999] overflow-y-auto bg-black bg-opacity-50 backdrop-blur-sm"
       style={{ isolation: "isolate" }}
     >
+      <Popup show={showPopup} message={popupMessage} type={popupType} />
       <div className="w-full max-w-3xl p-8 bg-white shadow-2xl rounded-2xl relative m-4 max-h-[90vh] overflow-y-auto">
         {onClose && (
           <button

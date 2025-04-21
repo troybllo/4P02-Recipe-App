@@ -49,7 +49,8 @@ def register_user():
         password=password,
         country=country,
         preferences=preferences,
-        friend_list=[],
+        following=[],
+        followers=[],
         created_recipes=[]
     )
 
@@ -60,7 +61,8 @@ def register_user():
         "password_hash": new_user.password_hash,
         "country": new_user.country,
         "preferences": new_user.preferences,
-        "friend_list": new_user.friend_list,
+        "following": new_user.following,
+        "followers": new_user.followers,
         "created_recipes": new_user.created_recipes
     }
 
