@@ -8,6 +8,8 @@ from ..controllers.recipes import (
     get_recent_recipes,
     list_easy_recipes,
     list_quick_picks,
+    like_recipe_controller,
+    unlike_recipe_controller
 )
 
 recipes_blueprint = Blueprint("recipes", __name__)
@@ -40,14 +42,19 @@ def get_easy_recipes_route():
 def get_quick_picks_route():
     return list_quick_picks()
 
-
-
 @recipes_blueprint.route("/recipes/<post_id>", methods=["PUT"])
 def update_recipe_route(post_id):
     return update_recipe(post_id)
 
-
 @recipes_blueprint.route("/recipes/<post_id>", methods=["DELETE"])
 def delete_recipe_route(post_id):
     return delete_recipe(post_id)
+
+@recipes_blueprint.route('/recipes/like', methods=['POST'])
+def like_route():
+    return like_recipe_controller()
+
+@recipes_blueprint.route('/recipes/unlike', methods=['POST'])
+def unlike_route():
+    return unlike_recipe_controller()
 

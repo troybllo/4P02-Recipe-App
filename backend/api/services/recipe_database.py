@@ -194,3 +194,55 @@ def get_editors_picks_by_category():
         picks_response[category] = category_recipes
 
     return picks_response
+
+from firebase_admin import firestore
+
+def like_recipe(owner_id: str, post_id: str, liker_id: str):
+    """Add liker_id to likedBy and increment likes (if not already liked)."""
+    db = firestore.client()
+    doc_ref = (
+        db.collection("users")
+          .document(owner_id)
+          .collection("created_recipes")
+          .document(post_id)
+    )
+    doc = doc_ref.get()
+    if not doc.exists:
+        return None
+
+    data = doc.to_dict()
+    liked_by = set(data.get("likedBy", []))
+
+    if liker_id in liked_by:
+        # already liked → do nothing
+        return data
+
+    doc_ref.update({
+        "likedBy": firestore.ArrayUnion([liker_id]),
+        "likes":   firestore.Increment(1)
+    })
+    return doc_ref.get().to_dict()
+
+def unlike_recipe(owner_id: str, post_id: str, liker_id: str):
+    """Remove liker_id from likedBy and decrement likes (if previously liked)."""
+    db = firestore.client()
+    doc_ref = (
+        db.collection("users")
+          .document(owner_id)
+          .collection("created_recipes")
+          .document(post_id)
+    )
+    doc = doc_ref.get()
+    if not doc.exists:
+        return None
+
+    data = doc.to_dict()
+    if liker_id not in data.get("likedBy", []):
+        # wasn’t liked → nothing to undo
+        return data
+
+    doc_ref.update({
+        "likedBy": firestore.ArrayRemove([liker_id]),
+        "likes":   firestore.Increment(-1)
+    })
+    return doc_ref.get().to_dict()

@@ -11,6 +11,8 @@ from ..services.recipe_database import (
     get_most_recent_recipes,
     get_easy_recipes,
     get_quick_picks,
+    like_recipe,
+    unlike_recipe
 )
 
 
@@ -148,3 +150,30 @@ def list_easy_recipes():
 def list_quick_picks():
     recipes = get_quick_picks()
     return jsonify({"recipes": recipes}), 200
+
+def like_recipe_controller():
+    body = request.get_json(silent=True) or {}
+    owner_id = body.get("ownerId")
+    post_id  = body.get("postId")
+    liker_id = body.get("likerId")
+    if not all([owner_id, post_id, liker_id]):
+        return jsonify({"error": "Missing ownerId, postId, or likerId"}), 400
+
+    updated = like_recipe(owner_id, post_id, liker_id)
+    if not updated:
+        return jsonify({"error": "Recipe not found"}), 404
+    return jsonify({"message": "liked", "recipe": updated}), 200
+
+
+def unlike_recipe_controller():
+    body = request.get_json(silent=True) or {}
+    owner_id = body.get("ownerId")
+    post_id  = body.get("postId")
+    liker_id = body.get("likerId")
+    if not all([owner_id, post_id, liker_id]):
+        return jsonify({"error": "Missing ownerId, postId, or likerId"}), 400
+
+    updated = unlike_recipe(owner_id, post_id, liker_id)
+    if not updated:
+        return jsonify({"error": "Recipe not found"}), 404
+    return jsonify({"message": "unliked", "recipe": updated}), 200
