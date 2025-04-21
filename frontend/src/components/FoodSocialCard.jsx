@@ -6,6 +6,7 @@ import EditPost from "../components/EditPost";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 import feastlyLogo from "../images/feastly_black.png";
+import Popup from "./Popup";
 
 const FoodSocialCard = ({
   postId,
@@ -25,7 +26,6 @@ const FoodSocialCard = ({
   likes,
   isLiked,
   userId,
-  triggerPopup,
 }) => {
   const recipeId = id || postId;
 
@@ -44,6 +44,17 @@ const FoodSocialCard = ({
   const [isLoading, setIsLoading] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
   const cardRef = useRef(null);
+
+  const [showPopup, setShowPopup] = useState(false);
+  const [popupMessage, setPopupMessage] = useState("");
+  const [popupType, setPopupType] = useState("");
+    
+  const triggerPopup = (message, type) => {
+    setPopupMessage(message);
+    setPopupType(type);
+    setShowPopup(true);
+    setTimeout(() => setShowPopup(false), 2500);
+  };
 
   const formattedDate = datePosted
     ? new Date(datePosted).toLocaleDateString("en-US", {
@@ -64,14 +75,21 @@ const FoodSocialCard = ({
     setIsLoading(true);
 
     const heart = document.createElement("div");
+    if (!localStorage.getItem("userId")) {
+      triggerPopup(`This feature requires sign in`, `error`);
+      return;
+    }
     heart.className = styles.floatingHeart;
-    heart.innerHTML = "❤️";
     cardRef.current.appendChild(heart);
     setTimeout(() => heart.remove(), 1000);
 
     try {
       setLiked(!liked);
       setLikeCount((prevCount) => (liked ? prevCount - 1 : prevCount + 1));
+      if (triggerPopup) {
+        if(liked) triggerPopup("Removed Like!");
+        else triggerPopup("Liked Recipe!");
+      }
     } catch (error) {
       console.error("Error toggling like:", error);
     } finally {
@@ -115,8 +133,9 @@ const FoodSocialCard = ({
       difficulty,
       servings,
       ingredients: parsedIngredients,
-      instructions: parsedInstructions
+      instructions: parsedInstructions,
     });
+    console.log("Recipe downloaded!");
     triggerPopup && triggerPopup("Recipe downloaded!");
   };
 
@@ -186,113 +205,112 @@ const FoodSocialCard = ({
     ? parsedInstructions
     : [];
 
-    useEffect(() => {
-      const fetchAuthor = async () => {
-        if (!authorId) return;
-    
-        try {
-          const res = await fetch(`http://localhost:5000/api/profile/username?userId=${authorId}`);
-          const data = await res.json();
-          if (res.ok) {
-            setAuthorData({
-              username: data.username,
-              profileImageUrl: data.profileImageUrl || "https://via.placeholder.com/40",
-            });
-          } else {
-            console.error("Error fetching author:", data.error);
-          }
-        } catch (err) {
-          console.error("Error fetching author:", err);
+  useEffect(() => {
+    const fetchAuthor = async () => {
+      if (!authorId) return;
+
+      try {
+        const res = await fetch(
+          `http://127.0.0.1:5000/api/profile/username?userId=${authorId}`,
+        );
+        const data = await res.json();
+        if (res.ok) {
+          setAuthorData({
+            username: data.username,
+            profileImageUrl:
+              data.profileImageUrl || "https://via.placeholder.com/40",
+          });
+        } else {
+          console.error("Error fetching author:", data.error);
         }
-      };
-    
-      fetchAuthor();
-    }, [authorId]);
-
-
-
-    const downloadRecipeAsPDF = (recipe) => {
-      const {
-        title,
-        author = authorData.username,
-        datePosted,
-        cookingTime = "N/A",
-        difficulty = "N/A",
-        servings = "N/A",
-        ingredients = [],
-        instructions = [],
-      } = recipe;
-    
-      const doc = new jsPDF();
-    
-      const formattedDate = datePosted
-        ? new Date(datePosted).toLocaleDateString("en-US", {
-            year: "numeric",
-            month: "long",
-            day: "numeric",
-          })
-        : "Unknown Date";
-    
-      const loadImageAndGenerate = () => {
-        const img = new Image();
-        img.src = feastlyLogo;
-    
-        img.onload = () => {
-          doc.addImage(img, "PNG", 15, 10, 15, 15); // (img, type, x, y, width, height)
-          doc.setFont("helvetica", "bold");
-          doc.setFontSize(16);
-          doc.text("Feastly Recipes", 35, 20);
-    
-          // Title & Meta
-          doc.setFont("helvetica", "bold");
-          doc.setFontSize(18);
-          doc.text(title, 20, 35);
-    
-          doc.setFont("helvetica", "normal");
-          doc.setFontSize(12);
-          console.log("Author Data:", authorData);
-          doc.text(`By: ${authorData.username}`, 20, 43);
-          doc.text(`Date: ${formattedDate}`, 20, 49);
-          doc.text(`Cooking Time: ${cookingTime}`, 20, 55);
-          doc.text(`Difficulty: ${difficulty}`, 20, 61);
-          doc.text(`Servings: ${servings}`, 20, 67);
-    
-          // Ingredients Table
-          autoTable(doc, {
-            startY: 75,
-            head: [["Ingredients"]],
-            body: ingredients.map((item) => [item]),
-            theme: "striped",
-            styles: { font: "helvetica", fontSize: 11 },
-          });
-    
-          // Instructions Table
-          autoTable(doc, {
-            startY: doc.lastAutoTable.finalY + 10,
-            head: [["Step", "Instruction"]],
-            body: instructions.map((step, i) => [`${i + 1}`, step]),
-            theme: "grid",
-            styles: { font: "helvetica", fontSize: 11 },
-            headStyles: { fillColor: [217, 237, 211], textColor: [0, 100, 0] },
-          });
-    
-          // Footer
-          doc.setFontSize(10);
-          doc.setTextColor(150);
-          doc.text("Generated by Feastly", 20, doc.internal.pageSize.height - 10);
-    
-          doc.save(`${title}.pdf`);
-        };
-      };
-    
-      loadImageAndGenerate();
+      } catch (err) {
+        console.error("Error fetching author:", err);
+      }
     };
-    
 
-    
+    fetchAuthor();
+  }, [authorId]);
+
+  const downloadRecipeAsPDF = (recipe) => {
+    const {
+      title,
+      author = authorData.username,
+      datePosted,
+      cookingTime = "N/A",
+      difficulty = "N/A",
+      servings = "N/A",
+      ingredients = [],
+      instructions = [],
+    } = recipe;
+
+    const doc = new jsPDF();
+
+    const formattedDate = datePosted
+      ? new Date(datePosted).toLocaleDateString("en-US", {
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+        })
+      : "Unknown Date";
+
+    const loadImageAndGenerate = () => {
+      const img = new Image();
+      img.src = feastlyLogo;
+
+      img.onload = () => {
+        doc.addImage(img, "PNG", 15, 10, 15, 15); // (img, type, x, y, width, height)
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(16);
+        doc.text("Feastly Recipes", 35, 20);
+
+        // Title & Meta
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(18);
+        doc.text(title, 20, 35);
+
+        doc.setFont("helvetica", "normal");
+        doc.setFontSize(12);
+        console.log("Author Data:", authorData);
+        doc.text(`By: ${authorData.username}`, 20, 43);
+        doc.text(`Date: ${formattedDate}`, 20, 49);
+        doc.text(`Cooking Time: ${cookingTime}`, 20, 55);
+        doc.text(`Difficulty: ${difficulty}`, 20, 61);
+        doc.text(`Servings: ${servings}`, 20, 67);
+
+        // Ingredients Table
+        autoTable(doc, {
+          startY: 75,
+          head: [["Ingredients"]],
+          body: ingredients.map((item) => [item]),
+          theme: "striped",
+          styles: { font: "helvetica", fontSize: 11 },
+        });
+
+        // Instructions Table
+        autoTable(doc, {
+          startY: doc.lastAutoTable.finalY + 10,
+          head: [["Step", "Instruction"]],
+          body: instructions.map((step, i) => [`${i + 1}`, step]),
+          theme: "grid",
+          styles: { font: "helvetica", fontSize: 11 },
+          headStyles: { fillColor: [217, 237, 211], textColor: [0, 100, 0] },
+        });
+
+        // Footer
+        doc.setFontSize(10);
+        doc.setTextColor(150);
+        doc.text("Generated by Feastly", 20, doc.internal.pageSize.height - 10);
+
+        doc.save(`${title}.pdf`);
+      };
+    };
+
+    loadImageAndGenerate();
+  };
 
   return (
     <>
+      <Popup show={showPopup} message={popupMessage} type={popupType} className="z-[9999]"/>
       <motion.div
         className="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 relative"
         ref={cardRef}
@@ -310,7 +328,9 @@ const FoodSocialCard = ({
                 className="w-9 h-9 rounded-full bg-gradient-to-br from-green-500 to-green-700 text-white flex items-center justify-center font-semibold text-sm flex-shrink-0"
                 whileHover={{ scale: 1.2 }}
               >
-                {authorData.username && authorData.username[0] ? authorData.username[0] : "?"}
+                {authorData.username && authorData.username[0]
+                  ? authorData.username[0]
+                  : "?"}
               </motion.div>
             </Link>
             <div className="ml-3 flex-1 min-w-0">
@@ -323,7 +343,10 @@ const FoodSocialCard = ({
               >
                 {title || "Untitled Recipe"}
               </h3>
-              <Link to={`/profile/${authorData.username}`} className="text-xs text-gray-500">
+              <Link
+                to={`/profile/${authorData.username}`}
+                className="text-xs text-gray-500"
+              >
                 by {authorData.username || "Unknown"} • {formattedDate}
               </Link>
             </div>
@@ -459,7 +482,6 @@ const FoodSocialCard = ({
               >
                 ⏬
               </motion.button>
-              
             </div>
 
             <motion.button
@@ -562,12 +584,8 @@ const FoodSocialCard = ({
         imageList={imageList}
       />
     </>
-    
   );
-  
 };
-
-
 
 FoodSocialCard.defaultProps = {
   likes: 0,
