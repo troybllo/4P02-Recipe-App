@@ -39,7 +39,7 @@ const Discovery = () => {
     const fetchMostLiked = async () => {
       try {
         const response = await fetch(
-          //`http://127.0.0.1:5000/api/recipes/most-liked`,
+          `http://127.0.0.1:5000/api/recipes/most-liked`,
         );
         const data = await response.json();
         console.log("Most liked API response:", data);
@@ -68,7 +68,7 @@ const Discovery = () => {
     const fetchQuickPicks = async () => {
       try {
         const response = await fetch(
-          //`http://127.0.0.1:5000/api/recipes/quick-picks`,
+          `http://127.0.0.1:5000/api/recipes/quick-picks`,
         );
         const data = await response.json();
         console.log("Quick picks API response:", data);

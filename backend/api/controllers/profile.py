@@ -9,6 +9,7 @@ from ..services.profile_database import (
     save_post,
     unsave_post,
     get_user_with_recipes,
+    get_users_by_query,
 )
 from ..services.database_interface import get_user_by_username, get_user_by_id
 
@@ -395,3 +396,11 @@ def suggested_users_controller(user_id):
     except Exception as e:
         print(f"Error getting suggested users: {str(e)}")
         return jsonify({"error": "Failed to get suggested users"}), 500
+
+def search_users():
+    query = request.args.get("query", "")
+    if not query:
+        return jsonify({"error": "Missing query"}), 400
+
+    users = get_users_by_query(query)
+    return jsonify({"users": users}), 200

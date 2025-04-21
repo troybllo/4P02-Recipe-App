@@ -271,3 +271,20 @@ def get_suggested_users(user_id, limit=5):
                 break
 
     return suggested_users
+
+def get_users_by_query(query):
+    db = firestore.client()
+    users_ref = db.collection("users")
+
+    matching_users = []
+    for doc in users_ref.stream():
+        user = doc.to_dict()
+        if query.lower() in user.get("username", "").lower() or query.lower() in user.get("email", "").lower():
+            matching_users.append({
+                "userId": user.get("userId"),
+                "username": user.get("username"),
+                "email": user.get("email"),
+                "profileImageUrl": user.get("profileImageUrl", "")
+            })
+
+    return matching_users

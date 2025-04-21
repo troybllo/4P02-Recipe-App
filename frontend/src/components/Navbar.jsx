@@ -11,11 +11,13 @@ import profileIcon from "../images/profileIcon.png";
 import homePic from "../images/homePic.png"
 import createPostIcon from "../images/createPostIcon.png";
 import Popup from "./Popup";
+import SearchBar from "./SearchBar";
 
 export default function Navbar() {
   const [showPopup, setShowPopup] = useState(false);
   const [popupMessage, setPopupMessage] = useState("");
   const [popupType, setPopupType] = useState("success");
+  const [showSearch, setShowSearch] = useState(false);
 
   const triggerPopup = (message, type) => {
     setPopupMessage(message);
@@ -89,7 +91,12 @@ export default function Navbar() {
 
   return (
     <>
-      <Popup show={showPopup} message={popupMessage} type={popupType} className="z-[9999]"/>
+      <Popup
+        show={showPopup}
+        message={popupMessage}
+        type={popupType}
+        className="z-[9999]"
+      />
       <motion.div
         className={`fixed top-0 left-0 right-0 h-16 z-[99999] transition-all duration-300 ${
           isScrolled ? "bg-white/90 backdrop-blur-md shadow-md" : "bg-white"
@@ -166,6 +173,18 @@ export default function Navbar() {
                 </motion.div>
               </>
             )}
+          </div>
+
+          <div className="relative">
+            <motion.button
+              onClick={() => setShowSearch((prev) => !prev)}
+              className="text-gray-600 hover:text-gray-800 p-4"
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.9 }}
+            >
+              {showSearch ? <X size={24} /> : <span role="img" aria-label="Search">🔍</span>}
+            </motion.button>
+            {showSearch && <SearchBar onClose={() => setShowSearch(false)} />}
           </div>
 
           <div className="hidden lg:flex items-center">

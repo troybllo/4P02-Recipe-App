@@ -12,6 +12,7 @@ from ..controllers.profile import (
     get_followers_controller,
     get_following_controller,
     batch_get_user_info_controller,
+    search_users,
 )
 
 profile_blueprint = Blueprint("profile_features", __name__)
@@ -151,3 +152,7 @@ def get_suggested_users_route(user_id):
     from ..controllers.profile import suggested_users_controller
 
     return suggested_users_controller(user_id)
+
+@profile_blueprint.route("/search/users", methods=["GET"])
+def search_users_route():
+    return search_users()
