@@ -27,7 +27,9 @@ const FoodSocialCard = ({
   isLiked,
   userId,
 }) => {
-  const recipeId = id || postId;
+  const ownerId       = authorId || userId;
+  const recipeId     = id || postId;
+  const currentUserId = localStorage.getItem("userId");
 
   const [authorData, setAuthorData] = useState({
     username: "",
@@ -49,6 +51,36 @@ const FoodSocialCard = ({
   const [popupMessage, setPopupMessage] = useState("");
   const [popupType, setPopupType] = useState("");
     
+  const me = localStorage.getItem("userId");
+  const owner = userId || authorId;
+  
+  const API = "http://127.0.0.1:5000/api"
+
+  useEffect(() => {
+    if (!me) return
+    const owner = userId || authorId
+    const url = `${API}/recipes/like-status`
+              + `?ownerId=${owner}`
+              + `&postId=${recipeId}`
+              + `&likerId=${me}`
+
+    console.debug("[like-status] fetching", url)
+    fetch(url)
+      .then(res => {
+        console.debug("[like-status] status", res.status, "content-type:", res.headers.get("content-type"))
+        return res.json()
+      })
+      .then(json => {
+        console.debug("[like-status] json", json)
+        if (typeof json.isLiked === "boolean") {
+          setLiked(json.isLiked)
+          setLikeCount(json.likeCount)
+        }
+      })
+      .catch(err => console.error("[like-status] error", err))
+  }, [me, recipeId, userId, authorId])
+
+
   const triggerPopup = (message, type) => {
     setPopupMessage(message);
     setPopupType(type);
@@ -73,29 +105,45 @@ const FoodSocialCard = ({
   const handleLike = async () => {
     if (isLoading) return;
     setIsLoading(true);
-
-    const heart = document.createElement("div");
-    if (!localStorage.getItem("userId")) {
-      triggerPopup(`This feature requires sign in`, `error`);
-      return;
-    }
-    heart.className = styles.floatingHeart;
-    cardRef.current.appendChild(heart);
-    setTimeout(() => heart.remove(), 1000);
-
+  
+    // snapshot the new state
+    const newLiked = !liked;
+    setLiked(newLiked);
+    setLikeCount(c => newLiked ? c + 1 : c - 1);
+  
     try {
-      setLiked(!liked);
-      setLikeCount((prevCount) => (liked ? prevCount - 1 : prevCount + 1));
-      if (triggerPopup) {
-        if(liked) triggerPopup("Removed Like!");
-        else triggerPopup("Liked Recipe!");
+      const res = await fetch(
+        `${API}/recipes/${newLiked ? "like" : "unlike"}`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            ownerId,
+            postId: recipeId,
+            likerId: currentUserId,
+          }),
+        }
+      );
+      if (!res.ok) {
+        // rollback
+        setLiked(liked);
+        setLikeCount(c => newLiked ? c - 1 : c + 1);
+        triggerPopup("Failed to update like", "error");
+      } else {
+        triggerPopup(newLiked ? "Liked Recipe!" : "Removed Like!");
       }
-    } catch (error) {
-      console.error("Error toggling like:", error);
+    } catch (err) {
+      // rollback
+      setLiked(liked);
+      setLikeCount(c => newLiked ? c - 1 : c + 1);
+      triggerPopup("Network error", "error");
     } finally {
       setIsLoading(false);
     }
   };
+  
+  
+  
 
   const handleShare = async () => {
     try {
@@ -139,7 +187,6 @@ const FoodSocialCard = ({
     triggerPopup && triggerPopup("Recipe downloaded!");
   };
 
-  const currentUserId = localStorage.getItem("userId");
   const isOwner = currentUserId === (authorId || userId);
 
   const cardVariants = {
