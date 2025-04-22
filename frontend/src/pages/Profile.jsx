@@ -612,6 +612,7 @@ const Profile = () => {
                         author={username}
                         authorId={profileData.userId}
                         likes={recipe.likes || 0}
+                        isSaved={recipe.isSaved || false}
                         isLiked={recipe.isLiked || false}
                       />
                     ))}
@@ -622,10 +623,24 @@ const Profile = () => {
                   </div>
                 )
               ) : (
-                // Saved posts section unchanged
-                <div className="text-center py-20 bg-gray-50 rounded-lg">
-                  {/* … saved placeholder … */}
-                </div>
+                profileData.savedPosts?.length > 0 ? (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {profileData.recipes
+                      .filter(r => profileData.savedPosts.includes(r.postId))
+                      .map(recipe => (
+                        <FoodSocialCard
+                          key={recipe.postId}
+                          {...recipe}
+                          isSaved={profileData.savedPosts.includes(recipe.postId)}
+                          /* pass any extra props if needed */
+                        />
+                    ))}
+                  </div>
+                ) : (
+                  <div className="text-center py-20 bg-gray-50 rounded-lg">
+                    <p className="text-gray-500">You haven’t saved any recipes yet.</p>
+                  </div>
+                )
               )}
             </>
           )}

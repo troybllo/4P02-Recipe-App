@@ -151,3 +151,22 @@ def get_suggested_users_route(user_id):
     from ..controllers.profile import suggested_users_controller
 
     return suggested_users_controller(user_id)
+
+@profile_blueprint.route("/save-status", methods=["GET"])
+def save_status_controller():
+    """
+    GET /api/profile/save-status?userId=…&postId=…
+    Returns { isSaved: boolean }
+    """
+    user_id = request.args.get("userId")
+    post_id = request.args.get("postId")
+    if not user_id or not post_id:
+        return jsonify({"error": "Missing userId or postId"}), 400
+
+    user_doc = get_user_by_id(user_id)
+    if not user_doc:
+        return jsonify({"error": "User not found"}), 404
+
+    saved = post_id in user_doc.get("savedPosts", [])
+    return jsonify({"isSaved": saved}), 200
+

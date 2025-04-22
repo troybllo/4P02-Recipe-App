@@ -25,6 +25,7 @@ const FoodSocialCard = ({
   instructions,
   likes,
   isLiked,
+  isSaved: initialSaved,
   userId,
 }) => {
   const ownerId       = authorId || userId;
@@ -46,6 +47,7 @@ const FoodSocialCard = ({
   const [isLoading, setIsLoading] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
   const cardRef = useRef(null);
+  const [isSaved, setIsSaved] = useState(initialSaved);
 
   const [showPopup, setShowPopup] = useState(false);
   const [popupMessage, setPopupMessage] = useState("");
@@ -79,8 +81,7 @@ const FoodSocialCard = ({
       })
       .catch(err => console.error("[like-status] error", err))
   }, [me, recipeId, userId, authorId])
-
-
+  
   const triggerPopup = (message, type) => {
     setPopupMessage(message);
     setPopupType(type);
@@ -143,6 +144,20 @@ const FoodSocialCard = ({
   };
   
   
+  const handleSaveToggle = async () => {
+    const endpoint = isSaved ? "unsavePost" : "savePost";
+    const res = await fetch(`${API}/profile/${endpoint}`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ userId: currentUserId, postId }),
+    });
+    if (res.ok) {
+      setIsSaved(s => !s);
+      triggerPopup(isSaved ? "Removed from saved" : "Saved!");
+    } else {
+      triggerPopup("Failed to update saved status", "error");
+    }
+  };
   
 
   const handleShare = async () => {
@@ -529,6 +544,19 @@ const FoodSocialCard = ({
               >
                 ⏬
               </motion.button>
+
+              <motion.button
+                className="p-2 rounded-full text-gray-500 hover:text-gray-700"
+                onClick={handleSaveToggle}
+                aria-label={isSaved ? "Unsave" : "Save"}
+                variants={buttonVariants}
+                whileHover="hover"
+                whileTap="tap"
+              >
+                {isSaved ? "🔖" : "📑"}
+              </motion.button>
+
+
             </div>
 
             <motion.button
