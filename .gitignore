@@ -13,3 +13,7 @@ __pycache__/
 *.pyc
 *.pyc
 backend/api/routes/__pycache__/recipes.cpython-311.pyc
+backend/Dockerfile
+docker-compose.yml
+dockerignore
+frontend/Dockerfile

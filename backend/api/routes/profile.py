@@ -15,7 +15,8 @@ from ..controllers.profile import (
     get_followers_controller,
     get_following_controller,
     batch_get_user_info_controller,
-    suggested_users_controller
+    suggested_users_controller,
+    search_users,
 )
 from ..services.database_interface import get_user_by_id
 
@@ -170,3 +171,7 @@ def save_status_controller():
 
     saved = post_id in user_doc.get("savedPosts", [])
     return jsonify({"isSaved": saved}), 200
+
+@profile_blueprint.route("/search/users", methods=["GET"])
+def search_users_route():
+    return search_users()

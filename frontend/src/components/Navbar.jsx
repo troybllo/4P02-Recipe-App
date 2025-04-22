@@ -11,11 +11,13 @@ import profileIcon from "../images/profileIcon.png";
 import homePic from "../images/homePic.png"
 import createPostIcon from "../images/createPostIcon.png";
 import Popup from "./Popup";
+import SearchBar from "./SearchBar";
 
 export default function Navbar() {
   const [showPopup, setShowPopup] = useState(false);
   const [popupMessage, setPopupMessage] = useState("");
   const [popupType, setPopupType] = useState("success");
+  const [showSearch, setShowSearch] = useState(false);
 
   const triggerPopup = (message, type) => {
     setPopupMessage(message);
@@ -167,6 +169,19 @@ export default function Navbar() {
               </>
             )}
           </div>
+
+          <div className="relative">
+            <motion.button
+              onClick={() => setShowSearch((prev) => !prev)}
+              className="text-gray-600 hover:text-gray-800 p-4"
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.9 }}
+            >
+              {showSearch ? <X size={24} /> : <span role="img" aria-label="Search">🔍</span>}
+            </motion.button>
+            {showSearch && <SearchBar onClose={() => setShowSearch(false)} />}
+          </div>
+
 
           <div className="hidden lg:flex items-center">
             {!isLoggedIn && (
