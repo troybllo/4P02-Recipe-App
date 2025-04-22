@@ -6,6 +6,7 @@ import UserListModal from "../components/UserListModal";
 import CreatePost from "../components/CreatePost"; // Import CreatePost component
 import Masonry from "react-masonry-css";
 import { useAuth } from "../components/AuthContext";
+import { motion, AnimatePresence } from "framer-motion";
 
 const breakpointColumnsObj = {
   default: 3,
@@ -31,6 +32,7 @@ const Profile = () => {
     followers: [],
     following: [],
     recipes: [],
+    savedPosts: [],
   });
   const [loading, setLoading] = useState(true);
   const [isEditProfileOpen, setIsEditProfileOpen] = useState(false);
@@ -112,6 +114,7 @@ const Profile = () => {
           recipes: sortedRecipes, // Override recipes with sorted version
           followers: data.followers || [], // Ensure followers is an array
           following: data.following || [], // Ensure following is an array
+          savedPosts:  data.savedPosts  || [],
         });
 
         // Only check following status if this is not the user's own profile
@@ -245,6 +248,15 @@ const Profile = () => {
         error,
       );
     }
+  };
+
+  const handleSaveToggle = (recipeId, isNowSaved) => {
+    setProfileData(prev => ({
+      ...prev,
+      savedPosts: isNowSaved
+        ? [...prev.savedPosts, recipeId]
+        : prev.savedPosts.filter(id => id !== recipeId)
+    }));
   };
 
   // Function to update following list in localStorage
@@ -614,6 +626,14 @@ const Profile = () => {
                         likes={recipe.likes || 0}
                         isSaved={recipe.isSaved || false}
                         isLiked={recipe.isLiked || false}
+                        onSaveToggle={(recipeId, newIsSaved) => {
+                          setProfileData(prev => ({
+                            ...prev,                                // ← use three dots, not a Unicode ellipsis
+                            savedPosts: newIsSaved
+                              ? [...prev.savedPosts, recipeId]
+                              : prev.savedPosts.filter(id => id !== recipeId)
+                          }));
+                        }}
                       />
                     ))}
                   </div>
@@ -624,18 +644,27 @@ const Profile = () => {
                 )
               ) : (
                 profileData.savedPosts?.length > 0 ? (
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {profileData.recipes
-                      .filter(r => profileData.savedPosts.includes(r.postId))
-                      .map(recipe => (
-                        <FoodSocialCard
-                          key={recipe.postId}
-                          {...recipe}
-                          isSaved={profileData.savedPosts.includes(recipe.postId)}
-                          /* pass any extra props if needed */
-                        />
-                    ))}
-                  </div>
+                  <AnimatePresence>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                      {profileData.recipes
+                        .filter((r) => profileData.savedPosts.includes(r.postId))
+                        .map((recipe) => (
+                          <motion.div
+                            key={recipe.postId}
+                            layout
+                            initial={{ opacity: 0, scale: 0.95 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            exit={{ opacity: 0, scale: 0.95 }}
+                          >
+                            <FoodSocialCard
+                              {...recipe}
+                              isSaved={true}
+                              onSaveToggle={handleSaveToggle}
+                            />
+                          </motion.div>
+                        ))}
+                    </div>
+                  </AnimatePresence>
                 ) : (
                   <div className="text-center py-20 bg-gray-50 rounded-lg">
                     <p className="text-gray-500">You haven’t saved any recipes yet.</p>

@@ -27,6 +27,7 @@ const FoodSocialCard = ({
   isLiked,
   isSaved: initialSaved,
   userId,
+  onSaveToggle,
 }) => {
   const ownerId       = authorId || userId;
   const recipeId     = id || postId;
@@ -161,20 +162,26 @@ const FoodSocialCard = ({
   };
   
   
-  const handleSaveToggle = async () => {
+  async function handleSaveToggle() {
     const endpoint = isSaved ? "unsavePost" : "savePost";
     const res = await fetch(`${API}/profile/${endpoint}`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ userId: currentUserId, postId }),
+      body: JSON.stringify({
+        userId:    currentUserId,
+        postId:    recipeId,
+      }),
     });
     if (res.ok) {
-      setIsSaved(s => !s);
-      triggerPopup(isSaved ? "Removed from saved" : "Saved!");
+      const newIsSaved = !isSaved;
+      setIsSaved(newIsSaved);
+      onSaveToggle?.(recipeId, newIsSaved);               // ← 3) notify parent
+      triggerPopup(newIsSaved ? "Saved!" : "Removed from saved");
     } else {
-      triggerPopup("Failed to update saved status", "error");
+      triggerPopup("Save failed", "error");
     }
-  };
+  }
+  
   
 
   const handleShare = async () => {
@@ -684,6 +691,7 @@ FoodSocialCard.defaultProps = {
   isLiked: false,
   ingredients: [],
   instructions: [],
+  onSaveToggle: () => {},
 };
 
 export default FoodSocialCard;
