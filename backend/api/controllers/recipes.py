@@ -1,5 +1,11 @@
+# controllers/recipes.py
+
 from flask import request, jsonify
 from datetime import datetime
+from firebase_admin import firestore
+import json
+import cloudinary.uploader
+
 from ..services.recipe_database import (
     create_recipe_in_firebase,
     get_recipe_from_firebase,
@@ -12,7 +18,7 @@ from ..services.recipe_database import (
     get_easy_recipes,
     get_quick_picks,
     like_recipe,
-    unlike_recipe
+    unlike_recipe,
 )
 
 
@@ -31,16 +37,15 @@ def create_recipe():
         "difficulty":   data.get("difficulty"),
         "servings":     data.get("servings"),
         "datePosted":   datetime.utcnow().isoformat(),
-        "likes":        0,          
-        "likedBy":      [],        
+        "likes":        0,
+        "likedBy":      [],
         "ingredients":  data.get("ingredients"),
         "instructions": data.get("instructions"),
     }
 
     # Upload images
     if image_files:
-        image_entries = upload_images_to_cloudinary(image_files)
-        recipe_data["imageList"] = image_entries
+        recipe_data["imageList"] = upload_images_to_cloudinary(image_files)
     else:
         recipe_data["imageList"] = []
 
@@ -49,14 +54,54 @@ def create_recipe():
 
 
 def get_recipe(post_id):
-    # Use only query parameters for GET
+    """
+    GET /api/recipes/<post_id>
+    Try per-user lookup, else fall back to collection_group.
+    """
     user_id = request.args.get("userId")
-    if not user_id:
-        return jsonify({"error": "Missing userId"}), 400
-    recipe_doc = get_recipe_from_firebase(user_id, post_id)
-    if not recipe_doc:
+    if user_id:
+        doc = get_recipe_from_firebase(user_id, post_id)
+        if doc:
+            doc["userId"] = user_id
+            return jsonify(doc), 200
+
+    return get_recipe_global(post_id)
+
+def get_recipe_global(post_id):
+    """
+    Naive “scan all users” fallback—no collectionGroup index needed.
+    """
+    from firebase_admin import firestore
+    db = firestore.client()
+
+    try:
+        # 1) fetch every user ID
+        users = db.collection("users").stream()
+
+        # 2) for each user, check their created_recipes subcollection
+        for u in users:
+            uid = u.id
+            snap = (
+                db.collection("users")
+                  .document(uid)
+                  .collection("created_recipes")
+                  .document(post_id)
+                  .get()
+            )
+            if snap.exists:
+                data = snap.to_dict()
+                data["postId"] = snap.id
+                data["userId"] = uid
+                # optional: pull username from the parent user doc
+                data["author"] = u.to_dict().get("username", "Unknown")
+                return jsonify(data), 200
+
         return jsonify({"error": "Recipe not found"}), 404
-    return jsonify(recipe_doc), 200
+
+    except Exception as e:
+        print(f"[get_recipe_global ERROR]: {e}")
+        return jsonify({"error": str(e)}), 500
+
 
 
 def update_recipe(post_id):
@@ -67,106 +112,85 @@ def update_recipe(post_id):
 
     image_files = request.files.getlist("images") if request.files else []
 
-    existing_doc = get_recipe_from_firebase(user_id, post_id)
-    if not existing_doc:
+    existing = get_recipe_from_firebase(user_id, post_id)
+    if not existing:
         return jsonify({"error": "Recipe not found"}), 404
 
     updated_data = {}
-    fields = [
-        "title",
-        "description",
-        "cookingTime",
-        "difficulty",
-        "servings",
-        "ingredients",
-        "instructions",
-    ]
-    for f in fields:
-        if f in data:
-            updated_data[f] = data[f]
+    for field in ("title", "description", "cookingTime", "difficulty", "servings", "ingredients", "instructions"):
+        if field in data:
+            updated_data[field] = data[field]
 
     # Remove images
-    remove_ids_str = data.get("removePublicIds")
-    remove_ids = []
-    if remove_ids_str:
-        remove_ids = [rid.strip()
-                      for rid in remove_ids_str.split(",") if rid.strip()]
-
-    current_images = existing_doc.get("imageList", [])
-    remaining_images = []
-    for img_obj in current_images:
-        if img_obj["publicId"] in remove_ids:
-            delete_image_from_cloudinary(img_obj["publicId"])
+    remove_ids = [rid.strip() for rid in (data.get("removePublicIds") or "").split(",") if rid.strip()]
+    kept = []
+    for img in existing.get("imageList", []):
+        if img.get("publicId") in remove_ids:
+            delete_image_from_cloudinary(img["publicId"])
         else:
-            remaining_images.append(img_obj)
+            kept.append(img)
 
-    # Add new images
-    new_images = []
-    if image_files:
-        new_images = upload_images_to_cloudinary(image_files)
+    # Add new
+    new_imgs = upload_images_to_cloudinary(image_files) if image_files else []
+    updated_data["imageList"] = kept + new_imgs
 
-    updated_data["imageList"] = remaining_images + new_images
-
-    updated_recipe = update_recipe_in_firebase(user_id, post_id, updated_data)
-    if not updated_recipe:
+    result = update_recipe_in_firebase(user_id, post_id, updated_data)
+    if not result:
         return jsonify({"error": "Update failed"}), 404
 
-    return jsonify({"message": "Recipe updated", "recipe": updated_recipe}), 200
+    return jsonify({"message": "Recipe updated", "recipe": result}), 200
 
 
 def delete_recipe(post_id):
-    # Use query parameter for DELETE to avoid unsupported media type issues
     user_id = request.args.get("userId")
     if not user_id:
         return jsonify({"error": "Missing userId"}), 400
+
     deleted = delete_recipe_from_firebase(user_id, post_id)
     if not deleted:
         return jsonify({"error": "Recipe not found"}), 404
+
     return jsonify({"message": "Recipe deleted"}), 200
 
 
 def list_most_liked_recipes():
-    recipes = get_most_liked_recipes()
-    return jsonify({"recipes": recipes}), 200
+    return jsonify({"recipes": get_most_liked_recipes()}), 200
 
 
 def get_recent_recipes():
     limit = int(request.args.get("limit", 100))
-    recent = get_most_recent_recipes(limit=limit)
-    return jsonify({"recipes": recent}), 200
+    return jsonify({"recipes": get_most_recent_recipes(limit=limit)}), 200
 
 
 def list_easy_recipes():
-    recipes = get_easy_recipes()
-    return jsonify({"recipes": recipes}), 200
+    return jsonify({"recipes": get_easy_recipes()}), 200
+
 
 def list_quick_picks():
-    recipes = get_quick_picks()
-    return jsonify({"recipes": recipes}), 200
+    return jsonify({"recipes": get_quick_picks()}), 200
+
 
 def like_recipe_controller():
     body = request.get_json(silent=True) or {}
-    owner_id = body.get("ownerId")
-    post_id  = body.get("postId")
-    liker_id = body.get("likerId")
-    if not all([owner_id, post_id, liker_id]):
+    owner, post, liker = body.get("ownerId"), body.get("postId"), body.get("likerId")
+    if not all([owner, post, liker]):
         return jsonify({"error": "Missing ownerId, postId, or likerId"}), 400
 
-    updated = like_recipe(owner_id, post_id, liker_id)
+    updated = like_recipe(owner, post, liker)
     if not updated:
         return jsonify({"error": "Recipe not found"}), 404
+
     return jsonify({"message": "liked", "recipe": updated}), 200
 
 
 def unlike_recipe_controller():
     body = request.get_json(silent=True) or {}
-    owner_id = body.get("ownerId")
-    post_id  = body.get("postId")
-    liker_id = body.get("likerId")
-    if not all([owner_id, post_id, liker_id]):
+    owner, post, liker = body.get("ownerId"), body.get("postId"), body.get("likerId")
+    if not all([owner, post, liker]):
         return jsonify({"error": "Missing ownerId, postId, or likerId"}), 400
 
-    updated = unlike_recipe(owner_id, post_id, liker_id)
+    updated = unlike_recipe(owner, post, liker)
     if not updated:
         return jsonify({"error": "Recipe not found"}), 404
+
     return jsonify({"message": "unliked", "recipe": updated}), 200

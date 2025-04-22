@@ -368,14 +368,7 @@ const FoodSocialCard = ({
 
         {/* Card Image */}
         <div className="relative overflow-hidden">
-        <Link
-            to={`/recipes/${recipeId}`}
-            onClick={() => {
-              if (userId) {
-                localStorage.setItem("viewedRecipeUserId", userId);
-              }
-            }}
-          >
+        <Link to={`/recipes/${recipeId}/${userId || authorId}`}>
             <motion.div className="relative group">
               {displayImageUrl ? (
                 <motion.img
@@ -562,7 +555,7 @@ const FoodSocialCard = ({
                   transition={{ delay: 0.3 }}
                 >
                   <Link
-                    to={`/recipes/${userId}/${recipeId}`}
+                    to={`/recipes/${recipeId}/${userId || authorId}`} 
                     className="text-[#1d9c3f] hover:text-[#187832] font-medium text-sm"
                   >
                     View full recipe page →

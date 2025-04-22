@@ -29,8 +29,7 @@ function App() {
             <Route path="/landing" element={<Landing />} />
             <Route path="/signin" element={<SignInPage />} />
             <Route path="/signup" element={<SignUpPage />} />
-            <Route path="/recipes/:postId" element={<RecipeDetail />} />
-
+            <Route path="/recipes/:postId/:userId" element={<RecipeDetail />} />
             
             {/* Public profile route - for viewing other profiles */}
             <Route path="/profile/:profileUsername" element={<Profile />} />
