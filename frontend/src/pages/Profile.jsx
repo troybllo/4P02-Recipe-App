@@ -3,18 +3,16 @@ import { useParams, useNavigate } from "react-router-dom";
 import FoodSocialCard from "../components/FoodSocialCard";
 import EditProfile from "../components/EditProfile";
 import UserListModal from "../components/UserListModal";
-import CreatePost from "../components/CreatePost"; // Import CreatePost component
+import CreatePost from "../components/CreatePost";
 import Masonry from "react-masonry-css";
 import { useAuth } from "../components/AuthContext";
 import "../styles/masonry.css";
 
+// Enhanced breakpoint columns object with more responsive values
 const breakpointColumnsObj = {
   default: 3,
   1440: 3,
-  1920: 3,
-  1680: 3,
-  1280: 3,
-  1080: 2,
+  1100: 2,
   824: 2,
   640: 1,
 };
@@ -35,20 +33,29 @@ const Profile = () => {
   });
   const [loading, setLoading] = useState(true);
   const [isEditProfileOpen, setIsEditProfileOpen] = useState(false);
-  const [isCreatePostOpen, setIsCreatePostOpen] = useState(false); // New state for CreatePost modal
+  const [isCreatePostOpen, setIsCreatePostOpen] = useState(false);
   const [showPosts, setShowPosts] = useState(true);
   const [isFollowing, setIsFollowing] = useState(false);
   const [profileUpdated, setProfileUpdated] = useState(false);
   const [showFollowersModal, setShowFollowersModal] = useState(false);
   const [showFollowingModal, setShowFollowingModal] = useState(false);
 
+  // Use window width for responsive behavior
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+
   // If currentUser is properly structured with username property
   const isOwnProfile =
     currentUser?.user && profileUsername === currentUser.user.username;
 
-  console.log("Current user:", currentUser);
-  console.log("Profile username:", profileUsername);
-  console.log("Is own profile:", isOwnProfile);
+  // Add resize listener for better responsive behavior
+  useEffect(() => {
+    const handleResize = () => {
+      setWindowWidth(window.innerWidth);
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   // Handle create post modal
   const handleOpenCreatePost = () => {
@@ -92,7 +99,7 @@ const Profile = () => {
             headers: {
               "Cache-Control": "no-cache",
             },
-          },
+          }
         );
 
         if (!response.ok) {
@@ -100,11 +107,10 @@ const Profile = () => {
         }
 
         const data = await response.json();
-        console.log("Profile data from API:", data);
 
         // Sort recipes by date
         const sortedRecipes = (data.recipes || []).sort(
-          (a, b) => new Date(b.datePosted) - new Date(a.datePosted),
+          (a, b) => new Date(b.datePosted) - new Date(a.datePosted)
         );
 
         // Store API response directly in profileData
@@ -145,13 +151,11 @@ const Profile = () => {
     try {
       // Use the correct API endpoint with the expected query parameters
       const url = `http://127.0.0.1:5000/api/profile/isFollowing?userId=${currentUserId}&targetId=${targetUserId}`;
-      console.log("Checking follow status from server with URL:", url);
 
       const response = await fetch(url);
 
       if (response.ok) {
         const data = await response.json();
-        console.log("Server response for follow status:", data);
 
         // Update the following state based on server response
         setIsFollowing(data.isFollowing);
@@ -198,9 +202,6 @@ const Profile = () => {
         ? "http://127.0.0.1:5000/api/profile/unfollow"
         : "http://127.0.0.1:5000/api/profile/follow";
 
-      console.log("Follow toggle - sending currentUserId:", currentUserId);
-      console.log("Follow toggle - sending targetUserId:", targetUserId);
-
       const response = await fetch(endpoint, {
         method: "POST",
         headers: {
@@ -232,10 +233,6 @@ const Profile = () => {
 
         // Update localStorage to reflect the change
         updateLocalStorageFollowing(targetUserId, newFollowingState);
-
-        console.log(
-          `Successfully ${isFollowing ? "unfollowed" : "followed"} user`,
-        );
       } else {
         const errorData = await response.json();
         console.error("Error following/unfollowing:", errorData);
@@ -243,7 +240,7 @@ const Profile = () => {
     } catch (error) {
       console.error(
         `Error ${isFollowing ? "unfollowing" : "following"} user:`,
-        error,
+        error
       );
     }
   };
@@ -272,13 +269,12 @@ const Profile = () => {
       } else {
         // Remove user from following list
         userData.following = userData.following.filter(
-          (id) => id !== targetUserId,
+          (id) => id !== targetUserId
         );
       }
 
       // Save updated user data back to localStorage
       localStorage.setItem("user", JSON.stringify(userData));
-      console.log("Updated localStorage following:", userData.following);
     } catch (error) {
       console.error("Error updating localStorage following:", error);
     }
@@ -293,34 +289,22 @@ const Profile = () => {
   // Use profileData directly instead of profileData.user
   const username = profileData.username || profileUsername || "User";
 
-  // FIXED: Access bio directly from profileData, not from a nested user object
+  // Access bio directly from profileData, not from a nested user object
   let bio;
   if (profileData.bio != null && profileData.bio !== "") {
     bio = profileData.bio;
-    console.log("Using bio from API profile data:", bio);
   } else {
     bio = "This user hasn't added a bio yet.";
-    console.log("Using default bio message - no bio found in API response");
   }
 
   const profilePic =
     profileData.profileImageUrl ||
     "https://img.freepik.com/premium-vector/pixel-art-tree_735839-72.jpg";
 
-  // Debugging output
-  console.log("Full profile data:", profileData);
-  console.log("Username being displayed:", username);
-  console.log("Bio being displayed:", bio);
-  console.log("Follower count:", profileData.followers?.length || 0);
-  console.log("Following count:", profileData.following?.length || 0);
-
   const handleProfileUpdate = async (updatedUser) => {
-    console.log("Profile updated with:", updatedUser);
-
     // Check if there's an error in the update response
     if (updatedUser.error) {
       console.error("Profile update failed:", updatedUser.error);
-      // Error is already displayed in the EditProfile component
       return;
     }
 
@@ -331,27 +315,23 @@ const Profile = () => {
         updatedUser.profile.username &&
         currentUser?.user?.username !== updatedUser.profile.username;
 
-      console.log("Username changed:", usernameChanged);
-
       // Close the modal first
       setIsEditProfileOpen(false);
 
       if (usernameChanged) {
         // If username changed, log the user out and have them sign in again
-        console.log("Username was changed - logging out");
 
         // Notify the user first
         alert(
           "Your username has been updated to " +
             updatedUser.profile.username +
-            ". Please sign in again with your new username.",
+            ". Please sign in again with your new username."
         );
 
         // Perform logout - make sure we're calling the actual logout function
         if (typeof logout === "function") {
           try {
             logout();
-            console.log("Logout successful");
           } catch (logoutError) {
             console.error("Error during logout:", logoutError);
           }
@@ -375,12 +355,24 @@ const Profile = () => {
     }
   };
 
-  // Determine dynamic column count: if there are less than 3 recipes, use that count
+  // Determine dynamic column count based on screen size and recipe count
   const recipeCount = profileData.recipes?.length || 0;
-  const masonryColumns =
-    showPosts && recipeCount > 0 && recipeCount < breakpointColumnsObj.default
+  const getColumnCount = () => {
+    // First determine the base column count from window width
+    let baseCount;
+    if (windowWidth < 640) baseCount = 1;
+    else if (windowWidth < 824) baseCount = 1;
+    else if (windowWidth < 1100) baseCount = 2;
+    else baseCount = 3;
+
+    // If we have fewer recipes than the base column count, use recipe count
+    return showPosts && recipeCount > 0 && recipeCount < baseCount
       ? recipeCount
-      : breakpointColumnsObj.default;
+      : baseCount;
+  };
+
+  // Get the actual column count for masonry
+  const masonryColumns = getColumnCount();
 
   return (
     <>
@@ -582,92 +574,86 @@ const Profile = () => {
           </div>
         </div>
 
-        
-          <div className="mt-8">
-            {loading ? (
-              <div className="flex justify-center items-center py-20">
-                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-green-500"></div>
-              </div>
-            ) : (
-              <>
-                {showPosts ? (
-            profileData.recipes && profileData.recipes.length > 0 ? (
-              // Wrap the Masonry grid in a centered container with a maxWidth based on columns
-              <div style={{ display: "flex", justifyContent: "center" }}>
-                <div style={{ width: "100%", maxWidth: `${masonryColumns * 400}px` }}>
-                  <Masonry
-              breakpointCols={masonryColumns}
-              className="my-masonry-grid"
-              columnClassName="my-masonry-grid_column"
-                  >
-              {profileData.recipes.map((recipe) => (
-                // Wrap each card in a container to prevent stretching
-                <div
-                  key={recipe.postId}
-                  style={{
-                    width: "100%",
-                    maxWidth: "400px",
-                    margin: "0 auto 30px", // bottom margin to separate cards vertically
-                  }}
-                >
-                  <FoodSocialCard
-                    postId={recipe.postId}
-                    title={recipe.title}
-                    description={recipe.description}
-                    cookingTime={recipe.cookingTime}
-                    difficulty={recipe.difficulty}
-                    servings={recipe.servings}
-                    ingredients={recipe.ingredients}
-                    instructions={recipe.instructions}
-                    imageUrl={
-                recipe.imageList?.[0]?.url ||
-                "https://via.placeholder.com/400x300?text=No+Image"
-                    }
-                    datePosted={recipe.datePosted}
-                    author={username}
-                    authorId={profileData.userId}
-                    likes={recipe.likes || 0}
-                    isLiked={recipe.isLiked || false}
-                  />
-                </div>
-              ))}
-                  </Masonry>
-                </div>
-              </div>
-            ) : (
-              <div className="text-center py-20 bg-gray-50 rounded-lg">
-                <svg
-                  className="w-16 h-16 mx-auto text-gray-300"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d="M9 13h6m-3-3v6m-9 1V7a2 2 0 012-2h6l2 2h6a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z"
-                  />
-                </svg>
-                <h3 className="mt-4 text-lg font-medium text-gray-900">
-                  No posts yet
-                </h3>
-                <p className="mt-2 text-sm text-gray-500 max-w-sm mx-auto">
-                  {isOwnProfile
-              ? "Share your first recipe to get started!"
-              : `${username} hasn't shared any recipes yet.`}
-                </p>
-                {isOwnProfile && (
-                  <button
-              className="mt-5 px-4 py-2 bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-full hover:from-green-600 hover:to-emerald-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 shadow-sm transition-colors"
-              onClick={handleOpenCreatePost}
-                  >
-              Create Recipe
-                  </button>
-                )}
-              </div>
-            )
+        <div className="mt-8">
+          {loading ? (
+            <div className="flex justify-center items-center py-20">
+              <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-green-500"></div>
+            </div>
+          ) : (
+            <>
+              {showPosts ? (
+                profileData.recipes && profileData.recipes.length > 0 ? (
+                  <div className="masonry-container">
+                    <Masonry
+                      breakpointCols={masonryColumns}
+                      className="my-masonry-grid"
+                      columnClassName="my-masonry-grid_column"
+                    >
+                      {profileData.recipes.map((recipe) => (
+                        <div
+                          key={recipe.postId}
+                          style={{
+                            width: "100%",
+                            maxWidth: "100%", // Adjusted to use 100% width
+                          }}
+                        >
+                          <FoodSocialCard
+                            postId={recipe.postId}
+                            title={recipe.title}
+                            description={recipe.description}
+                            cookingTime={recipe.cookingTime}
+                            difficulty={recipe.difficulty}
+                            servings={recipe.servings}
+                            ingredients={recipe.ingredients}
+                            instructions={recipe.instructions}
+                            imageUrl={
+                              recipe.imageList?.[0]?.url ||
+                              "https://via.placeholder.com/400x300?text=No+Image"
+                            }
+                            datePosted={recipe.datePosted}
+                            author={username}
+                            authorId={profileData.userId}
+                            likes={recipe.likes || 0}
+                            isLiked={recipe.isLiked || false}
+                          />
+                        </div>
+                      ))}
+                    </Masonry>
+                  </div>
                 ) : (
+                  <div className="text-center py-20 bg-gray-50 rounded-lg">
+                    <svg
+                      className="w-16 h-16 mx-auto text-gray-300"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M9 13h6m-3-3v6m-9 1V7a2 2 0 012-2h6l2 2h6a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z"
+                      />
+                    </svg>
+                    <h3 className="mt-4 text-lg font-medium text-gray-900">
+                      No posts yet
+                    </h3>
+                    <p className="mt-2 text-sm text-gray-500 max-w-sm mx-auto">
+                      {isOwnProfile
+                        ? "Share your first recipe to get started!"
+                        : `${username} hasn't shared any recipes yet.`}
+                    </p>
+                    {isOwnProfile && (
+                      <button
+                        className="mt-5 px-4 py-2 bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-full hover:from-green-600 hover:to-emerald-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 shadow-sm transition-colors"
+                        onClick={handleOpenCreatePost}
+                      >
+                        Create Recipe
+                      </button>
+                    )}
+                  </div>
+                )
+              ) : (
                 // Saved posts section for own profile
                 <div className="text-center py-20 bg-gray-50 rounded-lg">
                   <svg

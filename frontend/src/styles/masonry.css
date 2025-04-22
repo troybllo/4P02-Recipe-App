@@ -2,39 +2,55 @@
   --masonry-gap: 1rem;
 }
 
+/* Adjust gap based on screen size */
 @media (min-width: 1280px) {
   :root {
-    --masonry-gap: 1rem;
+    --masonry-gap: 1.25rem;
   }
 }
 
 @media (min-width: 1600px) {
   :root {
-    --masonry-gap: 1rem;
+    --masonry-gap: 1.5rem;
   }
 }
 
 .my-masonry-grid {
   display: flex;
-  /* Negative margin on both sides for symmetrical spacing */
   margin-left: calc(-0.5 * var(--masonry-gap));
   margin-right: calc(-0.5 * var(--masonry-gap));
   width: auto;
-  padding: 0 3rem;
+  /* Remove fixed padding and let container control overall width */
+  padding: 0;
 }
 
 .my-masonry-grid_column {
-  /* Matching left/right padding to keep columns spaced */
-  padding-left: var(--masonry-gap);
-  padding-right: var(--masonry-gap);
+  padding-left: calc(var(--masonry-gap) / 2);
+  padding-right: calc(var(--masonry-gap) / 2);
   background-clip: padding-box;
 }
 
 .my-masonry-grid_column > div {
-  /* Vertical spacing between items in the same column */
   margin-bottom: var(--masonry-gap);
+  /* Ensure items don't exceed column width */
+  max-width: 100%;
 }
 
-/* Styles for the main content container */
+/* Add container class for better control */
+.masonry-container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
 
-
+/* Responsive adjustments */
+@media (max-width: 640px) {
+  .masonry-container {
+    padding: 0 0.5rem;
+  }
+  
+  :root {
+    --masonry-gap: 0.75rem;
+  }
+}
