@@ -1,5 +1,9 @@
 from flask import request, jsonify
 from werkzeug.security import check_password_hash
+# controllers/profile.py
+from ..controllers.recipes import get_recipe_global
+
+
 from ..services.profile_database import (
     update_profile_in_firestore,
     upload_profile_image_to_cloudinary,
@@ -183,37 +187,39 @@ def unfollow_user_controller():
 
 
 def save_post_controller():
-    """
-    POST /api/profile/savePost
-    { "userId": "...", "postId": "..." }
-    """
     data = request.get_json(silent=True) or {}
     user_id = data.get("userId")
     post_id = data.get("postId")
     if not user_id or not post_id:
         return jsonify({"error": "Missing userId or postId"}), 400
 
-    updated_doc = save_post(user_id, post_id)
-    if not updated_doc:
+    # --- NEW: make sure that ID belongs to _some_ recipe, anywhere ---
+    if not get_recipe_global(post_id):
+        return jsonify({"error": "Recipe not found"}), 404
+
+    updated = save_post(user_id, post_id)
+    if not updated:
         return jsonify({"error": "User not found"}), 404
-    return jsonify({"message": "Post saved", "profile": updated_doc}), 200
+
+    return jsonify({"message": "Post saved", "profile": updated}), 200
 
 
 def unsave_post_controller():
-    """
-    POST /api/profile/unsavePost
-    { "userId": "...", "postId": "..." }
-    """
     data = request.get_json(silent=True) or {}
     user_id = data.get("userId")
     post_id = data.get("postId")
     if not user_id or not post_id:
         return jsonify({"error": "Missing userId or postId"}), 400
 
-    updated_doc = unsave_post(user_id, post_id)
-    if not updated_doc:
+    # --- NEW: same guard here ---
+    if not get_recipe_global(post_id):
+        return jsonify({"error": "Recipe not found"}), 404
+
+    updated = unsave_post(user_id, post_id)
+    if not updated:
         return jsonify({"error": "User not found"}), 404
-    return jsonify({"message": "Post unsaved", "profile": updated_doc}), 200
+
+    return jsonify({"message": "Post unsaved", "profile": updated}), 200
 
 
 def fetch_user_by_username(username):

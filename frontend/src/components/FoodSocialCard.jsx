@@ -164,23 +164,29 @@ const FoodSocialCard = ({
   
   async function handleSaveToggle() {
     const endpoint = isSaved ? "unsavePost" : "savePost";
-    const res = await fetch(`${API}/profile/${endpoint}`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        userId:    currentUserId,
-        postId:    recipeId,
-      }),
-    });
-    if (res.ok) {
-      const newIsSaved = !isSaved;
-      setIsSaved(newIsSaved);
-      onSaveToggle?.(recipeId, newIsSaved);               // ← 3) notify parent
-      triggerPopup(newIsSaved ? "Saved!" : "Removed from saved");
-    } else {
+    const payload = {
+      userId:    currentUserId,   // ← YOUR user ID
+      postId:    recipeId         // ← the recipe’s ID, regardless of who owns it
+    };
+  
+    try {
+      const res = await fetch(`${API}/profile/${endpoint}`, {
+        method:  "POST",
+        headers: { "Content-Type": "application/json" },
+        body:    JSON.stringify(payload),
+      });
+  
+      if (!res.ok) throw new Error(await res.text());
+      const json = await res.json();
+      setIsSaved(!isSaved);
+      onSaveToggle?.(recipeId, !isSaved);
+      triggerPopup(!isSaved ? "Saved!" : "Removed from saved");
+    } catch (err) {
+      console.error("Save toggle failed:", err);
       triggerPopup("Save failed", "error");
     }
   }
+  
   
   
 

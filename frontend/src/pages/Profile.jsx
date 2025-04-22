@@ -42,6 +42,8 @@ const Profile = () => {
   const [profileUpdated, setProfileUpdated] = useState(false);
   const [showFollowersModal, setShowFollowersModal] = useState(false);
   const [showFollowingModal, setShowFollowingModal] = useState(false);
+  const [savedRecipes, setSavedRecipes] = useState([]);
+
 
   // If currentUser is properly structured with username property
   const isOwnProfile =
@@ -65,6 +67,18 @@ const Profile = () => {
     // Refresh the profile after creating a new post
     setProfileUpdated(true);
   };
+
+  useEffect(() => {
+    if (!showPosts && profileData.savedPosts.length) {
+      Promise.all(
+        profileData.savedPosts.map((postId) =>
+          fetch(`http://127.0.0.1:5000/api/recipes/${postId}`)
+            .then((res) => res.json())
+        )
+      ).then((recipes) => setSavedRecipes(recipes));
+    }
+  }, [showPosts, profileData.savedPosts]);
+  
 
   useEffect(() => {
     // Redirect to login if no username provided and user not logged in
@@ -646,25 +660,24 @@ const Profile = () => {
                 profileData.savedPosts?.length > 0 ? (
                   <AnimatePresence>
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                      {profileData.recipes
-                        .filter((r) => profileData.savedPosts.includes(r.postId))
-                        .map((recipe) => (
-                          <motion.div
-                            key={recipe.postId}
-                            layout
-                            initial={{ opacity: 0, scale: 0.95 }}
-                            animate={{ opacity: 1, scale: 1 }}
-                            exit={{ opacity: 0, scale: 0.95 }}
-                          >
-                            <FoodSocialCard
-                              {...recipe}
-                              isSaved={true}
-                              onSaveToggle={handleSaveToggle}
-                            />
-                          </motion.div>
-                        ))}
+                      {savedRecipes.map((recipe) => (
+                        <motion.div
+                          key={recipe.postId}
+                          layout
+                          initial={{ opacity: 0, scale: 0.95 }}
+                          animate={{ opacity: 1, scale: 1 }}
+                          exit={{ opacity: 0, scale: 0.95 }}
+                        >
+                          <FoodSocialCard
+                            {...recipe}
+                            isSaved={true}
+                            onSaveToggle={handleSaveToggle}
+                          />
+                        </motion.div>
+                      ))}
                     </div>
                   </AnimatePresence>
+
                 ) : (
                   <div className="text-center py-20 bg-gray-50 rounded-lg">
                     <p className="text-gray-500">You haven’t saved any recipes yet.</p>

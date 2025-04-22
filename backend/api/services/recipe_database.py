@@ -231,3 +231,23 @@ def get_editors_picks_by_category():
 
     return picks_response
 
+def get_recipe_global(post_id):
+    from firebase_admin import firestore
+    db = firestore.client()
+
+    for u in db.collection("users").stream():
+        uid = u.id
+        snap = (
+            db.collection("users")
+              .document(uid)
+              .collection("created_recipes")
+              .document(post_id)
+              .get()
+        )
+        if snap.exists:
+            data = snap.to_dict()
+            data["postId"] = snap.id
+            data["userId"]   = uid
+            return data
+
+    return None
