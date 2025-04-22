@@ -81,6 +81,23 @@ const FoodSocialCard = ({
       })
       .catch(err => console.error("[like-status] error", err))
   }, [me, recipeId, userId, authorId])
+
+  useEffect(() => {
+    if (!currentUserId) return;
+  
+    fetch(`${API}/profile/save-status?userId=${currentUserId}&postId=${recipeId}`)
+      .then(res => {
+        if (!res.ok) throw new Error(res.status);
+        return res.json();
+      })
+      .then(json => {
+        if (typeof json.isSaved === "boolean") {
+          setIsSaved(json.isSaved);
+        }
+      })
+      .catch(err => console.error("[save-status] error", err));
+  }, [currentUserId, recipeId]);
+
   
   const triggerPopup = (message, type) => {
     setPopupMessage(message);

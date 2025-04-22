@@ -1,4 +1,7 @@
-from flask import Blueprint
+from flask import Blueprint, request, jsonify
+from ..services.database_interface import get_user_by_id
+
+
 from ..controllers.profile import (
     edit_profile,
     change_password,
@@ -12,7 +15,9 @@ from ..controllers.profile import (
     get_followers_controller,
     get_following_controller,
     batch_get_user_info_controller,
+    suggested_users_controller
 )
+from ..services.database_interface import get_user_by_id
 
 profile_blueprint = Blueprint("profile_features", __name__)
 
@@ -152,12 +157,8 @@ def get_suggested_users_route(user_id):
 
     return suggested_users_controller(user_id)
 
-@profile_blueprint.route("/save-status", methods=["GET"])
+@profile_blueprint.route("/profile/save-status", methods=["GET"])
 def save_status_controller():
-    """
-    GET /api/profile/save-status?userId=…&postId=…
-    Returns { isSaved: boolean }
-    """
     user_id = request.args.get("userId")
     post_id = request.args.get("postId")
     if not user_id or not post_id:
@@ -169,4 +170,3 @@ def save_status_controller():
 
     saved = post_id in user_doc.get("savedPosts", [])
     return jsonify({"isSaved": saved}), 200
-
