@@ -50,12 +50,12 @@ export default function Home() {
   const [hasFollowing, setHasFollowing] = useState(false);
   const [suggestedUsers, setSuggestedUsers] = useState([]);
   const [refreshTrigger, setRefreshTrigger] = useState(0);
+  const username = localStorage.getItem("username");
 
   // Check if user is logged in and fetch their feed
   useEffect(() => {
     const userId = localStorage.getItem("userId");
     const token = localStorage.getItem("token");
-    const username = localStorage.getItem("username");
 
     if (!userId || !token) {
       setIsLoggedIn(false);
@@ -606,11 +606,11 @@ export default function Home() {
 
             {/* Sidebar */}
             <motion.div className="md:w-1/3" variants={itemVariants}>
-              <div className="bg-white rounded-xl shadow-sm p-6 mb-6">
+              {/* <div className="bg-white rounded-xl shadow-sm p-6 mb-6">
                 <div
                   className="flex items-center cursor-pointer"
                   onClick={() =>
-                    navigate(`/profile/${localStorage.getItem("username")}`)
+                    navigate(`/profile/${username}`)
                   }
                 >
                   {localStorage.getItem("profileImageUrl") ? (
@@ -621,27 +621,28 @@ export default function Home() {
                     />
                   ) : (
                     <div className="w-14 h-14 rounded-full bg-gradient-to-br from-green-500 to-green-700 text-white flex items-center justify-center font-semibold text-xl">
-                      {localStorage.getItem("username") &&
-                      localStorage.getItem("username")[0]
-                        ? localStorage.getItem("username")[0].toUpperCase()
+                      {username &&
+                      username[0]
+                        ? username[0].toUpperCase()
                         : "U"}
                     </div>
                   )}
                   <div className="ml-3">
                     <h3 className="font-bold text-lg text-gray-800">
-                      {localStorage.getItem("username") || "User"}
+                      {username || "User"}
                     </h3>
                     <p className="text-gray-500 text-sm">Your Profile</p>
                   </div>
                 </div>
-              </div>
+              </div> */}
 
               {/* Suggested users to follow */}
-              <div className="bg-white rounded-xl shadow-sm p-6">
-                <h3 className="font-bold text-lg mb-4">Suggested for you</h3>
+              <div className="bg-white rounded-xl shadow-sm p-6 mb-8">
+                <h3 className="font-bold text-lg">Suggested for you</h3>
+                <p>A few users suggested for you!</p>
 
                 {suggestedUsers.length > 0 ? (
-                  <div className="space-y-4">
+                  <div className="space-y-4 pt-8">
                     {suggestedUsers.map((user, index) => (
                       <div
                         key={user.userId || index}
