@@ -79,25 +79,38 @@ const EditPost = ({
     }
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    setError("");
-    setSuccess("");
-
-    try {
-      await onSubmit(formData);
-      setSuccess("Recipe updated successfully!");
-      setTimeout(() => {
-        onClose();
-      }, 1500);
-    } catch (err) {
-      setError(err.message || "Error updating recipe");
-      console.error("Error updating recipe:", err);
-    } finally {
-      setLoading(false);
-    }
-  };
+  const handleSubmit = async () => {
+      const userId = localStorage.getItem("userId");
+  
+      try {
+        const formData = new FormData();
+        formData.append("userId", userId);
+        formData.append("title", title);
+        formData.append("description", description);
+        formData.append("cookingTime", cookingTime);
+        formData.append("difficulty", difficulty);
+        formData.append("servings", servings);
+        formData.append("ingredients", JSON.stringify(ingredients.split("\n")));
+        formData.append("instructions", JSON.stringify(instructions.split("\n")));
+        // if (newImage) {
+        //   formData.append("image", newImage);
+        // }
+  
+        const response = await fetch(`/api/recipes/${postId}`, {
+          method: "PUT",
+          body: formData,
+        });
+  
+        const result = await response.json();
+        if (response.ok) {
+          console.success("✅ Recipe updated!");
+        } else {
+          console.error("❌ Update failed: " + result.error);
+        }
+      } catch (err) {
+        console.error("Update error:", err);
+      }
+    };
 
   // Disable page scrolling when modal is open
   useEffect(() => {

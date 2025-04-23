@@ -171,7 +171,9 @@ export default function Navbar() {
           </div>
 
           <div className="relative">
-            <motion.button
+            {
+              isLoggedIn?
+              <motion.button
               onClick={() => setShowSearch((prev) => !prev)}
               className="text-gray-600 hover:text-gray-800 p-4"
               whileHover={{ scale: 1.1 }}
@@ -179,6 +181,11 @@ export default function Navbar() {
             >
               {showSearch ? <X size={24} /> : <span role="img" aria-label="Search">🔍</span>}
             </motion.button>
+            :
+            <></>
+
+            }
+            
             {showSearch && <SearchBar onClose={() => setShowSearch(false)} />}
           </div>
 
