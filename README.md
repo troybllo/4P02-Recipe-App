@@ -8,7 +8,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <img src="Logo.png" alt="Project Logo" width="200">
-    <p>Remembering Every Taste</p>
+    <p>A Recipe Sharing & Discovery Social App</p>
 </head>
 <body>
     <h1>Technologies</h1>
@@ -21,35 +21,39 @@
     <h1>Project Description</h1>
     <p>Feastly is the hub of all recipes for all tastes and people. It's designed to enhance
 the culinary experience by combining recipe management, social interaction, and artificial
-intelligence.Our goal is to foster a community of food enthusiasts through interactive features</p>
+intelligence. Feastly showcases personalized feed of recipes to users, overlayed in a beautiful and clean UI</p>
 
-<h1>Features (Planned)</h1>
+<h1>Features</h1>
 <ul>
-    <li>Save and Edit Recipies</li>
-    <li>Share Recipies</li>
-    <li>Search Recipies</li>
-    <li>Temporary Suggestions</li>
-    <li>Ai-Suggestions</li>
+    <li>✅Browse your personalized home feed</li>
+    <li>✅Like, Share, Save recipe posts</li>
+    <li>✅Discovery recipes</li>
+    <li>✅Search, follow, and interact with users and their posts</li>
+    <li>✅Customize your Feastly profile</li>
 </ul>
 
 <h1>Contributors</h1>
+<h4>Team Leaders</h4>
+<ul>
+    <li>Roger Li - Product Owner</li>
+    <li>Samrat Gautam - Scrum Master</li>
+</ul>
 <h4>Front End Team</h4>
 <ul>
-    <li>Roger Li - Developer and Manager</li>
-    <li>Sahil Modi - Developer</li>
-    <li>Troy Bello - Developer</li>
+    <li>Roger Li - Developer</li>
+    <li>Sahil Modi - Developer and Art Lead</li>
+    <li>Troy Bello - Developer and Designer</li>
     <li>Samrat Gautam - Developer</li>
+    <li>Duru Michael - Developer</li>
 </ul>
 <h4>Back End Team</h4>
 <ul>
-    <li>Roger Li - Developper and Manager</li>
-    <li>Ridham Elhance - Developer</li>
-     <li>Abdelgelil Mohamed - Developer</li>
-    <li>Duru Michael - Developer</li>
+    <li>Ridham Elhance - Backend Developer</li>
+    <li>Abdelgelil Mohamed - Backend Developer</li>
 </ul>
 
 <h5>Detailed Features</h5>
-    <li>Save and Edit- Both are buttons. Once a recipie is saved, it creates a new js file</li>
+    <li>Browse through your home feed which is catered to you specifically. You will see suggested users on the right, and a feed that showcases your following's posts</li>
     <li>Share recipies, is also a button, but it has a interaction with two or more profiles</li>
     <li>Recipies have [String] Title, [BLOB] Image, [String] Recipie Title, [String] Recipie Description, Example -> https://www.foodnetwork.com/recipes/pork-soup-dumplings-9534785</li>
     <li>Each Recipie page also has a list of ingredients that may be stored as a string</li>
