@@ -1,6 +1,6 @@
 # 🍽️ Feastly - 4P02 Recipe App
 
-![Feastly Logo](Logo.png)
+![Feastly Logo](feastly-Logo.png)
 
 > A Recipe Sharing & Discovery Social App designed to enhance your culinary experience through a personalized, interactive platform.
 
