@@ -35,7 +35,7 @@ Feastly is your go-to hub for all things culinary. Combining recipe discovery, s
 
 - 📱 Browse a personalized feed with suggested users and followed posts.
 - 📝 Share recipes with fields like title, description, ingredients, and images.
-- 🔎 Search recipes through keywords and AI-powered text analysis.
+- 🔎 Search recipes through keywords.
 - 🛠️ Initial manual data for testing and suggestions.
 - 📷 Support for media-rich posts using BLOB images.
 
