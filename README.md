@@ -70,12 +70,43 @@ Example Recipe Format:
 
 ---
 
+## 📂 How to Run the App
+
+> Setup instructions — including installing dependencies, running backend/frontend, and .env setup.
+
+### 🔧 Backend Setup (Python + Flask)
+
+```bash
+# Navigate to the backend directory
+cd backend
+
+# Install Python dependencies
+pip install -r requirements.txt
+
+# Set up necessary environment variables
+# (Refer to internal project documentation or .env.example for required keys)
+
+# Run the Flask server
+python start_server.py
+```
+
+### 💻 Frontend Setup (React)
+
+```bash
+# Navigate to the frontend directory
+cd frontend
+
+# Install Node.js dependencies
+npm install
+
+# Start the development server
+npm start
+```
+
+---
+
 ## 📄 License
 
 This project is licensed under [Your License Here].
 
 ---
-
-## 📂 How to Run the App
-
-> Setup instructions can be added here — including installing dependencies, setting up Docker, running backend/frontend, and .env setup if needed.
